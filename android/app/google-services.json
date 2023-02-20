@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "865805386609",
+    "project_id": "growcery-93a08",
+    "storage_bucket": "growcery-93a08.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:865805386609:android:9bbc5329f06d6ae059acd0",
+        "android_client_info": {
+          "package_name": "com.devtastic.growcery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "865805386609-fjmjaffdkhg8sph9c1vvqbng8u1a1gip.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXwvUG94N78p--NLqxAL7MRz3o6Nduh2g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "865805386609-fjmjaffdkhg8sph9c1vvqbng8u1a1gip.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
