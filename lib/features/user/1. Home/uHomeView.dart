@@ -26,7 +26,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
             Text(
               "Discover New Stocks",
               style: GoogleFonts.poppins(
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),

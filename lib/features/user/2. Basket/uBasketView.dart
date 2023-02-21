@@ -26,7 +26,7 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
             Text(
               "My Basket",
               style: GoogleFonts.poppins(
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
