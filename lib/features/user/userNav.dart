@@ -1,12 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:growcery/common/AuthRequiredDialog.dart';
 import 'package:growcery/constants/AppColors.dart';
 import 'package:growcery/features/ViewModels/AuthViewModels.dart';
 import 'package:growcery/features/user/1.%20Home/uHomeView.dart';
 import 'package:growcery/features/user/2.%20Basket/uBasketView.dart';
 import 'package:growcery/features/user/3.%20Profile/uProfileView.dart';
+import 'package:growcery/services/AuthService.dart';
+import 'package:growcery/services/FirestoreService.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 class UserNav extends ConsumerStatefulWidget {
@@ -55,6 +58,21 @@ class _UserNavState extends ConsumerState<UserNav> {
     ];
   }
 
+  Future<void> checkUser() async {
+    if(await FirestoreService().checkUserExist(AuthService().getID()) == false){
+      if(mounted){
+        context.go("/admin");
+      }
+    }
+
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +81,10 @@ class _UserNavState extends ConsumerState<UserNav> {
 
     return authState.when(
       data: (data){
+        if(data?.uid != null){
+          checkUser();
+        }
+
         return PersistentTabView(
           context,
           controller: _controller,

@@ -5,6 +5,7 @@ import "package:growcery/common/AuthDialog.dart";
 import "package:growcery/constants/AppColors.dart";
 
 import '../../../common/ViewItemSheet.dart';
+import "../../../services/AuthService.dart";
 import "../../ViewModels/AuthViewModels.dart";
 
 class UProfileView extends ConsumerStatefulWidget {
@@ -54,11 +55,25 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              data?.uid == null ? "Login to continue" : "John Doe",
-                              style: GoogleFonts.poppins(
-                                fontSize: 20,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  data?.uid == null ? "Login to continue" : "John Doe",
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: data?.uid == null ? false : true,
+                                  child: IconButton(
+                                    onPressed: (){
+                                      AuthService().signOut();
+                                    },
+                                    icon: const Icon(Icons.logout),
+                                  ),
+                                )
+                              ],
                             ),
                             Visibility(
                               visible: data?.uid == null ? true : false,

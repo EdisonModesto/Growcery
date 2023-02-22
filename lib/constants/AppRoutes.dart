@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:growcery/features/admin/adminNav.dart';
 import 'package:growcery/features/user/userNav.dart';
 
 class AppRoutes{
@@ -9,6 +10,10 @@ class AppRoutes{
       GoRoute(
         path: '/user',
         builder: (context, state) => UserNav(),
+      ),
+      GoRoute(
+        path: '/admin',
+        builder: (context, state) => AdminNav(),
       ),
     ],
   );

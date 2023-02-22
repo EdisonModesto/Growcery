@@ -34,4 +34,14 @@ class AuthService{
     }
   }
 
+
+  void signOut() async {
+    await FirebaseAuth.instance.signOut();
+  }
+
+  String? getID(){
+    return FirebaseAuth.instance.currentUser?.uid;
+  }
+
+
 }
