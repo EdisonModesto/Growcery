@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../common/ViewItemSheet.dart';
 import '../../../constants/AppColors.dart';
+import '../../ViewModels/ItemViewModel.dart';
 
 class UHomeView extends ConsumerStatefulWidget {
   const UHomeView({
@@ -17,6 +18,9 @@ class UHomeView extends ConsumerStatefulWidget {
 class _UHomeViewState extends ConsumerState<UHomeView> {
   @override
   Widget build(BuildContext context) {
+
+    var feed = ref.watch(itemProvider);
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
@@ -63,76 +67,103 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
               ),
             ),
             Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
-                childAspectRatio: 0.8,
-                children: List.generate(5, (index){
-                  return InkWell(
-                    onTap: (){
-                      showModalBottomSheet(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(12),
-                          ),
-                        ),
-                        context: context,
-                        isScrollControlled: true,
-                        builder: (context) => ViewItemSheet(),
-                      );
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Image.network(
-                                "https://via.placeholder.com/500 ",
-                                width: double.infinity,
-                                fit: BoxFit.fitWidth,
-                              ),
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Nameeeeeeeeeeeeeeee",
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Text(
-                                      "Stocks: 10",
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ],
+              child: feed.when(
+                data: (data){
+                  return GridView.count(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20,
+                      childAspectRatio: 0.8,
+                      children: List.generate(data.docs.length, (index){
+                        return InkWell(
+                          onTap: (){
+                            showModalBottomSheet(
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(12),
                                 ),
                               ),
-                            )
-                          ],
-                        ),
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) => ViewItemSheet(
+                                name: data.docs[index].data()['Name'],
+                                price: data.docs[index].data()['Price'],
+                                description: data.docs[index].data()['Description'],
+                                stock: data.docs[index].data()['Stocks'],
+                                image: data.docs[index].data()['Url'],
+                                id: data.docs[index].id,
+                              ),
+                            );
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Image.network(
+                                      data.docs[index].data()['Url'],
+                                      width: double.infinity,
+                                      fit: BoxFit.fitWidth,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            data.docs[index].data()['Name'],
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 5),
+                                          Text(
+                                            "PHP ${data.docs[index].data()['Price']}",
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      })
+                  );
+                },
+                error: (error, stack){
+                  return Center(
+                    child: Text(
+                      error.toString(),
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   );
-                })
+                },
+                loading: (){
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
               ),
             )
           ],

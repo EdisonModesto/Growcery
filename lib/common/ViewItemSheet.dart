@@ -1,13 +1,30 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:growcery/services/FirestoreService.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../constants/AppColors.dart';
+import 'AddToBasketSheet.dart';
 
 class ViewItemSheet extends ConsumerStatefulWidget {
   const ViewItemSheet({
+    required this.name,
+    required this.price,
+    required this.description,
+    required this.stock,
+    required this.image,
+    required this.id,
     Key? key,
   }) : super(key: key);
+
+  final String name;
+  final String price;
+  final String description;
+  final String stock;
+  final String image;
+  final String id;
 
   @override
   ConsumerState createState() => _ViewItemSheetState();
@@ -28,7 +45,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                 height: 200,
                 width: double.infinity,
                 child: Image.network(
-                  "https://via.placeholder.com/500 ",
+                  widget.image,
                   width: double.infinity,
                   fit: BoxFit.fitWidth,
                 ),
@@ -38,7 +55,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "CALAMANSI",
+                    widget.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.poppins(
@@ -47,14 +64,26 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                     ),
                   ),
                   IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.shopping_basket_outlined),
+                    onPressed: () {
+                      showMaterialModalBottomSheet(
+                        context: context,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                        ),
+                        builder: (context) => AddToBasketSheet(id: widget.id,),
+                      );
+                      //FirestoreService().addToBasket(widget.id);
+                    },
+                    icon: const Icon(Icons.shopping_basket_outlined),
                   ),
                 ],
               ),
               const SizedBox(height: 5),
               Text(
-                "PHP 199.00",
+                "PHP ${widget.price}",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.poppins(
@@ -77,7 +106,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                     ),
                   ),
                   Text(
-                    "Stocks: 10",
+                    "Stocks: ${widget.stock}",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.poppins(
@@ -89,7 +118,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
               ),
               const SizedBox(height: 15),
               Text(
-                "description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description v",
+                widget.description,
                 textAlign: TextAlign.justify,
                 style: GoogleFonts.poppins(
                   fontSize: 14,
