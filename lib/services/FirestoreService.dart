@@ -85,4 +85,10 @@ class FirestoreService{
       //"Date": DateTime.now().toString(),
     });
   }
+
+  void updateOrderStatus(id, status){
+    FirebaseFirestore.instance.collection("Orders").doc(id).update({
+      "Status": status,
+    });
+  }
 }

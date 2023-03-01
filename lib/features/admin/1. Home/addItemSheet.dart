@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:growcery/constants/AppColors.dart';
 import 'package:growcery/services/CloudService.dart';
@@ -199,9 +200,11 @@ class _AddItemSheetState extends ConsumerState<AddItemSheet> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      if(_formKey.currentState!.validate()){
+                      if(_formKey.currentState!.validate() && url != ""){
                         FirestoreService().addItem(url, nameController.text, priceController.text, quantityController.text, descriptionController.text);
                         Navigator.pop(context);
+                      } else {
+                        Fluttertoast.showToast(msg: "Please make sure to fill up all the fields and upload an image");
                       }
                     },
                     style: ElevatedButton.styleFrom(

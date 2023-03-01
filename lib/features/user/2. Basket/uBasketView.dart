@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:growcery/features/ViewModels/UserViewModel.dart';
 import 'package:growcery/services/FirestoreService.dart';
@@ -271,7 +272,11 @@ class _PriceLabelState extends ConsumerState<PriceLabel> {
         Expanded(
           child: InkWell(
             onTap: (){
-              FirestoreService().createOrder(widget.items);
+              if(widget.items.isNotEmpty){
+                FirestoreService().createOrder(widget.items);
+              } else{
+                Fluttertoast.showToast(msg: "No items in basket");
+              }
             },
             child: Container(
               height: 55,
