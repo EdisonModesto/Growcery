@@ -8,6 +8,7 @@ import 'package:growcery/services/FirestoreService.dart';
 
 import '../../../common/ViewItemSheet.dart';
 import '../../../constants/AppColors.dart';
+import '../../ViewModels/AuthViewModels.dart';
 
 class UBasketView extends ConsumerStatefulWidget {
   const UBasketView({
@@ -38,206 +39,253 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
 
   @override
   Widget build(BuildContext context) {
-    var basket = ref.watch(userProvider);
+
+
+    var authState = ref.watch(authStateProvider);
+
     total = 0.0;
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
-        child: basket.when(data: (data) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "My Basket",
-                style: GoogleFonts.poppins(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+        child: authState.when(
+          data: (data2) {
+            if (data2?.uid == null) {
+              return Center(
+                child: Text(
+                  "Please Login to view your basket",
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Expanded(
-                  child: ListView.separated(
-                itemCount: data.data()!["Basket"].length,
-                itemBuilder: (context, index) {
-                  return StreamBuilder(
-                    stream: FirebaseFirestore.instance
-                        .collection("Items")
-                        .doc(data
-                            .data()!["Basket"][index]
-                            .toString()
-                            .split(",")[0])
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        itemQuantity[index] = int.parse(data
-                            .data()!["Basket"][index]
-                            .toString()
-                            .split(",")[1]);
-                        itemPrice[index] = double.parse(
-                            snapshot.data!.data()!["Price"].toString());
-                        return Container(
-                          height: 100,
+              );
+            }
+            var basket = ref.watch(userProvider);
+            return basket.when(
+                data: (data){
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "My Basket",
+                        style: GoogleFonts.poppins(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Expanded(
+                        child: ListView.separated(
+                          itemCount: data.data()!["Basket"].length,
+                          itemBuilder: (context, index) {
+                            return StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection("Items")
+                                  .doc(data
+                                  .data()!["Basket"][index]
+                                  .toString()
+                                  .split(",")[0])
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  itemQuantity[index] = int.parse(data
+                                      .data()!["Basket"][index]
+                                      .toString()
+                                      .split(",")[1]);
+                                  itemPrice[index] = double.parse(
+                                      snapshot.data!.data()!["Price"].toString());
+                                  return Container(
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 100,
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: NetworkImage(
+                                                  snapshot.data!.data()!["Url"]),
+                                              fit: BoxFit.cover,
+                                            ),
+                                            color: Colors.grey[300],
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                snapshot.data!.data()!["Name"],
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 5),
+                                              Text(
+                                                snapshot.data!
+                                                    .data()!["Description"]
+                                                    .toString()
+                                                    .substring(0, 14),
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 5),
+                                              Text(
+                                                "PHP ${snapshot.data!.data()!["Price"]}",
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        InkWell(
+                                          onTap: () {
+                                            FirestoreService().updateBasketQuantity(
+                                                data
+                                                    .data()!["Basket"][index]
+                                                    .toString()
+                                                    .split(",")[0],
+                                                itemQuantity[index] - 1,
+                                                data.data()!["Basket"][index]);
+                                            itemQuantity[index] =
+                                                itemQuantity[index] - 1;
+                                            setState(() {});
+                                          },
+                                          child: Container(
+                                            width: 30,
+                                            height: 30,
+                                            decoration: BoxDecoration(
+                                              color: AppColors().primaryColor,
+                                              borderRadius:
+                                              BorderRadius.circular(10),
+                                            ),
+                                            child: const Icon(
+                                              Icons.remove,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Text(
+                                          "${itemQuantity[index]}",
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        InkWell(
+                                          onTap: () {
+                                            FirestoreService().updateBasketQuantity(
+                                                data
+                                                    .data()!["Basket"][index]
+                                                    .toString()
+                                                    .split(",")[0],
+                                                itemQuantity[index] + 1,
+                                                data.data()!["Basket"][index]);
+                                            itemQuantity[index] =
+                                                itemQuantity[index] + 1;
+                                            print(itemQuantity[index]);
+                                            setState(() {});
+                                          },
+                                          child: Container(
+                                            width: 30,
+                                            height: 30,
+                                            decoration: BoxDecoration(
+                                              color: AppColors().primaryColor,
+                                              borderRadius:
+                                              BorderRadius.circular(10),
+                                            ),
+                                            child: const Icon(
+                                              Icons.add,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
+
+                                return const SizedBox();
+                              },
+                            );
+                          },
+                          separatorBuilder: (context, index) =>
+                          const SizedBox(height: 10),
+                        ),
+                      ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          height: 55,
                           decoration: BoxDecoration(
                             color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(10),
                           ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 100,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage(
-                                        snapshot.data!.data()!["Url"]),
-                                    fit: BoxFit.cover,
-                                  ),
-                                  color: Colors.grey[300],
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      snapshot.data!.data()!["Name"],
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Text(
-                                      snapshot.data!
-                                          .data()!["Description"]
-                                          .toString()
-                                          .substring(0, 14),
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Text(
-                                      "PHP ${snapshot.data!.data()!["Price"]}",
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              InkWell(
-                                onTap: () {
-                                  FirestoreService().updateBasketQuantity(
-                                      data
-                                          .data()!["Basket"][index]
-                                          .toString()
-                                          .split(",")[0],
-                                      itemQuantity[index] - 1,
-                                      data.data()!["Basket"][index]);
-                                  itemQuantity[index] = itemQuantity[index] - 1;
-                                  setState(() {});
-                                },
-                                child: Container(
-                                  width: 30,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: AppColors().primaryColor,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: const Icon(
-                                    Icons.remove,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                "${itemQuantity[index]}",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              InkWell(
-                                onTap: () {
-                                  FirestoreService().updateBasketQuantity(
-                                      data
-                                          .data()!["Basket"][index]
-                                          .toString()
-                                          .split(",")[0],
-                                      itemQuantity[index] + 1,
-                                      data.data()!["Basket"][index]);
-                                  itemQuantity[index] = itemQuantity[index] + 1;
-                                  print(itemQuantity[index]);
-                                  setState(() {});
-                                },
-                                child: Container(
-                                  width: 30,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: AppColors().primaryColor,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: const Icon(
-                                    Icons.add,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ],
+                          child: PriceLabel(
+                            prices: itemPrice,
+                            quantity: itemQuantity,
+                            items: data.data()?["Basket"] ?? [],
                           ),
-                        );
-                      }
-
-                      return const SizedBox();
-                    },
+                        ),
+                      )
+                    ],
                   );
                 },
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 10),
-              )),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Container(
-                  height: 55,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                  ),
-                  child: PriceLabel(
-                    prices: itemPrice,
-                    quantity: itemQuantity,
-                    items: data.data()!["Basket"],
-                  ),
+                error: (error, stack) {
+                  return Center(
+                    child: Text(
+                      error.toString(),
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  );
+                }, loading: () {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            });
+          },
+          error: (error, stack) {
+            return Center(
+              child: Text(
+                error.toString(),
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
                 ),
-              )
-            ],
-          );
-        }, error: (error, stack) {
-          return Center(
-            child: Text(
-              error.toString(),
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
               ),
-            ),
-          );
-        }, loading: () {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }),
+            );
+          },
+          loading: () {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+        ),
       ),
     );
   }
 }
+
+
+
 
 class PriceLabel extends ConsumerStatefulWidget {
   const PriceLabel({
@@ -271,10 +319,10 @@ class _PriceLabelState extends ConsumerState<PriceLabel> {
       children: [
         Expanded(
           child: InkWell(
-            onTap: (){
-              if(widget.items.isNotEmpty){
+            onTap: () {
+              if (widget.items.isNotEmpty) {
                 FirestoreService().createOrder(widget.items);
-              } else{
+              } else {
                 Fluttertoast.showToast(msg: "No items in basket");
               }
             },

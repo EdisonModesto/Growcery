@@ -122,7 +122,7 @@ class _AuthDialogState extends ConsumerState<AuthDialog> {
                               ElevatedButton(
                                 onPressed: () {
                                   if (key.currentState!.validate()){
-                                    AuthService().signIn(emailController.text, passwordController.text);
+                                    AuthService().signIn(emailController.text, passwordController.text, context);
                                     Navigator.of(context).pop();
                                   }
                                 },
@@ -189,7 +189,7 @@ class _AuthDialogState extends ConsumerState<AuthDialog> {
                               ElevatedButton(
                                 onPressed: () {
                                   if (key2.currentState!.validate()){
-                                    AuthService().signUp(emailController.text, passwordController.text);
+                                    AuthService().signUp(emailController.text, passwordController.text,context);
                                     Navigator.of(context).pop();
                                   }
                                 },

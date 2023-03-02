@@ -2,10 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:growcery/services/FirestoreService.dart';
+import 'package:go_router/go_router.dart';
+
 
 class AuthService{
 
-  Future<void> signIn(email, password) async {
+  Future<void> signIn(email, password,BuildContext context) async {
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,
@@ -38,7 +40,7 @@ class AuthService{
     }
   }
 
-  Future<void> signUp(email, password) async {
+  Future<void> signUp(email, password,BuildContext context) async {
     try {
       final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,

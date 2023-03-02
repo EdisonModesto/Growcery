@@ -63,8 +63,9 @@ class _UserNavState extends ConsumerState<UserNav> {
       if(mounted){
         context.go("/admin");
       }
-    }
+    } else {
 
+    }
   }
 
   @override
@@ -83,6 +84,7 @@ class _UserNavState extends ConsumerState<UserNav> {
       data: (data){
         if(data?.uid != null){
           checkUser();
+          print("checkUser");
         }
 
         return PersistentTabView(
@@ -120,6 +122,9 @@ class _UserNavState extends ConsumerState<UserNav> {
                 }).whenComplete((){
                   _controller.jumpToTab(2);
                 });
+              } else {
+                setState(() {});
+                print("RE VUILDE");
               }
             }
           },

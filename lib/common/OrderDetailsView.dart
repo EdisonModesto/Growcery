@@ -16,6 +16,17 @@ class OrderDetailsView extends ConsumerStatefulWidget {
 }
 
 class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
+
+  Future<double> calculateTotal(items) async{
+    var total = 0.0;
+    for(var item in items){
+      var itemData = await FirebaseFirestore.instance.collection("Items").doc(item.toString().split(",")[0]).get();
+      total += double.parse(itemData.data()!["Price"]) * int.parse(items.toString().split(",")[1]);
+    }
+
+    return total;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -127,11 +138,21 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                     ),
                   ),
                   const Spacer(),
-                  Text(
-                    "PHP${widget.orderData.data()['Total']}",
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                    ),
+                  FutureBuilder(
+                    future: calculateTotal(widget.orderData.data()['Items']),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Text(
+                          "PHP${snapshot.data}",
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                          ),
+                        );
+                      }
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
                   ),
                 ],
               ),

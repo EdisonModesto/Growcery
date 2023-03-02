@@ -1,3 +1,5 @@
+import "package:cloud_firestore/cloud_firestore.dart";
+import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:google_fonts/google_fonts.dart";
@@ -5,7 +7,9 @@ import "package:growcery/common/AuthDialog.dart";
 import "package:growcery/constants/AppColors.dart";
 import "package:growcery/features/ViewModels/OrderViewModel.dart";
 import "package:growcery/services/FirestoreService.dart";
+import "package:modal_bottom_sheet/modal_bottom_sheet.dart";
 
+import "../../../common/OrderDetailsView.dart";
 import '../../../common/ViewItemSheet.dart';
 import "../../../services/AuthService.dart";
 import "../../ViewModels/AuthViewModels.dart";
@@ -20,6 +24,17 @@ class UProfileView extends ConsumerStatefulWidget {
 }
 
 class _UOrderViewState extends ConsumerState<UProfileView> {
+
+  Future<double> calculateTotal(items) async{
+    var total = 0.0;
+    for(var item in items){
+      var itemData = await FirebaseFirestore.instance.collection("Items").doc(item.toString().split(",")[0]).get();
+      total += double.parse(itemData.data()!["Price"]) * int.parse(items.toString().split(",")[1]);
+    }
+
+    return total;
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -187,6 +202,19 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                   itemBuilder: (context, index){
                                     return InkWell(
                                       onTap: (){
+                                        showMaterialModalBottomSheet(
+                                            context: context,
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(20),
+                                              ),
+                                            ),
+                                            builder: (context){
+                                              return OrderDetailsView(
+                                                orderData: toPay[index],
+                                              );
+                                            }
+                                        );
                                       },
                                       child: Container(
                                         height: 100,
@@ -199,9 +227,15 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                           children: [
                                             Container(
                                               width: 100,
+                                              height: 100,
                                               decoration: BoxDecoration(
-                                                color: Colors.grey[300],
+                                                color: AppColors().primaryColor,
                                                 borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: const Icon(
+                                                CupertinoIcons.money_dollar_circle,
+                                                color: Colors.white,
+                                                size: 50,
                                               ),
                                             ),
                                             const SizedBox(width: 10),
@@ -211,7 +245,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    "Product Name",
+                                                    toPay[index].id,
                                                     style: GoogleFonts.poppins(
                                                       fontSize: 14,
                                                       fontWeight: FontWeight.w400,
@@ -219,19 +253,27 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                   ),
                                                   const SizedBox(height: 5),
                                                   Text(
-                                                    "Quantity: 1",
+                                                    "Total Items: ${toPay[index].data()["Items"].length}",
                                                     style: GoogleFonts.poppins(
                                                       fontSize: 12,
                                                       fontWeight: FontWeight.w400,
                                                     ),
                                                   ),
                                                   const SizedBox(height: 5),
-                                                  Text(
-                                                    "Price: 100",
-                                                    style: GoogleFonts.poppins(
-                                                      fontSize: 12,
-                                                      fontWeight: FontWeight.w400,
-                                                    ),
+                                                  FutureBuilder(
+                                                      future: calculateTotal(toPay[index].data()["Items"]),
+                                                      builder: (context, result) {
+                                                        if(result.hasData){
+                                                          return Text(
+                                                            "Total Price: ${result.data}",
+                                                            style: GoogleFonts.poppins(
+                                                              fontSize: 12,
+                                                              fontWeight: FontWeight.w400,
+                                                            ),
+                                                          );
+                                                        }
+                                                        return const SizedBox();
+                                                      }
                                                   ),
                                                 ],
                                               ),
@@ -248,11 +290,19 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                   itemBuilder: (context, index){
                                     return InkWell(
                                       onTap: (){
-                                        /*      showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  builder: (context) => const ViewItemSheet(),
-                                );*/
+                                        showMaterialModalBottomSheet(
+                                            context: context,
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(20),
+                                              ),
+                                            ),
+                                            builder: (context){
+                                              return OrderDetailsView(
+                                                orderData: inProgress[index],
+                                              );
+                                            }
+                                        );
                                       },
                                       child: Container(
                                         height: 100,
@@ -265,9 +315,15 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                           children: [
                                             Container(
                                               width: 100,
+                                              height: 100,
                                               decoration: BoxDecoration(
-                                                color: Colors.grey[300],
+                                                color: AppColors().primaryColor,
                                                 borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: const Icon(
+                                                CupertinoIcons.cube_box,
+                                                color: Colors.white,
+                                                size: 50,
                                               ),
                                             ),
                                             const SizedBox(width: 10),
@@ -277,7 +333,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    "Product Name",
+                                                    inProgress[index].id,
                                                     style: GoogleFonts.poppins(
                                                       fontSize: 14,
                                                       fontWeight: FontWeight.w400,
@@ -285,19 +341,27 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                   ),
                                                   const SizedBox(height: 5),
                                                   Text(
-                                                    "Quantity: 1",
+                                                    "Total Items: ${inProgress[index].data()["Items"].length}",
                                                     style: GoogleFonts.poppins(
                                                       fontSize: 12,
                                                       fontWeight: FontWeight.w400,
                                                     ),
                                                   ),
                                                   const SizedBox(height: 5),
-                                                  Text(
-                                                    "Price: 100",
-                                                    style: GoogleFonts.poppins(
-                                                      fontSize: 12,
-                                                      fontWeight: FontWeight.w400,
-                                                    ),
+                                                  FutureBuilder(
+                                                      future: calculateTotal(inProgress[index].data()["Items"]),
+                                                      builder: (context, result) {
+                                                        if(result.hasData){
+                                                          return Text(
+                                                            "Total Price: ${result.data}",
+                                                            style: GoogleFonts.poppins(
+                                                              fontSize: 12,
+                                                              fontWeight: FontWeight.w400,
+                                                            ),
+                                                          );
+                                                        }
+                                                        return const SizedBox();
+                                                      }
                                                   ),
                                                 ],
                                               ),
@@ -314,11 +378,19 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                   itemBuilder: (context, index){
                                     return InkWell(
                                       onTap: (){
-                                        /*    showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  builder: (context) => const ViewItemSheet(),
-                                );*/
+                                        showMaterialModalBottomSheet(
+                                            context: context,
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(20),
+                                              ),
+                                            ),
+                                            builder: (context){
+                                              return OrderDetailsView(
+                                                orderData: toRecieve[index],
+                                              );
+                                            }
+                                        );
                                       },
                                       child: Container(
                                         height: 100,
@@ -331,9 +403,15 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                           children: [
                                             Container(
                                               width: 100,
+                                              height: 100,
                                               decoration: BoxDecoration(
-                                                color: Colors.grey[300],
+                                                color: AppColors().primaryColor,
                                                 borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: const Icon(
+                                                Icons.receipt_long_outlined,
+                                                color: Colors.white,
+                                                size: 50,
                                               ),
                                             ),
                                             const SizedBox(width: 10),
@@ -343,7 +421,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    "Product Name",
+                                                    toRecieve[index].id,
                                                     style: GoogleFonts.poppins(
                                                       fontSize: 14,
                                                       fontWeight: FontWeight.w400,
@@ -351,19 +429,27 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                   ),
                                                   const SizedBox(height: 5),
                                                   Text(
-                                                    "Quantity: 1",
+                                                    "Total Items: ${toRecieve[index].data()["Items"].length}",
                                                     style: GoogleFonts.poppins(
                                                       fontSize: 12,
                                                       fontWeight: FontWeight.w400,
                                                     ),
                                                   ),
                                                   const SizedBox(height: 5),
-                                                  Text(
-                                                    "Price: 100",
-                                                    style: GoogleFonts.poppins(
-                                                      fontSize: 12,
-                                                      fontWeight: FontWeight.w400,
-                                                    ),
+                                                  FutureBuilder(
+                                                      future: calculateTotal(toRecieve[index].data()["Items"]),
+                                                      builder: (context, result) {
+                                                        if(result.hasData){
+                                                          return Text(
+                                                            "Total Price: ${result.data}",
+                                                            style: GoogleFonts.poppins(
+                                                              fontSize: 12,
+                                                              fontWeight: FontWeight.w400,
+                                                            ),
+                                                          );
+                                                        }
+                                                        return const SizedBox();
+                                                      }
                                                   ),
                                                 ],
                                               ),
@@ -378,62 +464,91 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                 ListView.separated(
                                   itemCount: complete.length,
                                   itemBuilder: (context, index){
-                                    return Container(
-                                      height: 100,
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[200],
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            width: 100,
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey[300],
-                                              borderRadius: BorderRadius.circular(10),
+                                    return InkWell(
+                                      onTap: (){
+                                        showMaterialModalBottomSheet(
+                                            context: context,
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(20),
+                                              ),
                                             ),
-                                          ),
-                                          const SizedBox(width: 10),
-                                          Expanded(
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "Product Name",
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 5),
-                                                Text(
-                                                  "Quantity: 1",
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 5),
-                                                Text(
-                                                  "Price: 100",
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                              ],
+                                            builder: (context){
+                                              return OrderDetailsView(
+                                                orderData: complete[index],
+                                              );
+                                            }
+                                        );
+                                      },
+                                      child: Container(
+                                        height: 100,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[200],
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              width: 100,
+                                              height: 100,
+                                              decoration: BoxDecoration(
+                                                color: AppColors().primaryColor,
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: const Icon(
+                                                CupertinoIcons.check_mark_circled,
+                                                color: Colors.white,
+                                                size: 50,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                            const SizedBox(width: 10),
+                                            Expanded(
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    complete[index].id,
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 5),
+                                                  Text(
+                                                    "Total Items: ${complete[index].data()["Items"].length}",
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 5),
+                                                  FutureBuilder(
+                                                      future: calculateTotal(complete[index].data()["Items"]),
+                                                      builder: (context, result) {
+                                                        if(result.hasData){
+                                                          return Text(
+                                                            "Total Price: ${result.data}",
+                                                            style: GoogleFonts.poppins(
+                                                              fontSize: 12,
+                                                              fontWeight: FontWeight.w400,
+                                                            ),
+                                                          );
+                                                        }
+                                                        return const SizedBox();
+                                                      }
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     );
                                   },
                                   separatorBuilder: (context, index) => const SizedBox(height: 10),
                                 ),
-
-
                               ],
                             );
                           },

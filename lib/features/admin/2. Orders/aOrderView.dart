@@ -130,69 +130,97 @@ class _AOrderViewState extends ConsumerState<AOrderView> {
                               ListView.separated(
                                 itemCount: toPay.length,
                                 itemBuilder: (context, index){
-                                  return Container(
-                                    height: 100,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          width: 100,
-                                          height: 100,
-                                          decoration: BoxDecoration(
-                                            color: AppColors().primaryColor,
-                                            borderRadius: BorderRadius.circular(10),
+                                  return InkWell(
+                                    onTap: (){
+                                      showMaterialModalBottomSheet(
+                                          context: context,
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(20),
+                                            ),
                                           ),
-                                          child: Icon(
-                                            CupertinoIcons.check_mark_circled,
-                                            color: Colors.white,
-                                            size: 50,
+                                          builder: (context){
+                                            return OrderDetailsView(
+                                              orderData: toPay[index],
+                                            );
+                                          }
+                                      );
+                                    },
+                                    child: Container(
+                                      height: 100,
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 100,
+                                            height: 100,
+                                            decoration: BoxDecoration(
+                                              color: AppColors().primaryColor,
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: const Icon(
+                                              CupertinoIcons.money_dollar_circle,
+                                              color: Colors.white,
+                                              size: 50,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Expanded(
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                toPay[index].id,
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w400,
+                                          const SizedBox(width: 10),
+                                          Expanded(
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  toPay[index].id,
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
                                                 ),
-                                              ),
-                                              const SizedBox(height: 5),
-                                              Text(
-                                                "Total Items: ${toPay[index].data()["Items"].length}",
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
+                                                const SizedBox(height: 5),
+                                                Text(
+                                                  "Total Items: ${toPay[index].data()["Items"].length}",
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
                                                 ),
-                                              ),
-                                              const SizedBox(height: 5),
-                                              FutureBuilder(
-                                                  future: calculateTotal(toPay[index].data()["Items"]),
-                                                  builder: (context, result) {
-                                                    if(result.hasData){
-                                                      return Text(
-                                                        "Total Price: ${result.data}",
-                                                        style: GoogleFonts.poppins(
-                                                          fontSize: 12,
-                                                          fontWeight: FontWeight.w400,
-                                                        ),
-                                                      );
+                                                const SizedBox(height: 5),
+                                                FutureBuilder(
+                                                    future: calculateTotal(toPay[index].data()["Items"]),
+                                                    builder: (context, result) {
+                                                      if(result.hasData){
+                                                        return Text(
+                                                          "Total Price: ${result.data}",
+                                                          style: GoogleFonts.poppins(
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w400,
+                                                          ),
+                                                        );
+                                                      }
+                                                      return const SizedBox();
                                                     }
-                                                    return const SizedBox();
-                                                  }
-                                              ),
-                                            ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                          const SizedBox(width: 10),
+                                          IconButton(
+                                            onPressed:(){
+                                              FirestoreService().updateOrderStatus(toPay[index].id, "1");
+                                            },
+                                            icon: const Icon(
+                                              CupertinoIcons.upload_circle,
+                                              color: Colors.black,
+                                              size: 30,
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   );
                                 },
@@ -201,69 +229,97 @@ class _AOrderViewState extends ConsumerState<AOrderView> {
                               ListView.separated(
                                 itemCount: inProgress.length,
                                 itemBuilder: (context, index){
-                                  return Container(
-                                    height: 100,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          width: 100,
-                                          height: 100,
-                                          decoration: BoxDecoration(
-                                            color: AppColors().primaryColor,
-                                            borderRadius: BorderRadius.circular(10),
+                                  return InkWell(
+                                    onTap: (){
+                                      showMaterialModalBottomSheet(
+                                          context: context,
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(20),
+                                            ),
                                           ),
-                                          child: Icon(
-                                            CupertinoIcons.check_mark_circled,
-                                            color: Colors.white,
-                                            size: 50,
+                                          builder: (context){
+                                            return OrderDetailsView(
+                                              orderData: inProgress[index],
+                                            );
+                                          }
+                                      );
+                                    },
+                                    child: Container(
+                                      height: 100,
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 100,
+                                            height: 100,
+                                            decoration: BoxDecoration(
+                                              color: AppColors().primaryColor,
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: const Icon(
+                                              CupertinoIcons.cube_box,
+                                              color: Colors.white,
+                                              size: 50,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Expanded(
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                inProgress[index].id,
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w400,
+                                          const SizedBox(width: 10),
+                                          Expanded(
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  inProgress[index].id,
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
                                                 ),
-                                              ),
-                                              const SizedBox(height: 5),
-                                              Text(
-                                                "Total Items: ${inProgress[index].data()["Items"].length}",
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
+                                                const SizedBox(height: 5),
+                                                Text(
+                                                  "Total Items: ${inProgress[index].data()["Items"].length}",
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
                                                 ),
-                                              ),
-                                              const SizedBox(height: 5),
-                                              FutureBuilder(
-                                                  future: calculateTotal(inProgress[index].data()["Items"]),
-                                                  builder: (context, result) {
-                                                    if(result.hasData){
-                                                      return Text(
-                                                        "Total Price: ${result.data}",
-                                                        style: GoogleFonts.poppins(
-                                                          fontSize: 12,
-                                                          fontWeight: FontWeight.w400,
-                                                        ),
-                                                      );
+                                                const SizedBox(height: 5),
+                                                FutureBuilder(
+                                                    future: calculateTotal(inProgress[index].data()["Items"]),
+                                                    builder: (context, result) {
+                                                      if(result.hasData){
+                                                        return Text(
+                                                          "Total Price: ${result.data}",
+                                                          style: GoogleFonts.poppins(
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w400,
+                                                          ),
+                                                        );
+                                                      }
+                                                      return const SizedBox();
                                                     }
-                                                    return const SizedBox();
-                                                  }
-                                              ),
-                                            ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                          const SizedBox(width: 10),
+                                          IconButton(
+                                            onPressed:(){
+                                              FirestoreService().updateOrderStatus(inProgress[index].id, "2");
+                                            },
+                                            icon: const Icon(
+                                              CupertinoIcons.upload_circle,
+                                              color: Colors.black,
+                                              size: 30,
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   );
                                 },
@@ -272,69 +328,86 @@ class _AOrderViewState extends ConsumerState<AOrderView> {
                               ListView.separated(
                                 itemCount: toRecieve.length,
                                 itemBuilder: (context, index){
-                                  return Container(
-                                    height: 100,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          width: 100,
-                                          height: 100,
-                                          decoration: BoxDecoration(
-                                            color: AppColors().primaryColor,
-                                            borderRadius: BorderRadius.circular(10),
+                                  return InkWell(
+                                    onTap: (){
+                                      showMaterialModalBottomSheet(
+                                          context: context,
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(20),
+                                            ),
                                           ),
-                                          child: Icon(
-                                            CupertinoIcons.check_mark_circled,
-                                            color: Colors.white,
-                                            size: 50,
+                                          builder: (context){
+                                            return OrderDetailsView(
+                                              orderData: toRecieve[index],
+                                            );
+                                          }
+                                      );
+                                    },
+                                    child: Container(
+                                      height: 100,
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 100,
+                                            height: 100,
+                                            decoration: BoxDecoration(
+                                              color: AppColors().primaryColor,
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: const Icon(
+                                              Icons.receipt_long_outlined,
+                                              color: Colors.white,
+                                              size: 50,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Expanded(
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                toRecieve[index].id,
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w400,
+                                          const SizedBox(width: 10),
+                                          Expanded(
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  toRecieve[index].id,
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
                                                 ),
-                                              ),
-                                              const SizedBox(height: 5),
-                                              Text(
-                                                "Total Items: ${toRecieve[index].data()["Items"].length}",
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
+                                                const SizedBox(height: 5),
+                                                Text(
+                                                  "Total Items: ${toRecieve[index].data()["Items"].length}",
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
                                                 ),
-                                              ),
-                                              const SizedBox(height: 5),
-                                              FutureBuilder(
-                                                  future: calculateTotal(toRecieve[index].data()["Items"]),
-                                                  builder: (context, result) {
-                                                    if(result.hasData){
-                                                      return Text(
-                                                        "Total Price: ${result.data}",
-                                                        style: GoogleFonts.poppins(
-                                                          fontSize: 12,
-                                                          fontWeight: FontWeight.w400,
-                                                        ),
-                                                      );
+                                                const SizedBox(height: 5),
+                                                FutureBuilder(
+                                                    future: calculateTotal(toRecieve[index].data()["Items"]),
+                                                    builder: (context, result) {
+                                                      if(result.hasData){
+                                                        return Text(
+                                                          "Total Price: ${result.data}",
+                                                          style: GoogleFonts.poppins(
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w400,
+                                                          ),
+                                                        );
+                                                      }
+                                                      return const SizedBox();
                                                     }
-                                                    return const SizedBox();
-                                                  }
-                                              ),
-                                            ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   );
                                 },
@@ -375,7 +448,7 @@ class _AOrderViewState extends ConsumerState<AOrderView> {
                                               color: AppColors().primaryColor,
                                               borderRadius: BorderRadius.circular(10),
                                             ),
-                                            child: Icon(
+                                            child: const Icon(
                                               CupertinoIcons.check_mark_circled,
                                               color: Colors.white,
                                               size: 50,
