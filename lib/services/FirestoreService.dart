@@ -72,7 +72,7 @@ class FirestoreService{
   }
 
 
-  void createOrder(items){
+  Future<void> createOrder(items) async {
 
     FirebaseFirestore.instance.collection("Users").doc(AuthService().getID()).update({
       "Basket": [],
@@ -84,6 +84,16 @@ class FirestoreService{
       "Status": "0",
       //"Date": DateTime.now().toString(),
     });
+    
+    for(var item in items){
+      var itemInstance = FirebaseFirestore.instance.collection("Items").doc(item.toString().split(",")[0]);
+      var itemData = await itemInstance.get();
+      var itemStocks = itemData.data()!["Stocks"];
+     FirebaseFirestore.instance.collection("Items").doc(item.toString().split(",")[0]).update({
+       "Stocks" : (int.parse(itemStocks) - int.parse(item.toString().split(",")[1])).toString(),
+     });
+    }
+    
   }
 
   void updateOrderStatus(id, status){
