@@ -401,6 +401,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.2"
+  philippines:
+    dependency: "direct main"
+    description:
+      name: philippines
+      sha256: "37342a643d31d7df1d42d84c22f1d392f366aa7bdfb75ecaa9a27db8e86a5d4a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   platform:
     dependency: transitive
     description:

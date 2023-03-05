@@ -6,6 +6,7 @@ import "package:google_fonts/google_fonts.dart";
 import "package:growcery/common/AuthDialog.dart";
 import "package:growcery/constants/AppColors.dart";
 import "package:growcery/features/ViewModels/OrderViewModel.dart";
+import "package:growcery/features/user/3.%20Profile/uEditProfileDialog.dart";
 import "package:growcery/services/FirestoreService.dart";
 import "package:modal_bottom_sheet/modal_bottom_sheet.dart";
 
@@ -13,6 +14,7 @@ import "../../../common/OrderDetailsView.dart";
 import '../../../common/ViewItemSheet.dart';
 import "../../../services/AuthService.dart";
 import "../../ViewModels/AuthViewModels.dart";
+import "../../ViewModels/UserViewModel.dart";
 
 class UProfileView extends ConsumerStatefulWidget {
   const UProfileView({
@@ -40,6 +42,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
 
     var authState = ref.watch(authStateProvider);
     var orders = ref.watch(orderProvider);
+    var user = ref.watch(userProvider);
 
     return authState.when(
       data: (data){
@@ -59,68 +62,102 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                     ),
                   ),
                   const SizedBox(height: 15),
-                  Row(
-                    children: [
-                      data?.uid == null ? const CircleAvatar(
-                        radius: 35,
-                        child: Icon(Icons.person),
-                      ) :
-                      const CircleAvatar(
-                        radius: 35,
-                        backgroundImage: NetworkImage("https://i.pravatar.cc/300"),
-                      ),
-                      const SizedBox(width: 20,),
-                      Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  user.when(
+                    data: (data1){
+                      return Row(
+                        children: [
+                          data?.uid == null ? const CircleAvatar(
+                            radius: 35,
+                            child: Icon(Icons.person),
+                          ) :
+                          CircleAvatar(
+                            radius: 35,
+                            backgroundImage: data1.data()!["Image"] == "" ?
+                            const NetworkImage("https://i.pravatar.cc/300") :
+                            NetworkImage(data1.data()!["Image"]),
+                          ),
+                          const SizedBox(width: 20,),
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  data?.uid == null ? "Login to continue" : "John Doe",
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 20,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      data?.uid == null ? "Login to continue" : data1.data()!["Name"],
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                    Visibility(
+                                      visible: data?.uid == null ? false : true,
+                                      child: IconButton(
+                                        onPressed: (){
+                                          AuthService().signOut();
+                                        },
+                                        icon: const Icon(Icons.logout),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                data?.uid == null ? ElevatedButton(
+                                  onPressed: (){
+                                    showDialog(context: context, builder: (builder){
+                                      return const AuthDialog();
+                                    });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    elevation: 0,
+                                    backgroundColor: AppColors().primaryColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                  ),
+                                  child: Text(
+                                    "Login or Signup",
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ) : ElevatedButton(
+                                  onPressed: (){
+                                    showDialog(context: context, builder: (builder){
+                                      return UEditProfileDialog(data: data1);
+                                    });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    elevation: 0,
+                                    backgroundColor: AppColors().primaryColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                  ),
+                                  child: Text(
+                                    "Edit Profile",
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                    ),
                                   ),
                                 ),
-                                Visibility(
-                                  visible: data?.uid == null ? false : true,
-                                  child: IconButton(
-                                    onPressed: (){
-                                      AuthService().signOut();
-                                    },
-                                    icon: const Icon(Icons.logout),
-                                  ),
-                                )
-                              ],
-                            ),
-                            Visibility(
-                              visible: data?.uid == null ? true : false,
-                              child: ElevatedButton(
-                                onPressed: (){
-                                  showDialog(context: context, builder: (builder){
-                                    return AuthDialog();
-                                  });
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  elevation: 0,
-                                  backgroundColor: AppColors().primaryColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                ),
-                                child: Text(
-                                  "Login or Signup",
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ),
-                            )
-                          ]
-                      )
-                    ],
+                              ]
+                          )
+                        ],
+                      );
+                    },
+                    error: (error, stack){
+                      return const Center(
+                        child: Text("Error"),
+                      );
+                    },
+                    loading: (){
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
                   ),
                   const SizedBox(height: 20),
                   const Divider(),
@@ -189,7 +226,6 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                         orders.when(
                           data: (data1){
                             var userID = AuthService().getID();
-                            print(userID);
                             var toPay = data1.docs.where((element) => element.data()["Status"] == "0" && element.data()["User"] == userID).toList();
                             var inProgress = data1.docs.where((element) => element.data()["Status"] == "1" && element.data()["User"] == userID).toList();
                             var toRecieve = data1.docs.where((element) => element.data()["Status"] == "2" && element.data()["User"] == userID).toList();
@@ -454,6 +490,17 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                 ],
                                               ),
                                             ),
+                                            const SizedBox(width: 10),
+                                            IconButton(
+                                              onPressed:(){
+                                                FirestoreService().updateOrderStatus(toRecieve[index].id, "3");
+                                              },
+                                              icon: const Icon(
+                                                CupertinoIcons.cube_box,
+                                                color: Colors.black,
+                                                size: 30,
+                                              ),
+                                            )
                                           ],
                                         ),
                                       ),

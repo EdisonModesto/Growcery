@@ -124,6 +124,8 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                             children: [
                                               Text(
                                                 snapshot.data!.data()!["Name"],
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.poppins(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w600,
@@ -133,8 +135,9 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                               Text(
                                                 snapshot.data!
                                                     .data()!["Description"]
-                                                    .toString()
-                                                    .substring(0, 14),
+                                                    .toString(),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.poppins(
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.w400,
@@ -143,6 +146,8 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                               const SizedBox(height: 5),
                                               Text(
                                                 "PHP ${snapshot.data!.data()!["Price"]}",
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.poppins(
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.w400,

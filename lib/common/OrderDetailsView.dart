@@ -21,9 +21,8 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
     var total = 0.0;
     for(var item in items){
       var itemData = await FirebaseFirestore.instance.collection("Items").doc(item.toString().split(",")[0]).get();
-      total += double.parse(itemData.data()!["Price"]) * int.parse(items.toString().split(",")[1]);
+      total += double.parse(itemData.data()!["Price"]) * double.parse(item.toString().split(",")[1]);
     }
-
     return total;
   }
 
@@ -108,23 +107,6 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                     }
                   );
 
-                    Row(
-                    children: [
-                      Text(
-                        widget.orderData.data()['Items'][index],
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                        ),
-                      ),
-                      const Spacer(),
-                      Text(
-                        "x${widget.orderData.data()['Items'][index]}",
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  );
                 },
               ),
               const SizedBox(height: 20),
