@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:growcery/services/FirestoreService.dart';
 
 import '../../../common/ViewItemSheet.dart';
 import '../../../constants/AppColors.dart';
@@ -100,75 +101,91 @@ class _AHomeViewState extends ConsumerState<AHomeView> {
                         mainAxisSpacing: 20,
                         childAspectRatio: 0.8,
                         children: List.generate(data.docs.length, (index){
-                          return InkWell(
-                            onTap: (){
-                              showModalBottomSheet(
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(12),
-                                  ),
-                                ),
-                                context: context,
-                                isScrollControlled: true,
-                                builder: (context) => ViewItemSheet(
-                                  name: data.docs[index].data()["Name"],
-                                  price: data.docs[index].data()["Price"],
-                                  stock: data.docs[index].data()["Stocks"],
-                                  image: data.docs[index].data()["Url"],
-                                  description: "description",
-                                  id: data.docs[index].id,
-                                ),
-                              );
-                            },
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[200],
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Expanded(
-                                      child: Image.network(
-                                        data.docs[index].data()["Url"],
-                                        width: double.infinity,
-                                        fit: BoxFit.fitWidth,
+                          return Stack(
+                            children: [
+                              InkWell(
+                                onTap: (){
+                                  showModalBottomSheet(
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(12),
                                       ),
                                     ),
-                                    Expanded(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(20.0),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              data.docs[index].data()["Name"],
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 5),
-                                            Text(
-                                              "Stocks: ${data.docs[index].data()["Stocks"]}",
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                          ],
+                                    context: context,
+                                    isScrollControlled: true,
+                                    builder: (context) => ViewItemSheet(
+                                      name: data.docs[index].data()["Name"],
+                                      price: data.docs[index].data()["Price"],
+                                      stock: data.docs[index].data()["Stocks"],
+                                      image: data.docs[index].data()["Url"],
+                                      description: "description",
+                                      id: data.docs[index].id,
+                                    ),
+                                  );
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Expanded(
+                                          child: Image.network(
+                                            data.docs[index].data()["Url"],
+                                            width: double.infinity,
+                                            fit: BoxFit.fitWidth,
+                                          ),
                                         ),
-                                      ),
-                                    )
-                                  ],
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(20.0),
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  data.docs[index].data()["Name"],
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 5),
+                                                Text(
+                                                  "Stocks: ${data.docs[index].data()["Stocks"]}",
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                              Align(
+                                alignment: Alignment.topRight,
+                                child: IconButton(
+                                  onPressed: (){
+                                    FirestoreService().removeItem(data.docs[index].id);
+                                  },
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.redAccent,
+                                  ),
+                                ),
+                              )
+                            ],
                           );
                         })
                     );

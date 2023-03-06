@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:growcery/services/AuthService.dart';
+import 'package:growcery/services/FirestoreService.dart';
 
 import '../constants/AppColors.dart';
 
@@ -41,13 +43,8 @@ class _AuthDialogState extends ConsumerState<AuthView> {
                     const SizedBox(height: 75,),
 
                     CircleAvatar(
-                      backgroundColor: AppColors().primaryColor,
+                      backgroundImage: const AssetImage("assets/images/growceryLogo.jpg"),
                       radius: 50,
-                      child: const Icon(
-                        Icons.person,
-                        color: Colors.white,
-                        size: 40,
-                      ),
                     ),
                     const SizedBox(height: 50,),
                     TabBar(
@@ -131,7 +128,7 @@ class _AuthDialogState extends ConsumerState<AuthView> {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 25,),
+                                  const SizedBox(height: 15,),
                                   ElevatedButton(
                                     onPressed: () {
                                       if (key.currentState!.validate()){
@@ -150,6 +147,23 @@ class _AuthDialogState extends ConsumerState<AuthView> {
                                     ),
                                     child: const Text("Login"),
                                   ),
+                                  const SizedBox(height: 15,),
+                                  TextButton(
+                                    onPressed: () {
+                                      if(emailController.text.isNotEmpty){
+                                        AuthService().resetPassword(emailController.text);
+                                      } else {
+                                        Fluttertoast.showToast(msg: "Email field is empty, cannot reset password");
+                                      }
+                                    },
+                                    child: Text(
+                                      "Forgot Password?",
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  )
 
                                 ],
                               ),

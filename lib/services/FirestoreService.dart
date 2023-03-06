@@ -47,6 +47,10 @@ class FirestoreService{
     });
   }
 
+  void removeItem(id){
+    FirebaseFirestore.instance.collection("Items").doc(id).delete();
+  }
+
   Future<void> addToBasket(id, quantity) async {
 
     var ref = await FirebaseFirestore.instance.collection("Users").doc(AuthService().getID()).get();
@@ -82,7 +86,7 @@ class FirestoreService{
   }
 
 
-  Future<void> createOrder(items) async {
+  Future<void> createOrder(items, name, contact, address) async {
 
     FirebaseFirestore.instance.collection("Users").doc(AuthService().getID()).update({
       "Basket": [],
@@ -92,6 +96,9 @@ class FirestoreService{
       "User": AuthService().getID(),
       "Items": items,
       "Status": "0",
+      "Name": name,
+      "Contact": contact,
+      "Address": address,
       //"Date": DateTime.now().toString(),
     });
     

@@ -42,7 +42,7 @@ class _AProfileViewState extends ConsumerState<AProfileView> {
                       children: [
                         const CircleAvatar(
                           radius: 35,
-                          backgroundImage: NetworkImage("https://i.pravatar.cc/300"),
+                          backgroundImage: AssetImage("assets/images/growceryLogo.jpg"),
                         ),
                         const SizedBox(width: 20,),
                         Text(

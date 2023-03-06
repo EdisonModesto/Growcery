@@ -7,6 +7,11 @@ import 'package:go_router/go_router.dart';
 
 class AuthService{
 
+  void resetPassword(email){
+    FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+  }
+
+
   Future<void> signIn(email, password,BuildContext context) async {
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(

@@ -75,8 +75,9 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                           CircleAvatar(
                             radius: 35,
                             backgroundImage: data1.data()!["Image"] == "" ?
-                            const NetworkImage("https://i.pravatar.cc/300") :
+                            const NetworkImage("http://via.placeholder.com/300x300") :
                             NetworkImage(data1.data()!["Image"]),
+                            backgroundColor: AppColors().primaryColor,
                           ),
                           const SizedBox(width: 20,),
                           Column(

@@ -245,6 +245,9 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                             prices: itemPrice,
                             quantity: itemQuantity,
                             items: data.data()?["Basket"] ?? [],
+                            name: data.data()?["Name"] ?? "",
+                            address: data.data()?["Address"] ?? "",
+                            contact: data.data()?["Contact"] ?? "",
                           ),
                         ),
                       )
@@ -297,12 +300,19 @@ class PriceLabel extends ConsumerStatefulWidget {
     required this.prices,
     required this.quantity,
     required this.items,
+    required this.name,
+    required this.contact,
+    required this.address,
     Key? key,
   }) : super(key: key);
 
   final List<double> prices;
   final List<int> quantity;
   final List<dynamic> items;
+  final name;
+  final contact;
+  final address;
+
 
   @override
   ConsumerState createState() => _PriceLabelState();
@@ -325,10 +335,10 @@ class _PriceLabelState extends ConsumerState<PriceLabel> {
         Expanded(
           child: InkWell(
             onTap: () {
-              if (widget.items.isNotEmpty) {
-                FirestoreService().createOrder(widget.items);
+              if (widget.items.isNotEmpty && widget.name != "" && widget.contact != "" && widget.address.toString().split("%")[0] != "No Data") {
+                FirestoreService().createOrder(widget.items, widget.name, widget.contact, widget.address);
               } else {
-                Fluttertoast.showToast(msg: "No items in basket");
+                Fluttertoast.showToast(msg: "No items in basket or you have not filled up your profile yet");
               }
             },
             child: Container(
