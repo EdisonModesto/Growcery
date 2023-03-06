@@ -84,7 +84,6 @@ class _UserNavState extends ConsumerState<UserNav> {
       data: (data){
         if(data?.uid != null){
           checkUser();
-          print("checkUser");
         }
 
         return PersistentTabView(

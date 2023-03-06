@@ -8,10 +8,20 @@ class FirestoreService{
     FirebaseFirestore.instance.collection("Users").doc(AuthService().getID()).set({
       "Name": "No Name",
       "Image": "",
-      "Address": "1234 Main Street",
+      "Contact":"",
+      "Address": "No Data%NCR%Caloocan",
       "Basket" : [],
       "Orders" : [],
 
+    });
+  }
+
+  void updateUser(name, address, image, contact){
+    FirebaseFirestore.instance.collection("Users").doc(AuthService().getID()).update({
+      "Name": name,
+      "Image": image,
+      "Contact": contact,
+      "Address": address,
     });
   }
 

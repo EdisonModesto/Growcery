@@ -2,8 +2,9 @@ import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:go_router/go_router.dart";
 import "package:google_fonts/google_fonts.dart";
-import "package:growcery/common/AuthDialog.dart";
+import "package:growcery/common/AuthView.dart";
 import "package:growcery/constants/AppColors.dart";
 import "package:growcery/features/ViewModels/OrderViewModel.dart";
 import "package:growcery/features/user/3.%20Profile/uEditProfileDialog.dart";
@@ -42,10 +43,11 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
 
     var authState = ref.watch(authStateProvider);
     var orders = ref.watch(orderProvider);
-    var user = ref.watch(userProvider);
 
     return authState.when(
       data: (data){
+        var user = ref.watch(userProvider);
+
         return DefaultTabController(
           length: 4,
           child: SafeArea(
@@ -101,10 +103,8 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                   ],
                                 ),
                                 data?.uid == null ? ElevatedButton(
-                                  onPressed: (){
-                                    showDialog(context: context, builder: (builder){
-                                      return const AuthDialog();
-                                    });
+                                  onPressed: ()async{
+                                    context.go("/auth");
                                   },
                                   style: ElevatedButton.styleFrom(
                                     elevation: 0,

@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:growcery/services/FirestoreService.dart';
 import 'package:philippines/city.dart';
 import 'package:philippines/philippines.dart';
 import 'package:philippines/province.dart';
@@ -18,7 +20,7 @@ class UEditProfileDialog extends ConsumerStatefulWidget {
     Key? key,
   }) : super(key: key);
 
-  final data;
+  final DocumentSnapshot<Map<String, dynamic>> data;
 
   @override
   ConsumerState createState() => _UEditProfileDialogState();
@@ -26,9 +28,8 @@ class UEditProfileDialog extends ConsumerStatefulWidget {
 
 class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
   TextEditingController nameCtrl = TextEditingController();
-  TextEditingController ageCtrl = TextEditingController();
-  TextEditingController weightCtrl = TextEditingController();
-  TextEditingController heightCtrl = TextEditingController();
+  TextEditingController contactCtrl = TextEditingController();
+  TextEditingController streetCtrl = TextEditingController();
 
   var key = GlobalKey<FormState>();
   var reg = "NCR";
@@ -41,6 +42,17 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
 
   @override
   void initState() {
+    nameCtrl.text = widget.data.data()!["Name"];
+    contactCtrl.text = widget.data.data()!["Contact"];
+
+    List<String> formattedAddress = widget.data.data()!["Address"].toString().split("%");
+
+    streetCtrl.text = formattedAddress[0];
+
+    reg = formattedAddress[1];
+    city = formattedAddress[2];
+
+    url = widget.data.data()!["Image"];
 
     super.initState();
   }
@@ -140,7 +152,7 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
                           ),
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return "Please enter your name";
+                              return "";
                             }
                             return null;
                           },
@@ -152,7 +164,8 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
                       SizedBox(
                         height: 50,
                         child: TextFormField(
-                          controller: ageCtrl,
+                          controller: contactCtrl,
+                          keyboardType: TextInputType.number,
                           style: const TextStyle(
                               fontSize: 14
                           ),
@@ -181,7 +194,7 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
                           ),
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return "Please enter your age";
+                              return "";
                             }
                             return null;
                           },
@@ -193,7 +206,7 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
                       SizedBox(
                         height: 50,
                         child: TextFormField(
-                          controller: ageCtrl,
+                          controller: streetCtrl,
                           style: const TextStyle(
                               fontSize: 14
                           ),
@@ -222,7 +235,7 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
                           ),
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return "Please enter your age";
+                              return "";
                             }
                             return null;
                           },
@@ -294,7 +307,12 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
                       ElevatedButton(
                         onPressed: () async {
                           if (key.currentState!.validate()){
-
+                            FirestoreService().updateUser(
+                                nameCtrl.text,
+                                "${streetCtrl.text}%$reg%$city",
+                                url,
+                                contactCtrl.text,
+                            );
                             Navigator.pop(context);
                           }
                         },
