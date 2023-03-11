@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:growcery/features/ViewModels/UserViewModel.dart';
+import 'package:growcery/features/user/2.%20Basket/PaymentDialog.dart';
 import 'package:growcery/services/FirestoreService.dart';
 
 import '../../../common/ViewItemSheet.dart';
@@ -336,7 +337,9 @@ class _PriceLabelState extends ConsumerState<PriceLabel> {
           child: InkWell(
             onTap: () {
               if (widget.items.isNotEmpty && widget.name != "" && widget.contact != "" && widget.address.toString().split("%")[0] != "No Data") {
-                FirestoreService().createOrder(widget.items, widget.name, widget.contact, widget.address);
+                showDialog(context: context, builder: (builder){
+                  return PaymentDialog(items: widget.items, name: widget.name, contact: widget.contact, address: widget.address);
+                });
               } else {
                 Fluttertoast.showToast(msg: "No items in basket or you have not filled up your profile yet");
               }

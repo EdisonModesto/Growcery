@@ -46,7 +46,6 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                 width: double.infinity,
                 child: Image.network(
                   widget.image,
-                  width: double.infinity,
                   fit: BoxFit.fitWidth,
                 ),
               ),

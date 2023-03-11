@@ -16,6 +16,9 @@ class UHomeView extends ConsumerStatefulWidget {
 }
 
 class _UHomeViewState extends ConsumerState<UHomeView> {
+
+  TextEditingController searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
 
@@ -38,6 +41,12 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
             SizedBox(
               height: 60,
               child: TextField(
+                controller: searchController,
+                onChanged: (value){
+                  setState(() {
+
+                  });
+                },
                 decoration: InputDecoration(
                   contentPadding:  const EdgeInsets.symmetric(horizontal: 20),
                   hintText: "Search",
@@ -69,12 +78,16 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
             Expanded(
               child: feed.when(
                 data: (data){
-                  return GridView.count(
+                  var searchResult = data.docs.where((element) => element.data()["Name"].toString().toLowerCase().contains(searchController.text.toLowerCase()) && int.parse(element.data()['Stocks']) > 0).toList();
+
+                  var withStocks = data.docs.where((element) => int.parse(element.data()['Stocks']) > 0).toList();
+                  return searchController.text != "" ?
+                  GridView.count(
                       crossAxisCount: 2,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20,
                       childAspectRatio: 0.8,
-                      children: List.generate(data.docs.length, (index){
+                      children: List.generate(searchResult.length, (index){
                         return InkWell(
                           onTap: (){
                             showModalBottomSheet(
@@ -86,12 +99,12 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                               context: context,
                               isScrollControlled: true,
                               builder: (context) => ViewItemSheet(
-                                name: data.docs[index].data()['Name'],
-                                price: data.docs[index].data()['Price'],
-                                description: data.docs[index].data()['Description'],
-                                stock: data.docs[index].data()['Stocks'],
-                                image: data.docs[index].data()['Url'],
-                                id: data.docs[index].id,
+                                name: searchResult[index].data()['Name'],
+                                price: searchResult[index].data()['Price'],
+                                description: searchResult[index].data()['Description'],
+                                stock: searchResult[index].data()['Stocks'],
+                                image: searchResult[index].data()['Url'],
+                                id: searchResult[index].id,
                               ),
                             );
                           },
@@ -106,7 +119,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                 children: [
                                   Expanded(
                                     child: Image.network(
-                                      data.docs[index].data()['Url'],
+                                      searchResult[index].data()['Url'],
                                       width: double.infinity,
                                       fit: BoxFit.fitWidth,
                                     ),
@@ -118,7 +131,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Text(
-                                            data.docs[index].data()['Name'],
+                                            searchResult[index].data()['Name'],
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: GoogleFonts.poppins(
@@ -128,7 +141,85 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                           ),
                                           const SizedBox(height: 5),
                                           Text(
-                                            "PHP ${data.docs[index].data()['Price']}",
+                                            "PHP ${searchResult[index].data()['Price']}",
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      })
+                  ) :
+                  GridView.count(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20,
+                      childAspectRatio: 0.8,
+                      children: List.generate(withStocks.length, (index){
+                        return InkWell(
+                          onTap: (){
+                            showModalBottomSheet(
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(12),
+                                ),
+                              ),
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) => ViewItemSheet(
+                                name: withStocks[index].data()['Name'],
+                                price: withStocks[index].data()['Price'],
+                                description: withStocks[index].data()['Description'],
+                                stock: withStocks[index].data()['Stocks'],
+                                image: withStocks[index].data()['Url'],
+                                id: withStocks[index].id,
+                              ),
+                            );
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Image.network(
+                                      withStocks[index].data()['Url'],
+                                      width: double.infinity,
+                                      fit: BoxFit.fitWidth,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            withStocks[index].data()['Name'],
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 5),
+                                          Text(
+                                            "PHP ${withStocks[index].data()['Price']}",
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: GoogleFonts.poppins(

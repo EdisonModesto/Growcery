@@ -7,3 +7,6 @@ import 'package:growcery/services/AuthService.dart';
 final AutoDisposeStreamProvider userProvider = StreamProvider.autoDispose((ref){
   return FirebaseFirestore.instance.collection("Users").doc(AuthService().getID()).snapshots();
 });
+
+
+//MODEL VIEW VIEWMODEL

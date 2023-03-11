@@ -47,6 +47,17 @@ class FirestoreService{
     });
   }
 
+  void updateItem(url, name, price, stocks, description,id){
+    FirebaseFirestore.instance.collection("Items").doc(id).update({
+      "Url": url,
+      "Name": name,
+      "Price": price,
+      "Stocks": stocks,
+      "Description": description,
+    });
+  }
+
+
   void removeItem(id){
     FirebaseFirestore.instance.collection("Items").doc(id).delete();
   }
@@ -84,7 +95,6 @@ class FirestoreService{
       });
     }
   }
-
 
   Future<void> createOrder(items, name, contact, address) async {
 
