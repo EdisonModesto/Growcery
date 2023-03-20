@@ -25,11 +25,15 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
 
   List<int> itemQuantity = List.filled(100, 1);
   List<double> itemPrice = List.filled(100, 0);
+  List<bool> checkValues = List.filled(100, false);
+  List<int> selectedQuantity = [];
+  List<double> selectedPrice = [];
+  List<String> selecteditems = [];
 
   double total = 0.0;
 
   Future<double> loadTotal() async {
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     return total;
   }
 
@@ -115,7 +119,7 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                             borderRadius: BorderRadius.circular(10),
                                           ),
                                         ),
-                                        const SizedBox(width: 10),
+                                        const SizedBox(width: 20),
                                         Expanded(
                                           child: Column(
                                             mainAxisAlignment:
@@ -134,18 +138,6 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                               ),
                                               const SizedBox(height: 5),
                                               Text(
-                                                snapshot.data!
-                                                    .data()!["Description"]
-                                                    .toString(),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 5),
-                                              Text(
                                                 "PHP ${snapshot.data!.data()!["Price"]}",
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
@@ -154,74 +146,106 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                                   fontWeight: FontWeight.w400,
                                                 ),
                                               ),
+                                              const SizedBox(height: 5),
+                                              Row(
+                                                children: [
+                                                  InkWell(
+                                                    onTap: () {
+                                                      checkValues[index] = false;
+                                                      FirestoreService().updateBasketQuantity(
+                                                          data
+                                                              .data()!["Basket"][index]
+                                                              .toString()
+                                                              .split(",")[0],
+                                                          itemQuantity[index] - 1,
+                                                          data.data()!["Basket"][index]);
+                                                      itemQuantity[index] =
+                                                          itemQuantity[index] - 1;
+                                                      setState(() {});
+                                                    },
+                                                    child: Container(
+                                                      width: 25,
+                                                      height: 25,
+                                                      decoration: BoxDecoration(
+                                                        color: AppColors().primaryColor,
+                                                        borderRadius:
+                                                        BorderRadius.circular(8),
+                                                      ),
+                                                      child: const Icon(
+                                                        Icons.remove,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                  Text(
+                                                    "${itemQuantity[index]}",
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      checkValues[index] = false;
+                                                      FirestoreService().updateBasketQuantity(
+                                                          data
+                                                              .data()!["Basket"][index]
+                                                              .toString()
+                                                              .split(",")[0],
+                                                          itemQuantity[index] + 1,
+                                                          data.data()!["Basket"][index]);
+                                                      itemQuantity[index] =
+                                                          itemQuantity[index] + 1;
+                                                      print(itemQuantity[index]);
+                                                      setState(() {});
+                                                    },
+                                                    child: Container(
+                                                      width: 25,
+                                                      height: 25,
+                                                      decoration: BoxDecoration(
+                                                        color: AppColors().primaryColor,
+                                                        borderRadius:
+                                                        BorderRadius.circular(10),
+                                                      ),
+                                                      child: const Icon(
+                                                        Icons.add,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                ],
+                                              )
                                             ],
                                           ),
                                         ),
-                                        const SizedBox(width: 10),
-                                        InkWell(
-                                          onTap: () {
-                                            FirestoreService().updateBasketQuantity(
-                                                data
-                                                    .data()!["Basket"][index]
-                                                    .toString()
-                                                    .split(",")[0],
-                                                itemQuantity[index] - 1,
-                                                data.data()!["Basket"][index]);
-                                            itemQuantity[index] =
-                                                itemQuantity[index] - 1;
-                                            setState(() {});
+                                        const Spacer(),
+                                        Checkbox(
+                                          value: checkValues[index],
+                                          onChanged: (value) {
+                                            if (value!) {
+                                              selecteditems.add(data
+                                                  .data()!["Basket"][index]
+                                                  .toString()
+                                                  .split(",")[0]);
+                                              selectedQuantity.add(itemQuantity[index]);
+                                              selectedPrice.add(itemPrice[index]);
+
+                                            } else {
+                                              selecteditems.remove(data
+                                                  .data()!["Basket"][index]
+                                                  .toString()
+                                                  .split(",")[0]);
+                                              selectedQuantity.remove(itemQuantity[index]);
+                                              selectedPrice.remove(itemPrice[index]);
+                                            }
+                                            setState(() {
+                                              checkValues[index] = value!;
+                                            });
                                           },
-                                          child: Container(
-                                            width: 30,
-                                            height: 30,
-                                            decoration: BoxDecoration(
-                                              color: AppColors().primaryColor,
-                                              borderRadius:
-                                              BorderRadius.circular(10),
-                                            ),
-                                            child: const Icon(
-                                              Icons.remove,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Text(
-                                          "${itemQuantity[index]}",
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        InkWell(
-                                          onTap: () {
-                                            FirestoreService().updateBasketQuantity(
-                                                data
-                                                    .data()!["Basket"][index]
-                                                    .toString()
-                                                    .split(",")[0],
-                                                itemQuantity[index] + 1,
-                                                data.data()!["Basket"][index]);
-                                            itemQuantity[index] =
-                                                itemQuantity[index] + 1;
-                                            print(itemQuantity[index]);
-                                            setState(() {});
-                                          },
-                                          child: Container(
-                                            width: 30,
-                                            height: 30,
-                                            decoration: BoxDecoration(
-                                              color: AppColors().primaryColor,
-                                              borderRadius:
-                                              BorderRadius.circular(10),
-                                            ),
-                                            child: const Icon(
-                                              Icons.add,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
+                                        )
                                       ],
                                     ),
                                   );
@@ -243,9 +267,9 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                             color: Colors.grey[200],
                           ),
                           child: PriceLabel(
-                            prices: itemPrice,
-                            quantity: itemQuantity,
-                            items: data.data()?["Basket"] ?? [],
+                            prices: selectedPrice,
+                            quantity: selectedQuantity,
+                            items: selecteditems,
                             name: data.data()?["Name"] ?? "",
                             address: data.data()?["Address"] ?? "",
                             contact: data.data()?["Contact"] ?? "",

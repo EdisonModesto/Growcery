@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:profanity_filter/profanity_filter.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../constants/AppColors.dart';
@@ -194,6 +195,9 @@ class _EditItemSheetState extends ConsumerState<EditItemSheet> {
                       maxLines: 10,
                       validator: (value){
                         if(value!.isEmpty){
+                          return "";
+                        } else if(ProfanityFilter().hasProfanity(value)){
+                          Fluttertoast.showToast(msg: "Profanity not allowed!");
                           return "";
                         }
                         return null;

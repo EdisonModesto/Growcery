@@ -80,7 +80,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                 data: (data){
                   var searchResult = data.docs.where((element) => element.data()["Name"].toString().toLowerCase().contains(searchController.text.toLowerCase()) && int.parse(element.data()['Stocks']) > 0).toList();
 
-                  var withStocks = data.docs.where((element) => int.parse(element.data()['Stocks']) > 0).toList();
+                  //var withStocks = data.docs.where((element) => int.parse(element.data()['Stocks']) > 0).toList();
                   return searchController.text != "" ?
                   GridView.count(
                       crossAxisCount: 2,
@@ -165,8 +165,8 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20,
                       childAspectRatio: 0.8,
-                      children: List.generate(withStocks.length, (index){
-                        return InkWell(
+                      children: List.generate(data.docs.length, (index){
+                        return int.parse(data.docs[index].data()["Stocks"]) > 0 ? InkWell(
                           onTap: (){
                             showModalBottomSheet(
                               shape: const RoundedRectangleBorder(
@@ -177,12 +177,12 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                               context: context,
                               isScrollControlled: true,
                               builder: (context) => ViewItemSheet(
-                                name: withStocks[index].data()['Name'],
-                                price: withStocks[index].data()['Price'],
-                                description: withStocks[index].data()['Description'],
-                                stock: withStocks[index].data()['Stocks'],
-                                image: withStocks[index].data()['Url'],
-                                id: withStocks[index].id,
+                                name: data.docs[index].data()['Name'],
+                                price: data.docs[index].data()['Price'],
+                                description: data.docs[index].data()['Description'],
+                                stock: data.docs[index].data()['Stocks'],
+                                image: data.docs[index].data()['Url'],
+                                id: data.docs[index].id,
                               ),
                             );
                           },
@@ -197,7 +197,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                 children: [
                                   Expanded(
                                     child: Image.network(
-                                      withStocks[index].data()['Url'],
+                                      data.docs[index].data()['Url'],
                                       width: double.infinity,
                                       fit: BoxFit.fitWidth,
                                     ),
@@ -209,7 +209,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Text(
-                                            withStocks[index].data()['Name'],
+                                            data.docs[index].data()['Name'],
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: GoogleFonts.poppins(
@@ -219,7 +219,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                           ),
                                           const SizedBox(height: 5),
                                           Text(
-                                            "PHP ${withStocks[index].data()['Price']}",
+                                            "PHP ${data.docs[index].data()['Price']}",
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: GoogleFonts.poppins(
@@ -234,6 +234,70 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                 ],
                               ),
                             ),
+                          ),
+                        ) : ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Stack(
+                            children: [
+                              Container(
+                                color: Colors.grey[200],
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      child: Image.network(
+                                        data.docs[index].data()['Url'],
+                                        width: double.infinity,
+                                        fit: BoxFit.fitWidth,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(20.0),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              data.docs[index].data()['Name'],
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 5),
+                                            Text(
+                                              "PHP ${data.docs[index].data()['Price']}",
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                color: Colors.grey.withOpacity(0.8),
+                                child: Center(
+                                  child: Text(
+                                    "Sold Out",
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       })

@@ -6,6 +6,7 @@ import 'package:growcery/constants/AppColors.dart';
 import 'package:growcery/services/CloudService.dart';
 import 'package:growcery/services/FilePickerService.dart';
 import 'package:growcery/services/FirestoreService.dart';
+import 'package:profanity_filter/profanity_filter.dart';
 import 'package:uuid/uuid.dart';
 
 class AddItemSheet extends ConsumerStatefulWidget {
@@ -175,6 +176,9 @@ class _AddItemSheetState extends ConsumerState<AddItemSheet> {
                       maxLines: 10,
                       validator: (value){
                         if(value!.isEmpty){
+                          return "";
+                        } else if(ProfanityFilter().hasProfanity(value)){
+                          Fluttertoast.showToast(msg: "Profanity not allowed!");
                           return "";
                         }
                         return null;
