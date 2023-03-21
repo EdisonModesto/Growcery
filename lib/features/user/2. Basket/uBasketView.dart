@@ -30,12 +30,7 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
   List<double> selectedPrice = [];
   List<String> selecteditems = [];
 
-  double total = 0.0;
 
-  Future<double> loadTotal() async {
-    await Future.delayed(const Duration(seconds: 1));
-    return total;
-  }
 
   @override
   void initState() {
@@ -48,7 +43,6 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
 
     var authState = ref.watch(authStateProvider);
 
-    total = 0.0;
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
@@ -152,6 +146,12 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                                   InkWell(
                                                     onTap: () {
                                                       checkValues[index] = false;
+                                                      selecteditems.remove(data
+                                                          .data()!["Basket"][index]
+                                                          .toString());
+                                                      selectedQuantity.remove(itemQuantity[index]);
+                                                      selectedPrice.remove(itemPrice[index]);
+                                                      setState(() {});
                                                       FirestoreService().updateBasketQuantity(
                                                           data
                                                               .data()!["Basket"][index]
@@ -189,6 +189,12 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                                   InkWell(
                                                     onTap: () {
                                                       checkValues[index] = false;
+                                                      selecteditems.remove(data
+                                                          .data()!["Basket"][index]
+                                                          .toString());
+                                                      selectedQuantity.remove(itemQuantity[index]);
+                                                      selectedPrice.remove(itemPrice[index]);
+                                                      setState(() {});
                                                       FirestoreService().updateBasketQuantity(
                                                           data
                                                               .data()!["Basket"][index]
@@ -228,16 +234,16 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                             if (value!) {
                                               selecteditems.add(data
                                                   .data()!["Basket"][index]
-                                                  .toString()
-                                                  .split(",")[0]);
+                                                  .toString());
                                               selectedQuantity.add(itemQuantity[index]);
                                               selectedPrice.add(itemPrice[index]);
 
                                             } else {
+                                              print("CHANGED");
                                               selecteditems.remove(data
                                                   .data()!["Basket"][index]
                                                   .toString()
-                                                  .split(",")[0]);
+                                              );
                                               selectedQuantity.remove(itemQuantity[index]);
                                               selectedPrice.remove(itemPrice[index]);
                                             }
@@ -319,7 +325,6 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
 
 
 
-
 class PriceLabel extends ConsumerStatefulWidget {
   const PriceLabel({
     required this.prices,
@@ -344,13 +349,24 @@ class PriceLabel extends ConsumerStatefulWidget {
 }
 
 class _PriceLabelState extends ConsumerState<PriceLabel> {
-  Future<double> computeTotal() async {
+
+  double total = 0;
+
+
+  Future<double> computeTotal(dummy) async {
+    total = 0;
+    setState(() {});
     await Future.delayed(const Duration(seconds: 1));
-    double total = 0;
     for (int i = 0; i < widget.prices.length; i++) {
       total = total + (widget.prices[i] * widget.quantity[i]);
     }
     return total;
+  }
+
+  @override
+  void initState() {
+
+    super.initState();
   }
 
   @override
@@ -391,7 +407,7 @@ class _PriceLabelState extends ConsumerState<PriceLabel> {
         ),
         Expanded(
           child: FutureBuilder(
-              future: computeTotal(),
+              future: computeTotal(total),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Text(

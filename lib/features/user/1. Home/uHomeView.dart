@@ -19,6 +19,51 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
 
   TextEditingController searchController = TextEditingController();
 
+  var popUpItems = [
+    PopupMenuItem(
+      value: "All",
+      child: Text(
+        "All",
+        style: GoogleFonts.poppins(
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+    ),
+    PopupMenuItem(
+      value: "Leafy Green",
+      child: Text(
+        "Leafy Green",
+        style: GoogleFonts.poppins(
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+    ),
+    PopupMenuItem(
+      value: "Allium",
+      child: Text(
+        "Allium",
+        style: GoogleFonts.poppins(
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+    ),
+    PopupMenuItem(
+      value: "Marrow",
+      child: Text(
+        "Marrow",
+        style: GoogleFonts.poppins(
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+    ),
+  ];
+
+  var value = "All";
+
   @override
   Widget build(BuildContext context) {
 
@@ -39,7 +84,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
             ),
             const SizedBox(height: 10),
             SizedBox(
-              height: 60,
+              height: 50,
               child: TextField(
                 controller: searchController,
                 onChanged: (value){
@@ -48,7 +93,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                   });
                 },
                 decoration: InputDecoration(
-                  contentPadding:  const EdgeInsets.symmetric(horizontal: 20),
+                  contentPadding:  const EdgeInsets.symmetric(horizontal: 10),
                   hintText: "Search",
                   hintStyle: GoogleFonts.poppins(
                     fontSize: 16,
@@ -57,6 +102,17 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                   prefixIcon: Icon(
                     Icons.search,
                     color: AppColors().primaryColor,
+                  ),
+                  suffix: PopupMenuButton(
+                    icon: Icon(
+                      Icons.filter_list,
+                      color: AppColors().primaryColor,
+                    ),
+                    onSelected: (val){
+                      searchController.text = val.toString();
+                      setState(() {});
+                    },
+                    itemBuilder: (context) => popUpItems,
                   ),
                   filled: true,
                   fillColor: Colors.grey[200],
@@ -75,10 +131,25 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                 ),
               ),
             ),
+            const SizedBox(height: 10),
+
             Expanded(
               child: feed.when(
                 data: (data){
+
                   var searchResult = data.docs.where((element) => element.data()["Name"].toString().toLowerCase().contains(searchController.text.toLowerCase()) && int.parse(element.data()['Stocks']) > 0).toList();
+
+                  if (searchController.text == "Leafy Green") {
+                    searchResult = data.docs.where((element) => element.data()["Category"].toString().toLowerCase().contains(searchController.text.toLowerCase()) && int.parse(element.data()['Stocks']) > 0).toList();
+                  } else if (searchController.text == "Allium"){
+                    searchResult = data.docs.where((element) => element.data()["Category"].toString().toLowerCase().contains(searchController.text.toLowerCase()) && int.parse(element.data()['Stocks']) > 0).toList();
+                  } else if (searchController.text == "Marrow"){
+                    searchResult = data.docs.where((element) => element.data()["Category"].toString().toLowerCase().contains(searchController.text.toLowerCase()) && int.parse(element.data()['Stocks']) > 0).toList();
+                  } else if(searchController.text == "All"){
+                    searchResult = data.docs.where((element) => int.parse(element.data()['Stocks']) > 0).toList();
+                  } else {
+                    searchResult = data.docs.where((element) => element.data()["Name"].toString().toLowerCase().contains(searchController.text.toLowerCase()) && int.parse(element.data()['Stocks']) > 0).toList();
+                  }
 
                   //var withStocks = data.docs.where((element) => int.parse(element.data()['Stocks']) > 0).toList();
                   return searchController.text != "" ?

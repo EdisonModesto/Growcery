@@ -29,6 +29,41 @@ class _AddItemSheetState extends ConsumerState<AddItemSheet> {
 
   String url = "";
 
+  var popUpItems = [
+    PopupMenuItem(
+      value: "Leafy Green",
+      child: Text(
+        "Leafy Green",
+        style: GoogleFonts.poppins(
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+    ),
+    PopupMenuItem(
+      value: "Allium",
+      child: Text(
+        "Allium",
+        style: GoogleFonts.poppins(
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+    ),
+    PopupMenuItem(
+      value: "Marrow",
+      child: Text(
+        "Marrow",
+        style: GoogleFonts.poppins(
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+    ),
+  ];
+
+  var value = "Leafy Green";
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -82,30 +117,48 @@ class _AddItemSheetState extends ConsumerState<AddItemSheet> {
                   const SizedBox(height: 20),
                   SizedBox(
                     height: 50,
-                    child: TextFormField(
-                      controller: nameController,
-                      validator: (value){
-                        if(value!.isEmpty){
-                          return "";
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        errorStyle: GoogleFonts.poppins(
-                          height: 0,
-                        ),
-                        labelText: "Name",
-                        labelStyle: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        border: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Colors.grey,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: nameController,
+                            validator: (value){
+                              if(value!.isEmpty){
+                                return "";
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              errorStyle: GoogleFonts.poppins(
+                                height: 0,
+                              ),
+                              labelText: "Name",
+                              labelStyle: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Colors.grey,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
                           ),
-                          borderRadius: BorderRadius.circular(10),
                         ),
-                      ),
+                        SizedBox(width: 10,),
+                        PopupMenuButton(
+                          icon: Icon(
+                            Icons.filter_list,
+                            color: AppColors().primaryColor,
+                          ),
+                          onSelected: (val){
+                            value = val.toString();
+                            setState(() {});
+                          },
+                          itemBuilder: (context) => popUpItems,
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -205,7 +258,7 @@ class _AddItemSheetState extends ConsumerState<AddItemSheet> {
                   ElevatedButton(
                     onPressed: () {
                       if(_formKey.currentState!.validate() && url != ""){
-                        FirestoreService().addItem(url, nameController.text, priceController.text, quantityController.text, descriptionController.text);
+                        FirestoreService().addItem(url, nameController.text, priceController.text, quantityController.text, descriptionController.text, value);
                         Navigator.pop(context);
                       } else {
                         Fluttertoast.showToast(msg: "Please make sure to fill up all the fields and upload an image");

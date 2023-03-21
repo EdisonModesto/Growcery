@@ -199,6 +199,7 @@ class _AHomeViewState extends ConsumerState<AHomeView> {
                                             quantity: searchResult[index].data()["Stocks"],
                                             description: searchResult[index].data()["Description"],
                                             id: searchResult[index].id,
+                                            category: searchResult[index].data()["Category"],
                                           );
                                         });
                                       },
@@ -316,6 +317,7 @@ class _AHomeViewState extends ConsumerState<AHomeView> {
                                             quantity: data.docs[index].data()["Stocks"],
                                             description: data.docs[index].data()["Description"],
                                             id: data.docs[index].id,
+                                            category: data.docs[index].data()["Category"],
                                           );
                                         });
                                       },

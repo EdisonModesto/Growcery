@@ -315,6 +315,56 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                 ],
                                               ),
                                             ),
+                                            const SizedBox(width: 10),
+                                            IconButton(
+                                              icon: Icon(Icons.cancel_outlined),
+                                              onPressed: (){
+                                                showDialog(context: context, builder: (builder){
+                                                  return AlertDialog(
+                                                    title: Text(
+                                                      "Cancel Order",
+                                                      style: GoogleFonts.poppins(
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.w400,
+                                                      ),
+                                                    ),
+                                                    content: Text(
+                                                      "Are you sure you want to cancel this order?",
+                                                      style: GoogleFonts.poppins(
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w400,
+                                                      ),
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: (){
+                                                          Navigator.pop(context);
+                                                        },
+                                                        child: Text(
+                                                          "No",
+                                                          style: GoogleFonts.poppins(
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w400,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: (){
+                                                          FirestoreService().updateOrderStatus(toPay[index].id, "3");
+                                                        },
+                                                        child: Text(
+                                                          "Yes",
+                                                          style: GoogleFonts.poppins(
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w400,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  );
+                                                });
+                                              },
+                                            )
                                           ],
                                         ),
                                       ),

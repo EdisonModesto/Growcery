@@ -37,23 +37,25 @@ class FirestoreService{
     return exist;
   }
 
-  void addItem(url, name, price, stocks, description){
+  void addItem(url, name, price, stocks, description, category){
     FirebaseFirestore.instance.collection("Items").doc().set({
       "Url": url,
       "Name": name,
       "Price": price,
       "Stocks": stocks,
       "Description": description,
+      "Category": category,
     });
   }
 
-  void updateItem(url, name, price, stocks, description,id){
+  void updateItem(url, name, price, stocks, description,id, category){
     FirebaseFirestore.instance.collection("Items").doc(id).update({
       "Url": url,
       "Name": name,
       "Price": price,
       "Stocks": stocks,
       "Description": description,
+      "Category": category,
     });
   }
 
@@ -99,7 +101,7 @@ class FirestoreService{
   Future<void> createOrder(items, name, contact, address) async {
 
     FirebaseFirestore.instance.collection("Users").doc(AuthService().getID()).update({
-      "Basket": [],
+      "Basket": FieldValue.arrayRemove(items),
     });
 
     FirebaseFirestore.instance.collection("Orders").doc().set({
