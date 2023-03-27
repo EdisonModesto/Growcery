@@ -161,6 +161,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.2.5"
+  filter_profanity:
+    dependency: "direct main"
+    description:
+      name: filter_profanity
+      sha256: c983f39792bb6c45a1824ee0ca1d254b09f3cb6b26e6461a0013ed0fe0dcf342
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2+2"
   firebase_auth:
     dependency: "direct main"
     description:
@@ -262,6 +270,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.8"
+  flutter_rating_bar:
+    dependency: "direct main"
+    description:
+      name: flutter_rating_bar
+      sha256: d2af03469eac832c591a1eba47c91ecc871fe5708e69967073c043b2d775ed93
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.1"
   flutter_riverpod:
     dependency: "direct main"
     description:
@@ -513,14 +529,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2.4"
-  profanity_filter:
-    dependency: "direct main"
-    description:
-      name: profanity_filter
-      sha256: afe466d42a2763a5b86849192bee3337de45a9566d5915a0fe4aa5f9cd2e8ac4
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   riverpod:
     dependency: transitive
     description:

@@ -5,6 +5,7 @@ import 'package:growcery/features/admin/1.%20Home/editItemSheet.dart';
 import 'package:growcery/services/FirestoreService.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
+import '../../../common/ViewItemAdmin.dart';
 import '../../../common/ViewItemSheet.dart';
 import '../../../constants/AppColors.dart';
 import '../../ViewModels/ItemViewModel.dart';
@@ -124,7 +125,7 @@ class _AHomeViewState extends ConsumerState<AHomeView> {
                                     ),
                                     context: context,
                                     isScrollControlled: true,
-                                    builder: (context) => ViewItemSheet(
+                                    builder: (context) => ViewItemAdmin(
                                       name: searchResult[index].data()["Name"],
                                       price: searchResult[index].data()["Price"],
                                       stock: searchResult[index].data()["Stocks"],
@@ -203,12 +204,12 @@ class _AHomeViewState extends ConsumerState<AHomeView> {
                                           );
                                         });
                                       },
-                                      icon: const Icon(
+                                      icon: Icon(
                                         Icons.edit,
-                                        color: Colors.black,
+                                        color: AppColors().primaryColor,
                                       ),
                                     ),
-                                    IconButton(
+                                   /* IconButton(
                                       onPressed: (){
                                         FirestoreService().removeItem(searchResult[index].id);
                                       },
@@ -216,7 +217,7 @@ class _AHomeViewState extends ConsumerState<AHomeView> {
                                         Icons.delete,
                                         color: Colors.redAccent,
                                       ),
-                                    ),
+                                    ),*/
                                   ],
                                 ),
                               )
@@ -242,7 +243,7 @@ class _AHomeViewState extends ConsumerState<AHomeView> {
                                     ),
                                     context: context,
                                     isScrollControlled: true,
-                                    builder: (context) => ViewItemSheet(
+                                    builder: (context) => ViewItemAdmin(
                                       name: data.docs[index].data()["Name"],
                                       price: data.docs[index].data()["Price"],
                                       stock: data.docs[index].data()["Stocks"],
@@ -285,7 +286,7 @@ class _AHomeViewState extends ConsumerState<AHomeView> {
                                                 ),
                                                 const SizedBox(height: 5),
                                                 Text(
-                                                  "Stocks: ${data.docs[index].data()["Stocks"]}",
+                                                  "Stocks: ${data.docs[index].data()["Stocks"]}KG",
                                                   maxLines: 1,
                                                   overflow: TextOverflow.ellipsis,
                                                   style: GoogleFonts.poppins(
@@ -321,12 +322,12 @@ class _AHomeViewState extends ConsumerState<AHomeView> {
                                           );
                                         });
                                       },
-                                      icon: const Icon(
+                                      icon: Icon(
                                         Icons.edit,
-                                        color: Colors.black,
+                                        color:  AppColors().primaryColor,
                                       ),
                                     ),
-                                    IconButton(
+                                   /* IconButton(
                                       onPressed: (){
                                         FirestoreService().removeItem(data.docs[index].id);
                                       },
@@ -334,7 +335,7 @@ class _AHomeViewState extends ConsumerState<AHomeView> {
                                         Icons.delete,
                                         color: Colors.redAccent,
                                       ),
-                                    ),
+                                    ),*/
                                   ],
                                 ),
                               )

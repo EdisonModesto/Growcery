@@ -212,7 +212,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                           ),
                                           const SizedBox(height: 5),
                                           Text(
-                                            "PHP ${searchResult[index].data()['Price']}",
+                                            "PHP ${searchResult[index].data()['Price']}/KG",
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: GoogleFonts.poppins(
@@ -290,7 +290,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                           ),
                                           const SizedBox(height: 5),
                                           Text(
-                                            "PHP ${data.docs[index].data()['Price']}",
+                                            "PHP ${data.docs[index].data()['Price']}/KG",
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: GoogleFonts.poppins(
@@ -339,7 +339,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                             ),
                                             const SizedBox(height: 5),
                                             Text(
-                                              "PHP ${data.docs[index].data()['Price']}",
+                                              "PHP ${data.docs[index].data()['Price']}/KG",
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                               style: GoogleFonts.poppins(

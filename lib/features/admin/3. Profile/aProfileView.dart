@@ -1,6 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:growcery/features/admin/3.%20Profile/aSettingsSheet.dart';
 
 import '../../../services/AuthService.dart';
 import '../../ViewModels/AuthViewModels.dart';
@@ -29,12 +32,32 @@ class _AProfileViewState extends ConsumerState<AProfileView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Profile",
-                      style: GoogleFonts.poppins(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          "Profile",
+                          style: GoogleFonts.poppins(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: (){
+                            showModalBottomSheet(
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(12),
+                                ),
+                              ),
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) => const ASettingsSheet()
+                            );
+                          },
+                          icon: const Icon(CupertinoIcons.settings),
+                        )
+                      ],
                     ),
                     const SizedBox(height: 15),
                     Row(
@@ -61,6 +84,29 @@ class _AProfileViewState extends ConsumerState<AProfileView> {
                     ),
                     const SizedBox(height: 20),
                     const Divider(),
+                    Text(
+                      "Average Rating",
+                      style: GoogleFonts.poppins(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    RatingBar.builder(
+                      initialRating: 3,
+                      minRating: 1,
+                      direction: Axis.horizontal,
+                      ignoreGestures: true,
+                      allowHalfRating: true,
+                      itemCount: 5,
+                      itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      itemBuilder: (context, _) => const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      ),
+                      onRatingUpdate: (rating) {
+                        print(rating);
+                      },
+                    ),
 
 
                   ],

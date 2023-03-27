@@ -98,6 +98,12 @@ class FirestoreService{
     }
   }
 
+  void removeFromBasket(data){
+    FirebaseFirestore.instance.collection("Users").doc(AuthService().getID()).update({
+      "Basket": FieldValue.arrayRemove(["$data"]),
+    });
+  }
+
   Future<void> createOrder(items, name, contact, address) async {
 
     FirebaseFirestore.instance.collection("Users").doc(AuthService().getID()).update({

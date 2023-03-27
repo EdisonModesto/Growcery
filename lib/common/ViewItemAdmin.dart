@@ -1,15 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:growcery/services/FirestoreService.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-import '../constants/AppColors.dart';
-import 'AddToBasketSheet.dart';
-
-class ViewItemSheet extends ConsumerStatefulWidget {
-  const ViewItemSheet({
+class ViewItemAdmin extends ConsumerStatefulWidget {
+  const ViewItemAdmin({
     required this.name,
     required this.price,
     required this.description,
@@ -27,10 +21,10 @@ class ViewItemSheet extends ConsumerStatefulWidget {
   final String id;
 
   @override
-  ConsumerState createState() => _ViewItemSheetState();
+  ConsumerState createState() => _ViewItemAdminState();
 }
 
-class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
+class _ViewItemAdminState extends ConsumerState<ViewItemAdmin> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -61,22 +55,6 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      showMaterialModalBottomSheet(
-                        context: context,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                          ),
-                        ),
-                        builder: (context) => AddToBasketSheet(id: widget.id,),
-                      );
-                      //FirestoreService().addToBasket(widget.id);
-                    },
-                    icon: const Icon(Icons.shopping_basket_outlined),
                   ),
                 ],
               ),

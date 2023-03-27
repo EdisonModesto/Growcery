@@ -1,3 +1,4 @@
+import 'package:filter_profanity/filter_profanity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -6,7 +7,6 @@ import 'package:growcery/constants/AppColors.dart';
 import 'package:growcery/services/CloudService.dart';
 import 'package:growcery/services/FilePickerService.dart';
 import 'package:growcery/services/FirestoreService.dart';
-import 'package:profanity_filter/profanity_filter.dart';
 import 'package:uuid/uuid.dart';
 
 class AddItemSheet extends ConsumerStatefulWidget {
@@ -125,6 +125,9 @@ class _AddItemSheetState extends ConsumerState<AddItemSheet> {
                             validator: (value){
                               if(value!.isEmpty){
                                 return "";
+                              } else if(hasProfanity(value, offensiveWords: filipinoOffensiveWords + englishOffensiveWords)){
+                                Fluttertoast.showToast(msg: "Profanity not allowed!");
+                                return "";
                               }
                               return null;
                             },
@@ -146,7 +149,7 @@ class _AddItemSheetState extends ConsumerState<AddItemSheet> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 10,),
+                        const SizedBox(width: 10,),
                         PopupMenuButton(
                           icon: Icon(
                             Icons.filter_list,
@@ -207,7 +210,7 @@ class _AddItemSheetState extends ConsumerState<AddItemSheet> {
                         errorStyle: GoogleFonts.poppins(
                           height: 0,
                         ),
-                        labelText: "Stocks",
+                        labelText: "Stocks (KG)",
                         labelStyle: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
@@ -230,7 +233,7 @@ class _AddItemSheetState extends ConsumerState<AddItemSheet> {
                       validator: (value){
                         if(value!.isEmpty){
                           return "";
-                        } else if(ProfanityFilter().hasProfanity(value)){
+                        } else if(hasProfanity(value, offensiveWords: filipinoOffensiveWords + englishOffensiveWords)){
                           Fluttertoast.showToast(msg: "Profanity not allowed!");
                           return "";
                         }

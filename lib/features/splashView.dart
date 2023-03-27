@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:growcery/constants/AppColors.dart';
 
 
 class SplashView extends ConsumerStatefulWidget {
@@ -31,23 +32,27 @@ class _SplashViewState extends ConsumerState<SplashView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const CircleAvatar(
-                radius: 55,
-                backgroundImage: AssetImage('assets/images/growceryLogo.jpg'),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Growcery',
-                style: GoogleFonts.poppins(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
+        child: ColoredBox(
+          color: AppColors().primaryColor,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const CircleAvatar(
+                  radius: 55,
+                  backgroundImage: AssetImage('assets/images/growceryLogo.jpg'),
                 ),
-              ),
-            ],
+                const SizedBox(height: 10),
+                Text(
+                  'Growcery',
+                  style: GoogleFonts.poppins(
+                    fontSize: 30,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
           ),
         )
       ),

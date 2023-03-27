@@ -8,6 +8,7 @@ import "package:growcery/common/AuthView.dart";
 import "package:growcery/constants/AppColors.dart";
 import "package:growcery/features/ViewModels/OrderViewModel.dart";
 import "package:growcery/features/user/3.%20Profile/uEditProfileDialog.dart";
+import "package:growcery/features/user/3.%20Profile/uSettingsSheet.dart";
 import "package:growcery/services/FirestoreService.dart";
 import "package:modal_bottom_sheet/modal_bottom_sheet.dart";
 
@@ -56,12 +57,35 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Profile",
-                    style: GoogleFonts.poppins(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Profile",
+                        style: GoogleFonts.poppins(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Visibility(
+                        visible: data?.uid == null ? false : true,
+                        child: IconButton(
+                          onPressed: (){
+                            showModalBottomSheet(
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(12),
+                                  ),
+                                ),
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (context) => const USettingsSheet()
+                            );
+                          },
+                          icon: const Icon(CupertinoIcons.settings),
+                        ),
+                      )
+                    ],
                   ),
                   const SizedBox(height: 15),
                   user.when(
@@ -122,28 +146,8 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                       fontWeight: FontWeight.w400,
                                     ),
                                   ),
-                                ) : ElevatedButton(
-                                  onPressed: (){
-                                    showDialog(context: context, builder: (builder){
-                                      return UEditProfileDialog(data: data1);
-                                    });
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    elevation: 0,
-                                    backgroundColor: AppColors().primaryColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                  ),
-                                  child: Text(
-                                    "Edit Profile",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ),
+                                ) :
+                                SizedBox(),
                               ]
                           )
                         ],

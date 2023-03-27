@@ -1,8 +1,8 @@
+import 'package:filter_profanity/filter_profanity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:profanity_filter/profanity_filter.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../constants/AppColors.dart';
@@ -146,6 +146,9 @@ class _EditItemSheetState extends ConsumerState<EditItemSheet> {
                             validator: (value){
                               if(value!.isEmpty){
                                 return "";
+                              } else if(hasProfanity(value, offensiveWords: filipinoOffensiveWords + englishOffensiveWords)){
+                                Fluttertoast.showToast(msg: "Profanity not allowed!");
+                                return "";
                               }
                               return null;
                             },
@@ -167,7 +170,7 @@ class _EditItemSheetState extends ConsumerState<EditItemSheet> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 10,),
+                        const SizedBox(width: 10,),
                         PopupMenuButton(
                           icon: Icon(
                             Icons.filter_list,
@@ -251,7 +254,7 @@ class _EditItemSheetState extends ConsumerState<EditItemSheet> {
                       validator: (value){
                         if(value!.isEmpty){
                           return "";
-                        } else if(ProfanityFilter().hasProfanity(value)){
+                        } else if(hasProfanity(value, offensiveWords: filipinoOffensiveWords + englishOffensiveWords)){
                           Fluttertoast.showToast(msg: "Profanity not allowed!");
                           return "";
                         }

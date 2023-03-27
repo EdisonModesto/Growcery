@@ -30,10 +30,10 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
   TextEditingController nameCtrl = TextEditingController();
   TextEditingController contactCtrl = TextEditingController();
   TextEditingController streetCtrl = TextEditingController();
+  TextEditingController cityCtrl = TextEditingController();
 
   var key = GlobalKey<FormState>();
   var reg = "NCR";
-  var city = "Caloocan";
   var url = "";
 
   List<City> cities = getCities();
@@ -50,7 +50,7 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
     streetCtrl.text = formattedAddress[0];
 
     reg = formattedAddress[1];
-    city = formattedAddress[2];
+    cityCtrl.text = formattedAddress[2];
 
     url = widget.data.data()!["Image"];
 
@@ -274,32 +274,43 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
                       const SizedBox(
                         height: 10,
                       ),
-                      Row(
-                        children: [
-                          const Text(
-                            "City: ",
-                            style: TextStyle(
-                              fontSize: 16,
+                      SizedBox(
+                        height: 50,
+                        child: TextFormField(
+                          controller: cityCtrl,
+                          style: const TextStyle(
+                              fontSize: 14
+                          ),
+                          decoration: const InputDecoration(
+                            errorStyle: TextStyle(height: 0),
+                            label: Text("City"),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(8),
+                              ),
+                              borderSide: BorderSide(
+                                color: Colors.grey,
+                                width: 2.0,
+                              ),
+                            ),
+
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(8),
+                              ),
+                              borderSide: BorderSide(
+                                color: Colors.red,
+                                width: 6.0,
+                              ),
                             ),
                           ),
-                          const Spacer(),
-                          DropdownButton(
-                            value: city,
-                            items: List.generate(regions.length, (index){
-                              return DropdownMenuItem(
-                                value: cities[index].name,
-                                child: Text(
-                                    cities[index].name
-                                ),
-                              );
-                            }),
-                            onChanged: (value) {
-                                  setState(() {
-                                city = value.toString();
-                              });
-                            },
-                          ),
-                        ],
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "";
+                            }
+                            return null;
+                          },
+                        ),
                       ),
                       const SizedBox(
                         height: 15,
@@ -309,7 +320,7 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
                           if (key.currentState!.validate()){
                             FirestoreService().updateUser(
                                 nameCtrl.text,
-                                "${streetCtrl.text}%$reg%$city",
+                                "${streetCtrl.text}%$reg%${cityCtrl.text}",
                                 url,
                                 contactCtrl.text,
                             );
