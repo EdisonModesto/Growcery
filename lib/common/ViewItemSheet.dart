@@ -16,6 +16,7 @@ class ViewItemSheet extends ConsumerStatefulWidget {
     required this.stock,
     required this.image,
     required this.id,
+    required this.min,
     Key? key,
   }) : super(key: key);
 
@@ -25,6 +26,7 @@ class ViewItemSheet extends ConsumerStatefulWidget {
   final String stock;
   final String image;
   final String id;
+  final min;
 
   @override
   ConsumerState createState() => _ViewItemSheetState();
@@ -33,20 +35,24 @@ class ViewItemSheet extends ConsumerStatefulWidget {
 class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       height: 600,
+      color: AppColors().primaryColor,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 200,
-                width: double.infinity,
-                child: Image.network(
-                  widget.image,
-                  fit: BoxFit.fitWidth,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: SizedBox(
+                  height: 200,
+                  width: double.infinity,
+                  child: Image.network(
+                    widget.image,
+                    fit: BoxFit.fitWidth,
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -59,6 +65,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.poppins(
                       fontSize: 20,
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -72,11 +79,11 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                             topRight: Radius.circular(20),
                           ),
                         ),
-                        builder: (context) => AddToBasketSheet(id: widget.id,),
+                        builder: (context) => AddToBasketSheet(id: widget.id, minimum: widget.min,),
                       );
                       //FirestoreService().addToBasket(widget.id);
                     },
-                    icon: const Icon(Icons.shopping_basket_outlined),
+                    icon: Icon(Icons.shopping_basket_outlined, color: Colors.white,),
                   ),
                 ],
               ),
@@ -86,7 +93,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.poppins(
-                  color: Colors.lightGreen,
+                  color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.w400,
                 ),
@@ -101,6 +108,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.poppins(
                       fontSize: 18,
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -110,6 +118,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.poppins(
                       fontSize: 16,
+                      color: Colors.white,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -121,6 +130,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                 textAlign: TextAlign.justify,
                 style: GoogleFonts.poppins(
                   fontSize: 14,
+                  color: Colors.white,
                   fontWeight: FontWeight.w400,
                 ),
               ),

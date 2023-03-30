@@ -37,7 +37,7 @@ class FirestoreService{
     return exist;
   }
 
-  void addItem(url, name, price, stocks, description, category){
+  void addItem(url, name, price, stocks, description, category, minimum){
     FirebaseFirestore.instance.collection("Items").doc().set({
       "Url": url,
       "Name": name,
@@ -45,10 +45,11 @@ class FirestoreService{
       "Stocks": stocks,
       "Description": description,
       "Category": category,
+      "Minimum": minimum,
     });
   }
 
-  void updateItem(url, name, price, stocks, description,id, category){
+  void updateItem(url, name, price, stocks, description,id, category, minimum){
     FirebaseFirestore.instance.collection("Items").doc(id).update({
       "Url": url,
       "Name": name,
@@ -56,6 +57,7 @@ class FirestoreService{
       "Stocks": stocks,
       "Description": description,
       "Category": category,
+      "Minimum": minimum,
     });
   }
 
@@ -117,7 +119,8 @@ class FirestoreService{
       "Name": name,
       "Contact": contact,
       "Address": address,
-      //"Date": DateTime.now().toString(),
+      "Date": DateTime.now().toString(),
+      "Date Completed": "No Record",
     });
     
     for(var item in items){
@@ -134,6 +137,14 @@ class FirestoreService{
   void updateOrderStatus(id, status){
     FirebaseFirestore.instance.collection("Orders").doc(id).update({
       "Status": status,
+      "Date": DateTime.now().toString(),
+      "Date Completed": status == "2" ? DateTime.now().toString() : "",
+    });
+  }
+
+  void saveRating(rating){
+    FirebaseFirestore.instance.collection("Ratings").doc().set({
+      "Rating": rating,
     });
   }
 }

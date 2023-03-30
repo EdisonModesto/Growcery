@@ -65,12 +65,43 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "My Basket",
-                        style: GoogleFonts.poppins(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "My Basket",
+                            style: GoogleFonts.poppins(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              selecteditems.clear();
+                              selectedQuantity.clear();
+                              selectedPrice.clear();
+                              for (int index = 0; index < data.data()!["Basket"].length; index++) {
+                                checkValues[index] = true;
+                                selecteditems.add(data
+                                    .data()!["Basket"][index]
+                                    .toString());
+                                selectedQuantity.add(
+                                    itemQuantity[index]);
+                                selectedPrice.add(
+                                    itemPrice[index]);
+                              }
+                              setState(() {});
+                            },
+                            child: Text(
+                              "Select All",
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors().primaryColor,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 10),
                       Expanded(
@@ -417,7 +448,23 @@ class _PriceLabelState extends ConsumerState<PriceLabel> {
             onTap: () {
               if (widget.items.isNotEmpty && widget.name != "" && widget.contact != "" && widget.address.toString().split("%")[0] != "No Data") {
                 showDialog(context: context, builder: (builder){
-                  return PaymentDialog(items: widget.items, name: widget.name, contact: widget.contact, address: widget.address);
+                  return AlertDialog(
+title: const Text("Payment Method"),
+                    content: const Text("Please select your payment method"),
+                    actions: [
+                      TextButton(onPressed: (){
+                        FirestoreService().createOrder(widget.items, widget.name, widget.contact, widget.address);
+                        Fluttertoast.showToast(msg: "Order has been placed");
+                        Navigator.pop(builder);
+                      }, child: const Text("COD")),
+                      TextButton(onPressed: (){
+                        showDialog(context: context, builder: (builder){
+                          return PaymentDialog(items: widget.items, name: widget.name, contact: widget.contact, address: widget.address);
+                        });
+                        Navigator.pop(builder);
+                      }, child: const Text("Gcash")),
+                    ],
+                  );
                 });
               } else {
                 Fluttertoast.showToast(msg: "No items in basket or you have not filled up your profile yet");

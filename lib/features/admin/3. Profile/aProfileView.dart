@@ -7,6 +7,7 @@ import 'package:growcery/features/admin/3.%20Profile/aSettingsSheet.dart';
 
 import '../../../services/AuthService.dart';
 import '../../ViewModels/AuthViewModels.dart';
+import 'RatingProvider.dart';
 
 class AProfileView extends ConsumerStatefulWidget {
   const AProfileView({
@@ -21,7 +22,7 @@ class _AProfileViewState extends ConsumerState<AProfileView> {
   @override
   Widget build(BuildContext context) {
     var authState = ref.watch(authStateProvider);
-
+    var ratings = ref.watch(ratingsProvider);
     return authState.when(
         data: (data){
           return DefaultTabController(
@@ -84,28 +85,51 @@ class _AProfileViewState extends ConsumerState<AProfileView> {
                     ),
                     const SizedBox(height: 20),
                     const Divider(),
-                    Text(
-                      "Average Rating",
-                      style: GoogleFonts.poppins(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                    Center(
+                      child: Text(
+                        "Average Rating",
+                        style: GoogleFonts.poppins(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff414141)
+                        ),
                       ),
                     ),
-                    RatingBar.builder(
-                      initialRating: 3,
-                      minRating: 1,
-                      direction: Axis.horizontal,
-                      ignoreGestures: true,
-                      allowHalfRating: true,
-                      itemCount: 5,
-                      itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      itemBuilder: (context, _) => const Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                      ),
-                      onRatingUpdate: (rating) {
-                        print(rating);
-                      },
+                    ratings.when(
+                        data: (data){
+
+                          double totalRating = 0;
+
+                          data.docs.forEach((element) {
+                            totalRating += element.data()["Rating"];
+                          });
+                          totalRating = totalRating / data.docs.length;
+
+                          return Center(
+                            child: RatingBar.builder(
+                              initialRating: totalRating,
+                              minRating: 1,
+                              direction: Axis.horizontal,
+                              ignoreGestures: true,
+                              allowHalfRating: true,
+                              itemCount: 5,
+                              itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                              itemBuilder: (context, _) => const Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              ),
+                              onRatingUpdate: (rating) {
+                                print(rating);
+                              },
+                            ),
+                          );
+                        },
+                        error: (error, stack){
+                          return Center(child: Text(error.toString()));
+                        },
+                        loading: (){
+                          return Center(child: const CircularProgressIndicator());
+                        }
                     ),
 
 

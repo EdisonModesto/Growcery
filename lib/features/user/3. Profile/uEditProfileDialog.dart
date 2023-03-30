@@ -31,6 +31,7 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
   TextEditingController contactCtrl = TextEditingController();
   TextEditingController streetCtrl = TextEditingController();
   TextEditingController cityCtrl = TextEditingController();
+  TextEditingController brgyCtrl = TextEditingController();
 
   var key = GlobalKey<FormState>();
   var reg = "NCR";
@@ -49,7 +50,7 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
 
     streetCtrl.text = formattedAddress[0];
 
-    reg = formattedAddress[1];
+    brgyCtrl.text = formattedAddress[1];
     cityCtrl.text = formattedAddress[2];
 
     url = widget.data.data()!["Image"];
@@ -244,7 +245,7 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
                       const SizedBox(
                         height: 10,
                       ),
-                      Row(
+                  /*    Row(
                         children: [
                           const Text(
                             "Region: ",
@@ -264,12 +265,50 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
                               );
                             }),
                             onChanged: (value) {
-                          /*    setState(() {
+                          *//*    setState(() {
                                 goal = value.toString();
-                              });*/
+                              });*//*
                             },
                           ),
                         ],
+                      ),*/
+                      SizedBox(
+                        height: 50,
+                        child: TextFormField(
+                          controller: brgyCtrl,
+                          style: const TextStyle(
+                              fontSize: 14
+                          ),
+                          decoration: const InputDecoration(
+                            errorStyle: TextStyle(height: 0),
+                            label: Text("Barangay"),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(8),
+                              ),
+                              borderSide: BorderSide(
+                                color: Colors.grey,
+                                width: 2.0,
+                              ),
+                            ),
+
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(8),
+                              ),
+                              borderSide: BorderSide(
+                                color: Colors.red,
+                                width: 6.0,
+                              ),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "";
+                            }
+                            return null;
+                          },
+                        ),
                       ),
                       const SizedBox(
                         height: 10,
@@ -320,7 +359,7 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
                           if (key.currentState!.validate()){
                             FirestoreService().updateUser(
                                 nameCtrl.text,
-                                "${streetCtrl.text}%$reg%${cityCtrl.text}",
+                                "${streetCtrl.text}%${brgyCtrl.text}%${cityCtrl.text}",
                                 url,
                                 contactCtrl.text,
                             );

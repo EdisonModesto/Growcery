@@ -103,17 +103,6 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                     Icons.search,
                     color: AppColors().primaryColor,
                   ),
-                  suffix: PopupMenuButton(
-                    icon: Icon(
-                      Icons.filter_list,
-                      color: AppColors().primaryColor,
-                    ),
-                    onSelected: (val){
-                      searchController.text = val.toString();
-                      setState(() {});
-                    },
-                    itemBuilder: (context) => popUpItems,
-                  ),
                   filled: true,
                   fillColor: Colors.grey[200],
                   enabledBorder: OutlineInputBorder(
@@ -131,12 +120,27 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                 ),
               ),
             ),
-            const SizedBox(height: 10),
-
+            const SizedBox(height: 5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                PopupMenuButton(
+                  icon: Icon(
+                    Icons.filter_list,
+                    color: AppColors().primaryColor,
+                  ),
+                  onSelected: (val){
+                    searchController.text = val.toString();
+                    setState(() {});
+                  },
+                  itemBuilder: (context) => popUpItems,
+                ),
+              ],
+            ),
+            const SizedBox(height: 5),
             Expanded(
               child: feed.when(
                 data: (data){
-
                   var searchResult = data.docs.where((element) => element.data()["Name"].toString().toLowerCase().contains(searchController.text.toLowerCase()) && int.parse(element.data()['Stocks']) > 0).toList();
 
                   if (searchController.text == "Leafy Green") {
@@ -176,6 +180,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                 stock: searchResult[index].data()['Stocks'],
                                 image: searchResult[index].data()['Url'],
                                 id: searchResult[index].id,
+                                min: searchResult[index].data()['Minimum'],
                               ),
                             );
                           },
@@ -196,31 +201,37 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                     ),
                                   ),
                                   Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(20.0),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            searchResult[index].data()['Name'],
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
+                                    child: Container(
+                                      width: double.infinity,
+                                      color: AppColors().primaryColor,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(20.0),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              searchResult[index].data()['Name'],
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 16,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                          ),
-                                          const SizedBox(height: 5),
-                                          Text(
-                                            "PHP ${searchResult[index].data()['Price']}/KG",
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400,
+                                            const SizedBox(height: 5),
+                                            Text(
+                                              "PHP ${searchResult[index].data()['Price']}/KG",
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.poppins(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   )
@@ -254,6 +265,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                 stock: data.docs[index].data()['Stocks'],
                                 image: data.docs[index].data()['Url'],
                                 id: data.docs[index].id,
+                                min: searchResult[index].data()['Minimum'],
                               ),
                             );
                           },
@@ -274,31 +286,37 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                     ),
                                   ),
                                   Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(20.0),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            data.docs[index].data()['Name'],
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
+                                    child: Container(
+                                      color: AppColors().primaryColor,
+                                      width: double.infinity,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(20.0),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              data.docs[index].data()['Name'],
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.poppins(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                          ),
-                                          const SizedBox(height: 5),
-                                          Text(
-                                            "PHP ${data.docs[index].data()['Price']}/KG",
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400,
+                                            const SizedBox(height: 5),
+                                            Text(
+                                              "PHP ${data.docs[index].data()['Price']}/KG",
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.poppins(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   )

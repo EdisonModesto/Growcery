@@ -32,8 +32,13 @@ class _SplashViewState extends ConsumerState<SplashView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: ColoredBox(
-          color: AppColors().primaryColor,
+        child: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/landingPage.jpg'),
+              fit: BoxFit.cover,
+            ),
+          ),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -42,11 +47,11 @@ class _SplashViewState extends ConsumerState<SplashView> {
                   radius: 55,
                   backgroundImage: AssetImage('assets/images/growceryLogo.jpg'),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
                 Text(
                   'Growcery',
                   style: GoogleFonts.poppins(
-                    fontSize: 30,
+                    fontSize: 32,
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),

@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:growcery/features/user/3.%20Profile/uEditProfileDialog.dart';
 
 import '../../../constants/AppColors.dart';
+import '../../../services/AuthService.dart';
 import '../../ViewModels/UserViewModel.dart';
 
 class USettingsSheet extends ConsumerStatefulWidget {
@@ -27,7 +28,7 @@ class _USettingsSheetState extends ConsumerState<USettingsSheet> {
     return user.when(
       data: (data){
         return SizedBox(
-          height: 250,
+          height: 300,
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: SingleChildScrollView(
@@ -64,6 +65,28 @@ class _USettingsSheetState extends ConsumerState<USettingsSheet> {
                     },
                     child: Text(
                       "Edit Profile",
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xff414141),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      fixedSize: Size(MediaQuery.of(context).size.width, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () async {
+                      AuthService().signOut();
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "Logout",
                       style: GoogleFonts.poppins(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

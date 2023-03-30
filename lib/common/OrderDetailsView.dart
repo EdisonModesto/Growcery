@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,7 +29,7 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       height: 600,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -44,77 +45,111 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                 ),
               ),
               const SizedBox(height: 20),
-              Row(
-                children: [
-                  Text(
-                    "Order ID:",
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            "Order ID:",
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            widget.orderData.id,
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "Buyer Name:",
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            widget.orderData.data()['Name'],
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "Contact No:",
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            widget.orderData.data()['Contact'],
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Address:",
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          SizedBox(width: 30),
+                          Expanded(
+                            child: AutoSizeText(
+                              widget.orderData.data()['Address'],
+                              minFontSize: 0,
+                              wrapWords: true,
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                            "Order Date: \n${widget.orderData.data()['Date'].toString().split(" ")[0]}",
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            "Completed Date: \n${widget.orderData.data()['Date Completed']}",
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ]
+                      )
+                    ],
                   ),
-                  const Spacer(),
-                  Text(
-                    widget.orderData.id,
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Text(
-                    "Buyer Name:",
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const Spacer(),
-                  Text(
-                    widget.orderData.data()['Name'],
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Text(
-                    "Contact No:",
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const Spacer(),
-                  Text(
-                    widget.orderData.data()['Contact'],
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Text(
-                    "Address:",
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const Spacer(),
-                  Text(
-                    widget.orderData.data()['Address'],
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
+                ),
               ),
               const SizedBox(height: 20),
               Text(
@@ -137,22 +172,37 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                         .get(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return Row(
-                          children: [
-                            Text(
-                              snapshot.data!['Name'],
-                              style: GoogleFonts.poppins(
-                                fontSize: 16,
+                        return ListTile(
+                          contentPadding: const EdgeInsets.all(0),
+                          leading: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: SizedBox(
+                              child: Image.network(
+                                snapshot.data!['Url'],
+                                height: 50,
+                                width: 50,
+                                fit: BoxFit.cover,
                               ),
                             ),
-                            const Spacer(),
-                            Text(
-                              "x${widget.orderData.data()['Items'][index].toString().split(",")[1]}",
-                              style: GoogleFonts.poppins(
-                                fontSize: 16,
-                              ),
+                          ),
+                          title: Text(
+                            snapshot.data!['Name'],
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
                             ),
-                          ],
+                          ),
+                          subtitle: Text(
+                            "₹${snapshot.data!['Price']}",
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                            ),
+                          ),
+                          trailing: Text(
+                            "x${widget.orderData.data()['Items'][index].toString().split(",")[1]}",
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                            ),
+                          ),
                         );
                       }
                       return const Center(

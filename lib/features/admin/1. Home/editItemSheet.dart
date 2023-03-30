@@ -36,6 +36,7 @@ class _EditItemSheetState extends ConsumerState<EditItemSheet> {
   TextEditingController priceController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  TextEditingController minimumController = TextEditingController();
 
   String url = "";
 
@@ -247,6 +248,36 @@ class _EditItemSheetState extends ConsumerState<EditItemSheet> {
                   ),
                   const SizedBox(height: 20),
                   SizedBox(
+                    height: 50,
+                    child: TextFormField(
+                      controller: minimumController,
+                      keyboardType: TextInputType.number,
+                      validator: (value){
+                        if(value!.isEmpty){
+                          return "";
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        errorStyle: GoogleFonts.poppins(
+                          height: 0,
+                        ),
+                        labelText: "Minimum Order (KG)",
+                        labelStyle: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: Colors.grey,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  SizedBox(
                     height: 150,
                     child: TextFormField(
                       controller: descriptionController,
@@ -282,7 +313,7 @@ class _EditItemSheetState extends ConsumerState<EditItemSheet> {
                   ElevatedButton(
                     onPressed: () {
                       if(_formKey.currentState!.validate() && url != ""){
-                        FirestoreService().updateItem(url, nameController.text, priceController.text, quantityController.text, descriptionController.text, widget.id, value);
+                        FirestoreService().updateItem(url, nameController.text, priceController.text, quantityController.text, descriptionController.text, widget.id, value, minimumController.text );
                         Navigator.pop(context);
                       } else {
                         Fluttertoast.showToast(msg: "Please make sure to fill up all the fields and upload an image");

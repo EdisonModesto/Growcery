@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../constants/AppColors.dart';
@@ -8,10 +9,12 @@ import '../services/FirestoreService.dart';
 class AddToBasketSheet extends ConsumerStatefulWidget {
   const AddToBasketSheet({
     required this.id,
+    required this.minimum,
     Key? key,
   }) : super(key: key);
 
   final String id;
+  final minimum;
 
   @override
   ConsumerState createState() => _AddToBasketSheetState();
@@ -20,6 +23,12 @@ class AddToBasketSheet extends ConsumerStatefulWidget {
 class _AddToBasketSheetState extends ConsumerState<AddToBasketSheet> {
 
   int value = 1;
+
+  @override
+  void initState() {
+    value = int.parse(widget.minimum);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +61,18 @@ class _AddToBasketSheetState extends ConsumerState<AddToBasketSheet> {
                   InkWell(
                     onTap: () {
                       setState(() {
-                        if(value > 1){
+                        if(value > 1 && value > int.parse(widget.minimum)){
                           value--;
+                        } else {
+                          Fluttertoast.showToast(
+                            msg: "Minimum quantity is ${widget.minimum}",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0
+                          );
                         }
                       });
                     },
