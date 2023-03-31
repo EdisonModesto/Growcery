@@ -20,10 +20,11 @@ class EditItemSheet extends ConsumerStatefulWidget {
     required this.description,
     required this.id,
     required this.category,
+    required this.mini,
     Key? key,
   }) : super(key: key);
 
-  final url, name, price, quantity, description, id, category;
+  final url, name, price, quantity, description, id, category, mini;
 
   @override
   ConsumerState createState() => _EditItemSheetState();
@@ -82,6 +83,7 @@ class _EditItemSheetState extends ConsumerState<EditItemSheet> {
     priceController.text = widget.price;
     quantityController.text = widget.quantity;
     descriptionController.text = widget.description;
+    minimumController.text = widget.mini;
     value = widget.category;
     super.initState();
   }

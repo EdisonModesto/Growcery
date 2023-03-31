@@ -366,6 +366,10 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                               TextButton(
                                                                 onPressed: (){
                                                                   FirestoreService().updateOrderStatus(toPay[index].id, "4");
+                                                                  //restore stock
+                                                                  for(var i = 0; i < toPay[index].data()["Items"].length; i++){
+                                                                    FirestoreService().restoreStock(toPay[index].data()["Items"][i].toString().split(",")[0], toPay[index].data()["Items"][i].toString().split(",")[1]);
+                                                                  }
                                                                   Navigator.pop(builder);
                                                                 },
                                                                 child: Text(

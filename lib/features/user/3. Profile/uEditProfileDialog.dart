@@ -34,12 +34,27 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
   TextEditingController brgyCtrl = TextEditingController();
 
   var key = GlobalKey<FormState>();
-  var reg = "NCR";
+  var reg = "San Isidro";
   var url = "";
 
   List<City> cities = getCities();
   List<Province> provinces = getProvinces();
   List<Region> regions = getRegions();
+
+
+  List<String> brgy = [
+    "San Isidro",
+    "San Jose",
+    "Burgos",
+    "Manggahan",
+    "Rosario",
+    "Balite",
+    "Geronimo",
+    "San Rafael",
+    "Mascap",
+    "Macabud",
+    "Puray"
+  ];
 
   @override
   void initState() {
@@ -51,6 +66,7 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
     streetCtrl.text = formattedAddress[0];
 
     brgyCtrl.text = formattedAddress[1];
+    reg = formattedAddress[1];
     cityCtrl.text = formattedAddress[2];
 
     url = widget.data.data()!["Image"];
@@ -245,10 +261,10 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
                       const SizedBox(
                         height: 10,
                       ),
-                  /*    Row(
+                      Row(
                         children: [
                           const Text(
-                            "Region: ",
+                            "Barangay: ",
                             style: TextStyle(
                               fontSize: 16,
                             ),
@@ -256,59 +272,23 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
                           const Spacer(),
                           DropdownButton(
                             value: reg,
-                            items: List.generate(regions.length, (index){
+                            items: List.generate(brgy.length, (index){
                               return DropdownMenuItem(
-                                value: regions[index].name,
+                                value: brgy[index],
                                 child: Text(
-                                    regions[index].name
+                                    brgy[index]
                                 ),
                               );
                             }),
                             onChanged: (value) {
-                          *//*    setState(() {
-                                goal = value.toString();
-                              });*//*
+                              setState(() {
+                                brgyCtrl.text = value!;
+                                reg = value;
+                                //goal = value.toString();
+                              });
                             },
                           ),
                         ],
-                      ),*/
-                      SizedBox(
-                        height: 50,
-                        child: TextFormField(
-                          controller: brgyCtrl,
-                          style: const TextStyle(
-                              fontSize: 14
-                          ),
-                          decoration: const InputDecoration(
-                            errorStyle: TextStyle(height: 0),
-                            label: Text("Barangay"),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8),
-                              ),
-                              borderSide: BorderSide(
-                                color: Colors.grey,
-                                width: 2.0,
-                              ),
-                            ),
-
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8),
-                              ),
-                              borderSide: BorderSide(
-                                color: Colors.red,
-                                width: 6.0,
-                              ),
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "";
-                            }
-                            return null;
-                          },
-                        ),
                       ),
                       const SizedBox(
                         height: 10,

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:growcery/services/FirestoreService.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -71,16 +72,28 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                   ),
                   IconButton(
                     onPressed: () {
-                      showMaterialModalBottomSheet(
-                        context: context,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
+                      if (int.parse(widget.stock) >=int.parse(widget.min)) {
+                        showMaterialModalBottomSheet(
+                          context: context,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            ),
                           ),
-                        ),
-                        builder: (context) => AddToBasketSheet(id: widget.id, minimum: widget.min,),
-                      );
+                          builder: (context) => AddToBasketSheet(id: widget.id, minimum: widget.min,),
+                        );
+                      } else {
+                        Fluttertoast.showToast(
+                          msg: "Insufficient Stocks for minimum order",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
+                      }
                       //FirestoreService().addToBasket(widget.id);
                     },
                     icon: Icon(Icons.shopping_basket_outlined, color: Colors.white,),

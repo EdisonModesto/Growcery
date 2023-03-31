@@ -188,31 +188,38 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                                   children: [
                                                     InkWell(
                                                       onTap: () {
-                                                        checkValues[index] =
-                                                        false;
-                                                        selecteditems.remove(
-                                                            data
-                                                                .data()!["Basket"][index]
-                                                                .toString());
-                                                        selectedQuantity.remove(
-                                                            itemQuantity[index]);
-                                                        selectedPrice.remove(
-                                                            itemPrice[index]);
-                                                        setState(() {});
-                                                        FirestoreService()
-                                                            .updateBasketQuantity(
-                                                            data
-                                                                .data()!["Basket"][index]
-                                                                .toString()
-                                                                .split(",")[0],
-                                                            itemQuantity[index] -
-                                                                1,
-                                                            data
-                                                                .data()!["Basket"][index]);
-                                                        itemQuantity[index] =
-                                                            itemQuantity[index] -
-                                                                1;
-                                                        setState(() {});
+                                                        if (int.parse(snapshot.data!.data()!["Minimum"]) <=
+                                                            itemQuantity[index] - 1) {
+                                                          checkValues[index] =
+                                                          false;
+                                                          selecteditems.remove(
+                                                              data
+                                                                  .data()!["Basket"][index]
+                                                                  .toString());
+                                                          selectedQuantity.remove(
+                                                              itemQuantity[index]);
+                                                          selectedPrice.remove(
+                                                              itemPrice[index]);
+                                                          setState(() {});
+                                                          FirestoreService()
+                                                              .updateBasketQuantity(
+                                                              data
+                                                                  .data()!["Basket"][index]
+                                                                  .toString()
+                                                                  .split(",")[0],
+                                                              itemQuantity[index] -
+                                                                  1,
+                                                              data
+                                                                  .data()!["Basket"][index]);
+                                                          itemQuantity[index] =
+                                                              itemQuantity[index] -
+                                                                  1;
+                                                          setState(() {});
+                                                        } else {
+                                                          Fluttertoast.showToast(
+                                                              msg:
+                                                              "Minimum quantity is ${snapshot.data!.data()!["Minimum"]}");
+                                                        }
                                                       },
                                                       child: Container(
                                                         width: 25,
@@ -429,6 +436,34 @@ class _PriceLabelState extends ConsumerState<PriceLabel> {
     await Future.delayed(const Duration(seconds: 1));
     for (int i = 0; i < widget.prices.length; i++) {
       total = total + (widget.prices[i] * widget.quantity[i]);
+    }
+
+    var brgy = widget.address.toString().split("%")[1];
+
+    if (brgy == "San Isidro") {
+      total += 200;
+    } else if (brgy == "San Jose") {
+      total += 400;
+    } else if (brgy == "Burgos") {
+      total += 400;
+    } else if (brgy == "Manggahan") {
+      total += 400;
+    } else if (brgy == "Rosario") {
+      total += 350;
+    } else if (brgy == "Balite") {
+      total += 350;
+    } else if (brgy == "Geronimo") {
+      total += 350;
+    } else if (brgy == "San Rafael") {
+      total += 300;
+    } else if (brgy == "Mascap") {
+      total += 200;
+    } else if (brgy == "Macabud") {
+      total += 350;
+    } else if (brgy == "Puray") {
+      total += 250;
+    } else {
+      total += 0;
     }
     return total;
   }

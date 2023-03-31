@@ -378,7 +378,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                 color: Colors.grey.withOpacity(0.8),
                                 child: Center(
                                   child: Text(
-                                    "Sold Out",
+                                    "Out of Stock",
                                     style: GoogleFonts.poppins(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,

@@ -201,6 +201,7 @@ class _AHomeViewState extends ConsumerState<AHomeView> {
                                             description: searchResult[index].data()["Description"],
                                             id: searchResult[index].id,
                                             category: searchResult[index].data()["Category"],
+                                            mini: searchResult[index].data()["Minimum"],
                                           );
                                         });
                                       },
@@ -319,6 +320,8 @@ class _AHomeViewState extends ConsumerState<AHomeView> {
                                             description: data.docs[index].data()["Description"],
                                             id: data.docs[index].id,
                                             category: data.docs[index].data()["Category"],
+                                            mini:  data.docs[index].data()["Minimum"],
+
                                           );
                                         });
                                       },

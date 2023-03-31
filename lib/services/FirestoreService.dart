@@ -9,7 +9,7 @@ class FirestoreService{
       "Name": "No Name",
       "Image": "",
       "Contact":"",
-      "Address": "No Data%NCR%Caloocan",
+      "Address": "No Data%San Isidro%Caloocan",
       "Basket" : [],
       "Orders" : [],
 
@@ -145,6 +145,16 @@ class FirestoreService{
   void saveRating(rating){
     FirebaseFirestore.instance.collection("Ratings").doc().set({
       "Rating": rating,
+    });
+  }
+
+  Future<void> restoreStock(id, quantity) async {
+
+    final doc = await FirebaseFirestore.instance.collection("Items").doc(id).get();
+    var stocks = doc.data()!["Stocks"];
+
+    FirebaseFirestore.instance.collection("Items").doc(id).update({
+      "Stocks": (int.parse(stocks) + int.parse(quantity)).toString(),
     });
   }
 }
