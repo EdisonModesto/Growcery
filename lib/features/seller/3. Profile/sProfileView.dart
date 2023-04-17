@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:growcery/features/admin/3.%20Profile/aSettingsSheet.dart';
+import 'package:growcery/features/seller/3.%20Profile/aSettingsSheet.dart';
+
 
 import '../../../services/AuthService.dart';
 import '../../ViewModels/AuthViewModels.dart';
 import 'RatingProvider.dart';
 
-class AProfileView extends ConsumerStatefulWidget {
-  const AProfileView({
+class SProfileView extends ConsumerStatefulWidget {
+  const SProfileView({
     Key? key,
   }) : super(key: key);
 
@@ -18,7 +19,7 @@ class AProfileView extends ConsumerStatefulWidget {
   ConsumerState createState() => _AProfileViewState();
 }
 
-class _AProfileViewState extends ConsumerState<AProfileView> {
+class _AProfileViewState extends ConsumerState<SProfileView> {
   @override
   Widget build(BuildContext context) {
     var authState = ref.watch(authStateProvider);
@@ -103,6 +104,7 @@ class _AProfileViewState extends ConsumerState<AProfileView> {
                           data.docs.forEach((element) {
                             totalRating += element.data()["Rating"];
                           });
+
                           totalRating = totalRating / data.docs.length;
 
                           return Center(

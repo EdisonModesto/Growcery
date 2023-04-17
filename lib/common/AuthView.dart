@@ -21,6 +21,7 @@ class _AuthDialogState extends ConsumerState<AuthView> {
   var key = GlobalKey<FormState>();
   var key2 = GlobalKey<FormState>();
 
+  String _selectedOption = "";
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -133,7 +134,6 @@ class _AuthDialogState extends ConsumerState<AuthView> {
                                     onPressed: () {
                                       if (key.currentState!.validate()){
                                         AuthService().signIn(emailController.text, passwordController.text, context);
-                                        context.go('/user');
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(
@@ -212,12 +212,40 @@ class _AuthDialogState extends ConsumerState<AuthView> {
                                       ),
                                     ),
                                   ),
+                                  const SizedBox(height: 15,),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: RadioListTile(
+                                          title: Text('Buyer'),
+                                          value: 'Buyer',
+                                          groupValue: _selectedOption,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _selectedOption = value!;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: RadioListTile(
+                                          title: Text('Seller'),
+                                          value: 'Seller',
+                                          groupValue: _selectedOption,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _selectedOption = value!;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                   const SizedBox(height: 25,),
                                   ElevatedButton(
                                     onPressed: () async {
                                       if (key2.currentState!.validate()){
-                                        AuthService().signUp(emailController.text, passwordController.text,context);
-                                        context.go('/user');
+                                        AuthService().signUp(emailController.text, passwordController.text,_selectedOption , context);
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(

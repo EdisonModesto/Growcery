@@ -12,10 +12,11 @@ class PaymentDialog extends ConsumerWidget {
     @required this.name,
     @required this.contact,
     @required this.address,
+    @required this.sellerID,
     Key? key,
   }) : super(key: key);
 
-  final items, name, contact, address;
+  final items, name, contact, address, sellerID;
 
   Widget build(BuildContext context, WidgetRef ref) {
     return Center(
@@ -93,7 +94,7 @@ class PaymentDialog extends ConsumerWidget {
                       Expanded(
                         child: TextButton(
                           onPressed: () {
-                            FirestoreService().createOrder(items, name, contact, address);
+                            FirestoreService().createOrder(items, name, contact, address, sellerID);
 
                             Fluttertoast.showToast(msg: "Order placed successfully");
                             Navigator.pop(context);

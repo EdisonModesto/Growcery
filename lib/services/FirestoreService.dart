@@ -4,15 +4,14 @@ import 'package:growcery/services/AuthService.dart';
 
 class FirestoreService{
 
-  void createUser(){
+  void createUser(userType){
     FirebaseFirestore.instance.collection("Users").doc(AuthService().getID()).set({
       "Name": "No Name",
       "Image": "",
       "Contact":"",
       "Address": "No Data%San Isidro%Caloocan",
       "Basket" : [],
-      "Orders" : [],
-
+      "userType" : userType
     });
   }
 
@@ -37,9 +36,25 @@ class FirestoreService{
     return exist;
   }
 
-  void addItem(url, name, price, stocks, description, category, minimum){
+  Future<String> checkUserType(id) async {
+    var doc = await FirebaseFirestore.instance.collection("Users").doc(id).get();
+    if(doc["userType"] == "Buyer") {
+      print("Buyer");
+      return "Buyer";
+    } else if(doc["userType"] == "Seller"){
+      print("Seller");
+      return "Seller";
+    } else if(doc["userType"] == "Admin"){
+      print("Admin");
+      return "Admin";
+    }
+    return "Unknown";
+  }
+
+  void addItem(url, name, price, stocks, description, category, minimum, sellerID){
     FirebaseFirestore.instance.collection("Items").doc().set({
       "Url": url,
+      "SellerID": sellerID,
       "Name": name,
       "Price": price,
       "Stocks": stocks,
@@ -49,9 +64,10 @@ class FirestoreService{
     });
   }
 
-  void updateItem(url, name, price, stocks, description,id, category, minimum){
+  void updateItem(url, name, price, stocks, description,id, category, minimum, sellerID){
     FirebaseFirestore.instance.collection("Items").doc(id).update({
       "Url": url,
+      "SellerID": sellerID,
       "Name": name,
       "Price": price,
       "Stocks": stocks,
@@ -60,7 +76,6 @@ class FirestoreService{
       "Minimum": minimum,
     });
   }
-
 
   void removeItem(id){
     FirebaseFirestore.instance.collection("Items").doc(id).delete();
@@ -106,7 +121,7 @@ class FirestoreService{
     });
   }
 
-  Future<void> createOrder(items, name, contact, address) async {
+  Future<void> createOrder(items, name, contact, address, sellerID) async {
 
     FirebaseFirestore.instance.collection("Users").doc(AuthService().getID()).update({
       "Basket": FieldValue.arrayRemove(items),
@@ -119,6 +134,7 @@ class FirestoreService{
       "Name": name,
       "Contact": contact,
       "Address": address,
+      "SellerID": sellerID,
       "Date": DateTime.now().toString(),
       "Date Completed": "No Record",
     });
@@ -138,7 +154,7 @@ class FirestoreService{
     FirebaseFirestore.instance.collection("Orders").doc(id).update({
       "Status": status,
       "Date": DateTime.now().toString(),
-      "Date Completed": status == "2" ? DateTime.now().toString() : "",
+      "Date Completed": status == "3" ? DateTime.now().toString() : "",
     });
   }
 

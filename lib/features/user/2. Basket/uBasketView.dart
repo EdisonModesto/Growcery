@@ -26,6 +26,8 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
   List<int> itemQuantity = List.filled(100, 1);
   List<double> itemPrice = List.filled(100, 0);
   List<bool> checkValues = List.filled(100, false);
+
+
   List<int> selectedQuantity = [];
   List<double> selectedPrice = [];
   List<String> selecteditems = [];
@@ -77,23 +79,35 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                           ),
                           TextButton(
                             onPressed: () {
-                              selecteditems.clear();
-                              selectedQuantity.clear();
-                              selectedPrice.clear();
-                              for (int index = 0; index < data.data()!["Basket"].length; index++) {
-                                checkValues[index] = true;
-                                selecteditems.add(data
-                                    .data()!["Basket"][index]
-                                    .toString());
-                                selectedQuantity.add(
-                                    itemQuantity[index]);
-                                selectedPrice.add(
-                                    itemPrice[index]);
+                              if(selecteditems.length == 0) {
+                                selecteditems.clear();
+                                selectedQuantity.clear();
+                                selectedPrice.clear();
+                                for (int index = 0; index <
+                                    data.data()!["Basket"].length; index++) {
+                                  checkValues[index] = true;
+                                  selecteditems.add(data
+                                      .data()!["Basket"][index]
+                                      .toString());
+                                  selectedQuantity.add(
+                                      itemQuantity[index]);
+                                  selectedPrice.add(
+                                      itemPrice[index]);
+                                }
+                                setState(() {});
+                              } else {
+                                selecteditems.clear();
+                                selectedQuantity.clear();
+                                selectedPrice.clear();
+                                for (int index = 0; index <
+                                    data.data()!["Basket"].length; index++) {
+                                  checkValues[index] = false;
+                                }
+                                setState(() {});
                               }
-                              setState(() {});
                             },
                             child: Text(
-                              "Select All",
+                              selecteditems.length == 0 ? "Select All" : "Unselect All",
                               style: GoogleFonts.poppins(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -117,7 +131,6 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                   .split(",")[0])
                                   .snapshots(),
                               builder: (context, snapshot) {
-
 
                                 if (snapshot.hasData) {
                                   if(snapshot.data!.exists == false){
@@ -402,6 +415,8 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
 
 
 
+
+
 class PriceLabel extends ConsumerStatefulWidget {
   const PriceLabel({
     required this.prices,
@@ -468,6 +483,8 @@ class _PriceLabelState extends ConsumerState<PriceLabel> {
     return total;
   }
 
+  bool isSame = true;
+
   @override
   void initState() {
 
@@ -481,22 +498,32 @@ class _PriceLabelState extends ConsumerState<PriceLabel> {
         Expanded(
           child: InkWell(
             onTap: () {
-              if (widget.items.isNotEmpty && widget.name != "" && widget.contact != "" && widget.address.toString().split("%")[0] != "No Data") {
+              var sellerID = widget.items[0].toString().split(",")[0];
+
+
+              for (int i = 0; i < widget.items.length; i++) {
+                if(widget.items[i].toString().split(",")[0] != sellerID ){
+                  isSame = false;
+                  Fluttertoast.showToast(msg: "You can only checkout items from one seller per batch");
+                  return;
+                }
+              }
+
+              if (widget.items.isNotEmpty && widget.name != "" && widget.contact != "" && widget.address.toString().split("%")[0] != "No Data" && isSame) {
                 showDialog(context: context, builder: (builder){
                   return AlertDialog(
-title: const Text("Payment Method"),
+                    title: const Text("Payment Method"),
                     content: const Text("Please select your payment method"),
                     actions: [
                       TextButton(onPressed: (){
-                        FirestoreService().createOrder(widget.items, widget.name, widget.contact, widget.address);
+                        FirestoreService().createOrder(widget.items, widget.name, widget.contact, widget.address, sellerID);
                         Fluttertoast.showToast(msg: "Order has been placed");
                         Navigator.pop(builder);
                       }, child: const Text("COD")),
                       TextButton(onPressed: (){
                         showDialog(context: context, builder: (builder){
-                          return PaymentDialog(items: widget.items, name: widget.name, contact: widget.contact, address: widget.address);
+                          return PaymentDialog(items: widget.items, name: widget.name, contact: widget.contact, address: widget.address, sellerID: sellerID,);
                         });
-                        Navigator.pop(builder);
                       }, child: const Text("Gcash")),
                     ],
                   );

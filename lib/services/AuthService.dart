@@ -18,6 +18,7 @@ class AuthService{
           email: email,
           password: password
       );
+      context.go('/');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         Fluttertoast.showToast(
@@ -45,13 +46,14 @@ class AuthService{
     }
   }
 
-  Future<void> signUp(email, password,BuildContext context) async {
+  Future<void> signUp(email, password, userType, BuildContext context) async {
     try {
       final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      FirestoreService().createUser();
+      FirestoreService().createUser(userType);
+      context.go('/');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         Fluttertoast.showToast(

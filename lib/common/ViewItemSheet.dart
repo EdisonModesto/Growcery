@@ -61,7 +61,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    widget.name,
+                    "${widget.name} - MINIMUM OF ${widget.min}KG",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.poppins(

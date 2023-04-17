@@ -2,17 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:growcery/features/admin/1.%20Home/aHomeView.dart';
-import 'package:growcery/features/admin/2.%20Orders/aOrderView.dart';
-import 'package:growcery/features/admin/3.%20Profile/aProfileView.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 import '../../common/AuthRequiredDialog.dart';
 import '../../constants/AppColors.dart';
 import '../ViewModels/AuthViewModels.dart';
+import '1. Home/sHomeView.dart';
+import '2. Orders/sOrderView.dart';
+import '3. Profile/sProfileView.dart';
 
-class AdminNav extends ConsumerStatefulWidget {
-  const AdminNav({
+class SellerNav extends ConsumerStatefulWidget {
+  const SellerNav({
     Key? key,
   }) : super(key: key);
 
@@ -20,7 +20,7 @@ class AdminNav extends ConsumerStatefulWidget {
   ConsumerState createState() => _AdminNavState();
 }
 
-class _AdminNavState extends ConsumerState<AdminNav> {
+class _AdminNavState extends ConsumerState<SellerNav> {
   final PersistentTabController _controller = PersistentTabController(initialIndex: 0);
 
 
@@ -50,9 +50,9 @@ class _AdminNavState extends ConsumerState<AdminNav> {
 
   List<Widget> _buildScreens() {
     return [
-      const AHomeView(),
-      const AOrderView(),
-      const AProfileView()
+      const SHomeView(),
+      const SOrderView(),
+      const SProfileView()
     ];
   }
 

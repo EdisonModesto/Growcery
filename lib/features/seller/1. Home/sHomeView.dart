@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:growcery/features/admin/1.%20Home/editItemSheet.dart';
 import 'package:growcery/services/FirestoreService.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../../common/ViewItemAdmin.dart';
 import '../../../common/ViewItemSheet.dart';
 import '../../../constants/AppColors.dart';
+import '../../../services/AuthService.dart';
 import '../../ViewModels/ItemViewModel.dart';
 import 'addItemSheet.dart';
+import 'editItemSheet.dart';
 
-class AHomeView extends ConsumerStatefulWidget {
-  const AHomeView({
+class SHomeView extends ConsumerStatefulWidget {
+  const SHomeView({
     Key? key,
   }) : super(key: key);
 
@@ -20,7 +21,7 @@ class AHomeView extends ConsumerStatefulWidget {
   ConsumerState createState() => _AHomeViewState();
 }
 
-class _AHomeViewState extends ConsumerState<AHomeView> {
+class _AHomeViewState extends ConsumerState<SHomeView> {
   TextEditingController searchCtrl = TextEditingController();
 
 
@@ -35,6 +36,7 @@ class _AHomeViewState extends ConsumerState<AHomeView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
             Row(
               children: [
                 Text(
@@ -105,7 +107,8 @@ class _AHomeViewState extends ConsumerState<AHomeView> {
             Expanded(
               child: feed.when(
                   data: (data){
-                    var searchResult = data.docs.where((element) => element.data()["Name"].toString().toLowerCase().contains(searchCtrl.text.toLowerCase())).toList();
+                    var myData = data.docs.where((element) => AuthService().getID() == element.data()["SellerID"]).toList();
+                    var searchResult = data.docs.where((element) => element.data()["Name"].toString().toLowerCase().contains(searchCtrl.text.toLowerCase()) && AuthService().getID() == element.data()["SellerID"]).toList();
                     return searchCtrl.text != "" ?
                     GridView.count(
                         crossAxisCount: 2,
@@ -231,7 +234,7 @@ class _AHomeViewState extends ConsumerState<AHomeView> {
                         crossAxisSpacing: 20,
                         mainAxisSpacing: 20,
                         childAspectRatio: 0.8,
-                        children: List.generate(data.docs.length, (index){
+                        children: List.generate(myData.length, (index){
                           return Stack(
                             children: [
                               InkWell(
@@ -245,12 +248,12 @@ class _AHomeViewState extends ConsumerState<AHomeView> {
                                     context: context,
                                     isScrollControlled: true,
                                     builder: (context) => ViewItemAdmin(
-                                      name: data.docs[index].data()["Name"],
-                                      price: data.docs[index].data()["Price"],
-                                      stock: data.docs[index].data()["Stocks"],
-                                      image: data.docs[index].data()["Url"],
-                                      description: data.docs[index].data()["Description"],
-                                      id: data.docs[index].id,
+                                      name: myData[index].data()["Name"],
+                                      price: myData[index].data()["Price"],
+                                      stock: myData[index].data()["Stocks"],
+                                      image:myData[index].data()["Url"],
+                                      description: myData[index].data()["Description"],
+                                      id: myData[index].id,
                                     ),
                                   );
                                 },
@@ -265,7 +268,7 @@ class _AHomeViewState extends ConsumerState<AHomeView> {
                                       children: [
                                         Expanded(
                                           child: Image.network(
-                                            data.docs[index].data()["Url"],
+                                            myData[index].data()["Url"],
                                             width: double.infinity,
                                             fit: BoxFit.fitWidth,
                                           ),
@@ -277,7 +280,7 @@ class _AHomeViewState extends ConsumerState<AHomeView> {
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  data.docs[index].data()["Name"],
+                                                  myData[index].data()["Name"],
                                                   maxLines: 1,
                                                   overflow: TextOverflow.ellipsis,
                                                   style: GoogleFonts.poppins(
@@ -287,7 +290,7 @@ class _AHomeViewState extends ConsumerState<AHomeView> {
                                                 ),
                                                 const SizedBox(height: 5),
                                                 Text(
-                                                  "Stocks: ${data.docs[index].data()["Stocks"]}KG",
+                                                  "Stocks: ${myData[index].data()["Stocks"]}KG",
                                                   maxLines: 1,
                                                   overflow: TextOverflow.ellipsis,
                                                   style: GoogleFonts.poppins(
@@ -313,14 +316,14 @@ class _AHomeViewState extends ConsumerState<AHomeView> {
                                       onPressed: (){
                                         showMaterialModalBottomSheet(context: context, builder: (builder){
                                           return EditItemSheet(
-                                            url: data.docs[index].data()["Url"],
-                                            name: data.docs[index].data()["Name"],
-                                            price: data.docs[index].data()["Price"],
-                                            quantity: data.docs[index].data()["Stocks"],
-                                            description: data.docs[index].data()["Description"],
-                                            id: data.docs[index].id,
-                                            category: data.docs[index].data()["Category"],
-                                            mini:  data.docs[index].data()["Minimum"],
+                                            url:myData[index].data()["Url"],
+                                            name: myData[index].data()["Name"],
+                                            price: myData[index].data()["Price"],
+                                            quantity: myData[index].data()["Stocks"],
+                                            description: myData[index].data()["Description"],
+                                            id: myData[index].id,
+                                            category: myData[index].data()["Category"],
+                                            mini:  myData[index].data()["Minimum"],
 
                                           );
                                         });

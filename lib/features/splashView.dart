@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:growcery/constants/AppColors.dart';
+import 'package:growcery/services/AuthService.dart';
+import 'package:growcery/services/FirestoreService.dart';
 
 
 class SplashView extends ConsumerStatefulWidget {
@@ -17,8 +19,17 @@ class SplashView extends ConsumerStatefulWidget {
 class _SplashViewState extends ConsumerState<SplashView> {
 
   void startTimer(){
-    Future.delayed(const Duration(seconds: 3), () {
-      context.go('/user');
+    Future.delayed(const Duration(seconds: 3), () async {
+      var userType = await FirestoreService().checkUserType(AuthService().getID());
+      if(userType == "Buyer"){
+        context.go('/user');
+      } else if(userType == "Seller"){
+        context.go('/seller');
+      } else if(userType == "Admin"){
+        context.go('/seller');
+      } else {
+        context.go('/auth');
+      }
     });
   }
 

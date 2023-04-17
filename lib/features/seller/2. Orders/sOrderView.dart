@@ -13,8 +13,8 @@ import '../../ViewModels/AuthViewModels.dart';
 import '../../ViewModels/OrderViewModel.dart';
 
 
-class AOrderView extends ConsumerStatefulWidget {
-  const AOrderView({
+class SOrderView extends ConsumerStatefulWidget {
+  const SOrderView({
     Key? key,
   }) : super(key: key);
 
@@ -22,7 +22,7 @@ class AOrderView extends ConsumerStatefulWidget {
   ConsumerState createState() => _AOrderViewState();
 }
 
-class _AOrderViewState extends ConsumerState<AOrderView> {
+class _AOrderViewState extends ConsumerState<SOrderView> {
 
   Future<double> calculateTotal(items) async{
     var total = 0.0;
