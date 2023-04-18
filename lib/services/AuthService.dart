@@ -46,13 +46,13 @@ class AuthService{
     }
   }
 
-  Future<void> signUp(email, password, userType, BuildContext context) async {
+  Future<void> signUp(email, password, userType, BuildContext context, name, contact, gcash, address) async {
     try {
       final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      FirestoreService().createUser(userType);
+      FirestoreService().createUser(userType, name, contact, gcash, address);
       context.go('/');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

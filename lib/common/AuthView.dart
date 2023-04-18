@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -5,6 +6,11 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:growcery/services/AuthService.dart';
 import 'package:growcery/services/FirestoreService.dart';
+import 'package:philippines/city.dart';
+import 'package:philippines/philippines.dart';
+import 'package:philippines/province.dart';
+import 'package:philippines/region.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../constants/AppColors.dart';
 
@@ -20,10 +26,66 @@ class AuthView extends ConsumerStatefulWidget {
 class _AuthDialogState extends ConsumerState<AuthView> {
   var key = GlobalKey<FormState>();
   var key2 = GlobalKey<FormState>();
+  late WebViewController controller;
 
   String _selectedOption = "";
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController nameCtrl = TextEditingController();
+  TextEditingController contactCtrl = TextEditingController();
+  TextEditingController streetCtrl = TextEditingController();
+  TextEditingController cityCtrl = TextEditingController();
+  TextEditingController brgyCtrl = TextEditingController();
+  TextEditingController gcashCtrl = TextEditingController();
+
+  var reg = "San Isidro";
+  var url = "";
+
+  List<City> cities = getCities();
+  List<Province> provinces = getProvinces();
+  List<Region> regions = getRegions();
+  var obscure = true;
+  bool ppc = false;
+
+  List<String> brgy = [
+    "San Isidro",
+    "San Jose",
+    "Burgos",
+    "Manggahan",
+    "Rosario",
+    "Balite",
+    "Geronimo",
+    "San Rafael",
+    "Mascap",
+    "Macabud",
+    "Puray"
+  ];
+
+
+  @override
+  void initState() {
+    controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0x00000000))
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            // Update loading bar.
+          },
+          onPageStarted: (String url) {},
+          onPageFinished: (String url) {},
+          onWebResourceError: (WebResourceError error) {},
+          onNavigationRequest: (NavigationRequest request) {
+            if (request.url.startsWith('https://www.youtube.com/')) {
+              return NavigationDecision.prevent;
+            }
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse('https://doc-hosting.flycricket.io/growcery-terms-of-use/a2197822-7196-4fa8-b3ba-d3c7ddb791a4/terms'));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,11 +176,23 @@ class _AuthDialogState extends ConsumerState<AuthView> {
                                     height: 50,
                                     child: TextFormField(
                                       controller: passwordController,
+                                      obscureText: obscure,
                                       decoration: InputDecoration(
                                         labelText: "Password",
                                         labelStyle: GoogleFonts.poppins(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w400,
+                                        ),
+                                        suffixIcon: IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              obscure = !obscure;
+                                            });
+                                          },
+                                          icon: Icon(
+                                            obscure ? Icons.visibility_off : Icons.visibility,
+                                            color: Colors.grey,
+                                          ),
                                         ),
                                         border: OutlineInputBorder(
                                           borderSide: const BorderSide(
@@ -170,97 +244,365 @@ class _AuthDialogState extends ConsumerState<AuthView> {
                             ),
                             Form(
                               key: key2,
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    height: 50,
-                                    child: TextFormField(
-                                      controller: emailController,
-                                      decoration: InputDecoration(
-                                        labelText: "Email",
-                                        labelStyle: GoogleFonts.poppins(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Colors.grey,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 50,
+                                      child: TextFormField(
+                                        controller: emailController,
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return "";
+                                          }
+                                          return null;
+                                        },
+                                        decoration: InputDecoration(
+                                          labelText: "Email",
+                                          errorStyle: TextStyle(height: 0),
+                                          labelStyle: GoogleFonts.poppins(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400,
                                           ),
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),
+                                          border: OutlineInputBorder(
+                                            borderSide: const BorderSide(
+                                              color: Colors.grey,
+                                            ),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
 
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 15,),
-                                  SizedBox(
-                                    height: 50,
-                                    child: TextFormField(
-                                      controller: passwordController,
-                                      decoration: InputDecoration(
-                                        labelText: "Password",
-                                        labelStyle: GoogleFonts.poppins(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Colors.grey,
+                                    const SizedBox(height: 10,),
+                                    SizedBox(
+                                      height: 50,
+                                      child: TextFormField(
+                                        controller: passwordController,
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return "";
+                                          }
+                                          return null;
+                                        },
+                                        obscureText: obscure,
+                                        decoration: InputDecoration(
+                                          labelText: "Password",
+                                          errorStyle: TextStyle(height: 0),
+
+                                          labelStyle: GoogleFonts.poppins(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400,
                                           ),
-                                          borderRadius: BorderRadius.circular(10),
+                                          suffixIcon: IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                obscure = !obscure;
+                                              });
+                                            },
+                                            icon: Icon(
+                                              obscure ? Icons.visibility_off : Icons.visibility,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          border: OutlineInputBorder(
+                                            borderSide: const BorderSide(
+                                              color: Colors.grey,
+                                            ),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 15,),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: RadioListTile(
-                                          title: Text('Buyer'),
-                                          value: 'Buyer',
-                                          groupValue: _selectedOption,
+                                    const SizedBox(height: 10,),
+                                    SizedBox(
+                                      height: 50,
+                                      child: TextFormField(
+                                        controller: nameCtrl,
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return "";
+                                          }
+                                          return null;
+                                        },
+                                        decoration: InputDecoration(
+                                          labelText: "Name",
+                                          errorStyle: TextStyle(height: 0),
+
+                                          labelStyle: GoogleFonts.poppins(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          border: OutlineInputBorder(
+                                            borderSide: const BorderSide(
+                                              color: Colors.grey,
+                                            ),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10,),
+                                    SizedBox(
+                                      height: 50,
+                                      child: TextFormField(
+                                        controller: contactCtrl,
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return "";
+                                          }
+                                          return null;
+                                        },
+                                        decoration: InputDecoration(
+                                          labelText: "Contact",
+                                          errorStyle: TextStyle(height: 0),
+
+                                          labelStyle: GoogleFonts.poppins(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          border: OutlineInputBorder(
+                                            borderSide: const BorderSide(
+                                              color: Colors.grey,
+                                            ),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10,),
+                                    SizedBox(
+                                      height: 50,
+                                      child: TextFormField(
+                                        controller: gcashCtrl,
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return "";
+                                          }
+                                          return null;
+                                        },
+                                        decoration: InputDecoration(
+                                          labelText: "GCash",
+                                          errorStyle: TextStyle(height: 0),
+
+                                          labelStyle: GoogleFonts.poppins(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          border: OutlineInputBorder(
+                                            borderSide: const BorderSide(
+                                              color: Colors.grey,
+                                            ),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10,),
+                                    SizedBox(
+                                      height: 50,
+                                      child: TextFormField(
+                                        controller: streetCtrl,
+                                        style: const TextStyle(
+                                            fontSize: 14
+                                        ),
+                                        decoration: const InputDecoration(
+                                          errorStyle: TextStyle(height: 0),
+                                          label: Text("House Number & Street Name"),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(8),
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(8),
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: Colors.red,
+                                              width: 6.0,
+                                            ),
+                                          ),
+                                        ),
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return "";
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      children: [
+                                        const Text(
+                                          "Barangay: ",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                        DropdownButton(
+                                          value: reg,
+                                          items: List.generate(brgy.length, (index){
+                                            return DropdownMenuItem(
+                                              value: brgy[index],
+                                              child: Text(
+                                                  brgy[index]
+                                              ),
+                                            );
+                                          }),
                                           onChanged: (value) {
                                             setState(() {
-                                              _selectedOption = value!;
+                                              brgyCtrl.text = value!;
+                                              reg = value;
+                                              //goal = value.toString();
                                             });
                                           },
                                         ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    SizedBox(
+                                      height: 50,
+                                      child: TextFormField(
+                                        controller: cityCtrl,
+                                        style: const TextStyle(
+                                            fontSize: 14
+                                        ),
+                                        decoration: const InputDecoration(
+                                          errorStyle: TextStyle(height: 0),
+                                          label: Text("City"),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(8),
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(8),
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: Colors.red,
+                                              width: 6.0,
+                                            ),
+                                          ),
+                                        ),
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return "";
+                                          }
+                                          return null;
+                                        },
                                       ),
-                                      Expanded(
-                                        child: RadioListTile(
-                                          title: Text('Seller'),
-                                          value: 'Seller',
-                                          groupValue: _selectedOption,
-                                          onChanged: (value) {
+                                    ),
+                                    Row(
+                                      children: [
+                                        Checkbox(
+                                          value: ppc,
+                                          onChanged: (val){
                                             setState(() {
-                                              _selectedOption = value!;
+                                              ppc = val!;
                                             });
                                           },
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 25,),
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      if (key2.currentState!.validate()){
-                                        AuthService().signUp(emailController.text, passwordController.text,_selectedOption , context);
-                                      }
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      fixedSize: Size(MediaQuery.of(context).size.width, 50),
-                                      elevation: 0,
-                                      backgroundColor: AppColors().primaryColor,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                        RichText(
+                                          text: TextSpan(
+                                              text: "I agree to the  ",
+                                              style: GoogleFonts.poppins(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.black
+                                              ),
+                                              children: [
+                                                TextSpan(
+                                                  text: "Privacy Policy",
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: AppColors().primaryColor,
+                                                  ),
+                                                  recognizer: TapGestureRecognizer()
+                                                    ..onTap = () {
+                                                      Navigator.push(context, MaterialPageRoute(builder: (context){
+                                                        return Center(
+                                                          child: Card(
+                                                            child: SizedBox(
+                                                              child: WebViewWidget(controller: controller),
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }));
+                                                    },
+                                                ),
+                                              ]
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    child: const Text("Signup"),
-                                  ),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: RadioListTile(
+                                            title: Text('Buyer'),
+                                            value: 'Buyer',
+                                            groupValue: _selectedOption,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                _selectedOption = value!;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: RadioListTile(
+                                            title: Text('Seller'),
+                                            value: 'Seller',
+                                            groupValue: _selectedOption,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                _selectedOption = value!;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        if (key2.currentState!.validate() && ppc){
+                                          AuthService().signUp(emailController.text, passwordController.text,_selectedOption , context, nameCtrl.text, contactCtrl.text, gcashCtrl.text, "${streetCtrl.text}%${brgyCtrl.text}%${cityCtrl.text}");
+                                        }
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        fixedSize: Size(MediaQuery.of(context).size.width, 50),
+                                        elevation: 0,
+                                        backgroundColor: AppColors().primaryColor,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                      ),
+                                      child: const Text("Signup"),
+                                    ),
 
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ],

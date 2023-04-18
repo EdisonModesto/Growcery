@@ -4,21 +4,23 @@ import 'package:growcery/services/AuthService.dart';
 
 class FirestoreService{
 
-  void createUser(userType){
+  void createUser(userType, name, contact, gcash, address){
     FirebaseFirestore.instance.collection("Users").doc(AuthService().getID()).set({
-      "Name": "No Name",
+      "Name": name,
       "Image": "",
-      "Contact":"",
-      "Address": "No Data%San Isidro%Caloocan",
+      "GCash": gcash,
+      "Contact":contact,
+      "Address": address,
       "Basket" : [],
       "userType" : userType
     });
   }
 
-  void updateUser(name, address, image, contact){
+  void updateUser(name, address, image, contact, gcash){
     FirebaseFirestore.instance.collection("Users").doc(AuthService().getID()).update({
       "Name": name,
       "Image": image,
+      "GCash": gcash,
       "Contact": contact,
       "Address": address,
     });

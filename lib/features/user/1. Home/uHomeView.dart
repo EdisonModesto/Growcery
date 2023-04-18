@@ -294,6 +294,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                       image: searchResult[index].data()['Url'],
                                       id: searchResult[index].id,
                                       min: searchResult[index].data()['Minimum'],
+                                      sellerID: searchResult[index].data()['SellerID'],
                                     ),
                                   );
                                 },
@@ -378,7 +379,8 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                       stock: data.docs[index].data()['Stocks'],
                                       image: data.docs[index].data()['Url'],
                                       id: data.docs[index].id,
-                                      min: searchResult[index].data()['Minimum'],
+                                      min: data.docs[index].data()['Minimum'],
+                                      sellerID: data.docs[index].data()['SellerID'],
                                     ),
                                   );
                                 },

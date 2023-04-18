@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -20,15 +21,20 @@ class _SplashViewState extends ConsumerState<SplashView> {
 
   void startTimer(){
     Future.delayed(const Duration(seconds: 3), () async {
-      var userType = await FirestoreService().checkUserType(AuthService().getID());
-      if(userType == "Buyer"){
-        context.go('/user');
-      } else if(userType == "Seller"){
-        context.go('/seller');
-      } else if(userType == "Admin"){
-        context.go('/seller');
+      if(FirebaseAuth.instance.currentUser?.uid != null){
+        var userType = await FirestoreService().checkUserType(AuthService().getID());
+        if(userType == "Buyer"){
+          context.go('/user');
+        } else if(userType == "Seller"){
+          context.go('/seller');
+        } else if(userType == "Admin"){
+          context.go('/seller');
+        } else {
+          context.go('/auth');
+        }
       } else {
         context.go('/auth');
+
       }
     });
   }
