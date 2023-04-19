@@ -137,7 +137,7 @@ class FirestoreService{
       "Contact": contact,
       "Address": address,
       "SellerID": sellerID,
-      "Date": DateTime.now().toString(),
+      "Date": DateTime.now(),
       "Date Completed": "No Record",
     });
     
@@ -160,9 +160,11 @@ class FirestoreService{
     });
   }
 
-  void saveRating(rating){
-    FirebaseFirestore.instance.collection("Ratings").doc().set({
+  void saveRating(rating, sellerID, marketName){
+
+    FirebaseFirestore.instance.collection("Users").doc(sellerID).collection("Ratings").doc().set({
       "Rating": rating,
+      "MarketName": marketName,
     });
   }
 

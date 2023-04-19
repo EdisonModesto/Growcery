@@ -19,6 +19,7 @@ import '../../../common/ViewItemSheet.dart';
 import "../../../services/AuthService.dart";
 import "../../ViewModels/AuthViewModels.dart";
 import "../../ViewModels/UserViewModel.dart";
+import "RatingSheet.dart";
 
 class UProfileView extends ConsumerStatefulWidget {
   const UProfileView({
@@ -262,26 +263,18 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                               orders.when(
                                 data: (data1) {
                                   var userID = AuthService().getID();
-                                  var toPay = data1.docs.where((element) =>
-                                  element.data()["Status"] == "0" &&
-                                      element.data()["User"] == userID)
-                                      .toList();
-                                  var inProgress = data1.docs.where((element) =>
-                                  element.data()["Status"] == "1" &&
-                                      element.data()["User"] == userID)
-                                      .toList();
-                                  var toRecieve = data1.docs.where((element) =>
-                                  element.data()["Status"] == "2" &&
-                                      element.data()["User"] == userID)
-                                      .toList();
-                                  var complete = data1.docs.where((element) =>
-                                  element.data()["Status"] == "3" &&
-                                      element.data()["User"] == userID)
-                                      .toList();
-                                  var cancelled = data1.docs.where((element) =>
-                                  element.data()["Status"] == "4" &&
-                                      element.data()["User"] == userID)
-                                      .toList();
+                                  var toPay = data1.docs.where((element) => element.data()["Status"] == "0" && element.data()["User"] == userID).toList();
+                                  var inProgress = data1.docs.where((element) => element.data()["Status"] == "1" && element.data()["User"] == userID).toList();
+                                  var toRecieve = data1.docs.where((element) => element.data()["Status"] == "2" && element.data()["User"] == userID).toList();
+                                  var complete = data1.docs.where((element) => element.data()["Status"] == "3" && element.data()["User"] == userID).toList();
+                                  var cancelled = data1.docs.where((element) => element.data()["Status"] == "4" && element.data()["User"] == userID).toList();
+
+                                  toPay.sort((a, b) => a.data()["Date"].compareTo(b.data()["Date"]));
+                                  inProgress.sort(( a, b) => a.data()["Date"].compareTo(b.data()["Date"]));
+                                  toRecieve.sort((a, b) => a.data()["Date"].compareTo(b.data()["Date"]));
+                                  complete.sort((a, b) => a.data()["Date"].compareTo(b.data()["Date"]));
+                                  cancelled.sort((a, b) => a.data()["Date"].compareTo(b.data()["Date"]));
+
                                   return TabBarView(
                                     children: [
                                       ListView.separated(
@@ -399,6 +392,14 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                               ],
                                                             ),
                                                           ),
+                                                          IconButton(
+                                                            onPressed: (){
+                                                              FirestoreService().updateOrderStatus(toPay[index].id, "4");
+                                                            },
+                                                            icon: Icon(
+                                                              Icons.cancel_outlined
+                                                            )
+                                                          )
                                                         ],
                                                       ),
                                                     ),
@@ -660,14 +661,24 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
 
                                                       IconButton(
                                                         onPressed: () {
-                                                          FirestoreService()
-                                                              .updateOrderStatus(
-                                                              toPay[index].id,
-                                                              "1");
+                                                          print(toRecieve[index]);
+                                                          showMaterialModalBottomSheet(
+                                                              context: context,
+                                                              shape: const RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.vertical(
+                                                                  top: Radius.circular(20),
+                                                                ),
+                                                              ),
+                                                              isDismissible: false,
+                                                              builder: (context){
+                                                                return RatingSheet(
+                                                                  orderData: toRecieve[index],
+                                                                );
+                                                              }
+                                                          );
                                                         },
                                                         icon: const Icon(
-                                                          CupertinoIcons
-                                                              .upload_circle,
+                                                          CupertinoIcons.cube_box,
                                                           color: Colors.black,
                                                           size: 30,
                                                         ),

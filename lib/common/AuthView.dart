@@ -64,6 +64,7 @@ class _AuthDialogState extends ConsumerState<AuthView> {
 
   @override
   void initState() {
+    cityCtrl.text = "Montalban";
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0x00000000))
@@ -477,6 +478,7 @@ class _AuthDialogState extends ConsumerState<AuthView> {
                                     SizedBox(
                                       height: 50,
                                       child: TextFormField(
+                                        enabled: false,
                                         controller: cityCtrl,
                                         style: const TextStyle(
                                             fontSize: 14

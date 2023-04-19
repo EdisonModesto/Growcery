@@ -207,7 +207,7 @@ class _AddItemSheetState extends ConsumerState<AddItemSheet> {
                         errorStyle: GoogleFonts.poppins(
                           height: 0,
                         ),
-                        labelText: "Stocks (KG)",
+                        labelText: "Stocks",
                         labelStyle: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
@@ -237,7 +237,7 @@ class _AddItemSheetState extends ConsumerState<AddItemSheet> {
                         errorStyle: GoogleFonts.poppins(
                           height: 0,
                         ),
-                        labelText: "Minimum Order (KG)",
+                        labelText: "Minimum Order",
                         labelStyle: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,

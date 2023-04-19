@@ -159,7 +159,7 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                       ),
                       const SizedBox(height: 20),
                       Text(
-                        "Order Date: ${widget.orderData.data()['Date'].toString().split(" ")[0]}",
+                        "Order Date: ${widget.orderData.data()['Date'].toDate().toString().split(" ")[0]}",
                         style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,

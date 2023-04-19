@@ -129,50 +129,55 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors().primaryColor,
-                    elevation: 0,
-                    fixedSize: const Size(150, 40),
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                    ),
-                  ),
-                  child: Text(
-                    "Buy Now",
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  onPressed: (){
-                    if (int.parse(widget.stock) >=int.parse(widget.min)) {
-                      showMaterialModalBottomSheet(
-                        context: context,
+                StreamBuilder(
+                    stream: FirebaseFirestore.instance.collection("Items").doc(widget.id).snapshots(),
+                    builder: (context, snapshot) {
+                    return ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors().primaryColor,
+                        elevation: 0,
+                        fixedSize: const Size(150, 40),
                         shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
                           ),
                         ),
-                        builder: (context) => AddToBasketSheet(id: widget.id, minimum: widget.min, isNow: true, sellerID: widget.id,),
-                      );
-                    } else {
-                      Fluttertoast.showToast(
-                        msg: "Insufficient Stocks for minimum order",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        fontSize: 16.0,
-                      );
-                    }
-                    //FirestoreService().addToBasket(widget.id);
-                  },
+                      ),
+                      child: Text(
+                        "Buy Now",
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      onPressed: (){
+                        if (int.parse(widget.stock) >=int.parse(widget.min)) {
+                          showMaterialModalBottomSheet(
+                            context: context,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20),
+                              ),
+                            ),
+                            builder: (context) => AddToBasketSheet(id: widget.id, minimum: widget.min, isNow: true, sellerID: snapshot.data?["SellerID"],),
+                          );
+                        } else {
+                          Fluttertoast.showToast(
+                            msg: "Insufficient Stocks for minimum order",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0,
+                          );
+                        }
+                        //FirestoreService().addToBasket(widget.id);
+                      },
+                    );
+                  }
                 ),
 
                 ElevatedButton(

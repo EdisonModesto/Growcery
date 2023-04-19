@@ -68,7 +68,7 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
 
     brgyCtrl.text = formattedAddress[1];
     reg = formattedAddress[1];
-    cityCtrl.text = formattedAddress[2];
+    cityCtrl.text = "Montalban";
 
     url = widget.data.data()!["Image"];
     gcashCtrl.text = widget.data.data()!["GCash"];
@@ -339,12 +339,13 @@ class _UEditProfileDialogState extends ConsumerState<UEditProfileDialog> {
                       height: 50,
                       child: TextFormField(
                         controller: cityCtrl,
+                        enabled: false,
                         style: const TextStyle(
                             fontSize: 14
                         ),
                         decoration: const InputDecoration(
                           errorStyle: TextStyle(height: 0),
-                          label: Text("City"),
+                          label: Text("Municipality"),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(8),

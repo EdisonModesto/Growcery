@@ -376,13 +376,25 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                           decoration: BoxDecoration(
                             color: Colors.grey[200],
                           ),
-                          child: PriceLabel(
-                            prices: selectedPrice,
-                            quantity: selectedQuantity,
-                            items: selecteditems,
-                            name: data.data()?["Name"] ?? "",
-                            address: data.data()?["Address"] ?? "",
-                            contact: data.data()?["Contact"] ?? "",
+                          child: data.data()!["Basket"].length == 0
+                              ? const SizedBox()
+                              :
+                  StreamBuilder(
+                            stream: FirebaseFirestore.instance.collection("Items").doc(data.data()!["Basket"][0].toString().split(",")[0]).snapshots(),
+                            builder: (context, snapshot2) {
+                              if(snapshot2.hasData){
+                                return PriceLabel(
+                                  prices: selectedPrice,
+                                  quantity: selectedQuantity,
+                                  items: selecteditems,
+                                  name: data.data()?["Name"] ?? "",
+                                  address: data.data()?["Address"] ?? "",
+                                  contact: data.data()?["Contact"] ?? "",
+                                  sellerID: snapshot2.data?["SellerID"] ?? "",
+                                );
+                              }
+                              return SizedBox();
+                            }
                           ),
                         ),
                       )
@@ -439,6 +451,7 @@ class PriceLabel extends ConsumerStatefulWidget {
     required this.name,
     required this.contact,
     required this.address,
+    required this.sellerID,
     Key? key,
   }) : super(key: key);
 
@@ -448,6 +461,8 @@ class PriceLabel extends ConsumerStatefulWidget {
   final name;
   final contact;
   final address;
+  final sellerID;
+
 
 
   @override
@@ -530,13 +545,13 @@ class _PriceLabelState extends ConsumerState<PriceLabel> {
                     content: const Text("Please select your payment method"),
                     actions: [
                       TextButton(onPressed: (){
-                        FirestoreService().createOrder(widget.items, widget.name, widget.contact, widget.address, sellerID);
+                        FirestoreService().createOrder(widget.items, widget.name, widget.contact, widget.address, widget.sellerID);
                         Fluttertoast.showToast(msg: "Order has been placed");
                         Navigator.pop(builder);
                       }, child: const Text("COD")),
                       TextButton(onPressed: (){
                         showDialog(context: context, builder: (builder){
-                          return PaymentDialog(items: widget.items, name: widget.name, contact: widget.contact, address: widget.address, sellerID: sellerID,);
+                          return PaymentDialog(items: widget.items, name: widget.name, contact: widget.contact, address: widget.address, sellerID: widget.sellerID,);
                         });
                       }, child: const Text("Gcash")),
                     ],

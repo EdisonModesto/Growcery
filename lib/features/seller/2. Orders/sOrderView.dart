@@ -8,6 +8,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../../common/ViewItemSheet.dart';
 import '../../../constants/AppColors.dart';
+import '../../../services/AuthService.dart';
 import '../../../services/FirestoreService.dart';
 import '../../ViewModels/AuthViewModels.dart';
 import '../../ViewModels/OrderViewModel.dart';
@@ -125,10 +126,10 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
 
                       orders.when(
                         data: (data1){
-                          var toPay = data1.docs.where((element) => element.data()["Status"] == "0").toList();
-                          var inProgress = data1.docs.where((element) => element.data()["Status"] == "1").toList();
-                          var toRecieve = data1.docs.where((element) => element.data()["Status"] == "2").toList();
-                          var complete = data1.docs.where((element) => element.data()["Status"] == "3").toList();
+                          var toPay = data1.docs.where((element) => element.data()["Status"] == "0" && element.data()["SellerID"] == AuthService().getID()).toList();
+                          var inProgress = data1.docs.where((element) => element.data()["Status"] == "1" && element.data()["SellerID"] == AuthService().getID()).toList();
+                          var toRecieve = data1.docs.where((element) => element.data()["Status"] == "2" && element.data()["SellerID"] == AuthService().getID()).toList();
+                          var complete = data1.docs.where((element) => element.data()["Status"] == "3" && element.data()["SellerID"] == AuthService().getID()).toList();
 
                           return TabBarView(
                             children: [
