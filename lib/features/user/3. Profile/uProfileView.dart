@@ -61,7 +61,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
           var user = ref.watch(userProvider);
 
           return DefaultTabController(
-            length: 5,
+            length: 6,
             child: SafeArea(
               child: SizedBox(
                 child: Column(
@@ -246,6 +246,15 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                     ),
                                   ),
                                 ),
+                                Tab(
+                                  child: Text(
+                                    "Refund",
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                             const SizedBox(height: 10),
@@ -268,12 +277,14 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                   var toRecieve = data1.docs.where((element) => element.data()["Status"] == "2" && element.data()["User"] == userID).toList();
                                   var complete = data1.docs.where((element) => element.data()["Status"] == "3" && element.data()["User"] == userID).toList();
                                   var cancelled = data1.docs.where((element) => element.data()["Status"] == "4" && element.data()["User"] == userID).toList();
+                                  var refunded = data1.docs.where((element) => element.data()["Status"] == "5" && element.data()["User"] == userID).toList();
 
-                                  toPay.sort((a, b) => a.data()["Date"].compareTo(b.data()["Date"]));
-                                  inProgress.sort(( a, b) => a.data()["Date"].compareTo(b.data()["Date"]));
-                                  toRecieve.sort((a, b) => a.data()["Date"].compareTo(b.data()["Date"]));
-                                  complete.sort((a, b) => a.data()["Date"].compareTo(b.data()["Date"]));
-                                  cancelled.sort((a, b) => a.data()["Date"].compareTo(b.data()["Date"]));
+                                  toPay.sort((a, b) => b.data()["Date"].compareTo(a.data()["Date"]));
+                                  inProgress.sort(( a, b) => b.data()["Date"].compareTo(a.data()["Date"]));
+                                  toRecieve.sort((a, b) => b.data()["Date"].compareTo(a.data()["Date"]));
+                                  complete.sort((a, b) => b.data()["Date"].compareTo(a.data()["Date"]));
+                                  cancelled.sort((a, b) => b.data()["Date"].compareTo(a.data()["Date"]));
+                                  refunded.sort((a, b) => b.data()["Date"].compareTo(a.data()["Date"]));
 
                                   return TabBarView(
                                     children: [
@@ -393,12 +404,58 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                             ),
                                                           ),
                                                           IconButton(
-                                                            onPressed: (){
-                                                              FirestoreService().updateOrderStatus(toPay[index].id, "4");
+                                                            icon: const Icon(Icons.cancel_outlined),
+                                                            onPressed: () async {
+                                                              await showDialog(context: context, builder: (builder){
+                                                                return AlertDialog(
+                                                                  title: Text(
+                                                                    "Cancel Order",
+                                                                    style: GoogleFonts.poppins(
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.w400,
+                                                                    ),
+                                                                  ),
+                                                                  content: Text(
+                                                                    "Are you sure you want to cancel this order?",
+                                                                    style: GoogleFonts.poppins(
+                                                                      fontSize: 12,
+                                                                      fontWeight: FontWeight.w400,
+                                                                    ),
+                                                                  ),
+                                                                  actions: [
+                                                                    TextButton(
+                                                                      onPressed: (){
+                                                                        Navigator.of(builder).pop();
+                                                                      },
+                                                                      child: Text(
+                                                                        "No",
+                                                                        style: GoogleFonts.poppins(
+                                                                          fontSize: 12,
+                                                                          fontWeight: FontWeight.w400,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    TextButton(
+                                                                      onPressed: (){
+                                                                        FirestoreService().updateOrderStatus(toPay[index].id, "4");
+                                                                        //restore stock
+                                                                        for(var i = 0; i < toPay[index].data()["Items"].length; i++){
+                                                                          FirestoreService().restoreStock(toPay[index].data()["Items"][i].toString().split(",")[0], toPay[index].data()["Items"][i].toString().split(",")[1]);
+                                                                        }
+                                                                        Navigator.pop(builder);
+                                                                      },
+                                                                      child: Text(
+                                                                        "Yes",
+                                                                        style: GoogleFonts.poppins(
+                                                                          fontSize: 12,
+                                                                          fontWeight: FontWeight.w400,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                );
+                                                              });
                                                             },
-                                                            icon: Icon(
-                                                              Icons.cancel_outlined
-                                                            )
                                                           )
                                                         ],
                                                       ),
@@ -835,7 +892,6 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                         separatorBuilder: (context, index) =>
                                         const SizedBox(height: 10),
                                       ),
-
                                       ListView.separated(
                                         itemCount: complete.length,
                                         itemBuilder: (context, index) {
@@ -964,6 +1020,135 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                         separatorBuilder: (context, index) =>
                                         const SizedBox(height: 10),
                                       ),
+                                      ListView.separated(
+                                        itemCount: refunded.length,
+                                        itemBuilder: (context, index) {
+                                          return FutureBuilder(
+                                              future: getResource(
+                                                  refunded[index]
+                                                      .data()["Items"][0]
+                                                      .toString()
+                                                      .split(",")[0]),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.hasData) {
+                                                  return InkWell(
+                                                    onTap: () {
+                                                      showMaterialModalBottomSheet(
+                                                          context: context,
+                                                          shape: const RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius
+                                                                .vertical(
+                                                              top: Radius
+                                                                  .circular(20),
+                                                            ),
+                                                          ),
+                                                          builder: (context) {
+                                                            return OrderDetailsView(
+                                                              orderData: refunded[index],
+                                                            );
+                                                          }
+                                                      );
+                                                    },
+                                                    child: Container(
+                                                      height: 100,
+                                                      width: double.infinity,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.grey[200],
+                                                        borderRadius: BorderRadius
+                                                            .circular(10),
+                                                      ),
+                                                      child: Row(
+                                                        children: [
+                                                          Container(
+                                                            width: 100,
+                                                            height: 100,
+                                                            decoration: BoxDecoration(
+                                                              color: AppColors()
+                                                                  .primaryColor,
+                                                              borderRadius: BorderRadius
+                                                                  .circular(10),
+                                                              image: DecorationImage(
+                                                                image: NetworkImage(
+                                                                    snapshot
+                                                                        .data!["Url"]),
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              width: 10),
+                                                          Expanded(
+                                                            child: Column(
+                                                              mainAxisAlignment: MainAxisAlignment
+                                                                  .center,
+                                                              crossAxisAlignment: CrossAxisAlignment
+                                                                  .start,
+                                                              children: [
+                                                                Text(
+                                                                  refunded[index]
+                                                                      .id,
+                                                                  style: GoogleFonts
+                                                                      .poppins(
+                                                                    fontSize: 14,
+                                                                    fontWeight: FontWeight
+                                                                        .w400,
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 5),
+                                                                Text(
+                                                                  "Total Items: ${refunded[index]
+                                                                      .data()["Items"]
+                                                                      .length}",
+                                                                  style: GoogleFonts
+                                                                      .poppins(
+                                                                    fontSize: 12,
+                                                                    fontWeight: FontWeight
+                                                                        .w400,
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 5),
+                                                                FutureBuilder(
+                                                                    future: calculateTotal(
+                                                                        refunded[index]
+                                                                            .data()["Items"]),
+                                                                    builder: (
+                                                                        context,
+                                                                        result) {
+                                                                      if (result
+                                                                          .hasData) {
+                                                                        return Text(
+                                                                          "Total Price: ${result
+                                                                              .data}",
+                                                                          style: GoogleFonts
+                                                                              .poppins(
+                                                                            fontSize: 12,
+                                                                            fontWeight: FontWeight
+                                                                                .w400,
+                                                                          ),
+                                                                        );
+                                                                      }
+                                                                      return const SizedBox();
+                                                                    }
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                                return const SizedBox();
+                                              }
+                                          );
+                                        },
+                                        separatorBuilder: (context, index) =>
+                                        const SizedBox(height: 10),
+                                      ),
+
                                     ],
                                   );
                                 },

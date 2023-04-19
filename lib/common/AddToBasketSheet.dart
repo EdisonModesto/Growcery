@@ -29,10 +29,14 @@ class AddToBasketSheet extends ConsumerStatefulWidget {
 class _AddToBasketSheetState extends ConsumerState<AddToBasketSheet> {
 
   int value = 1;
+  double height = 250;
+  TextEditingController controller = TextEditingController();
+
 
   @override
   void initState() {
     value = int.parse(widget.minimum);
+    controller.text = value.toString();
     super.initState();
   }
 
@@ -40,12 +44,11 @@ class _AddToBasketSheetState extends ConsumerState<AddToBasketSheet> {
   Widget build(BuildContext context) {
 
     var user = ref.watch(userProvider);
-
     return user.when(
       data: (data){
 
         return SizedBox(
-          height: 250,
+          height: height,
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: SingleChildScrollView(
@@ -75,6 +78,7 @@ class _AddToBasketSheetState extends ConsumerState<AddToBasketSheet> {
                           setState(() {
                             if(value > 1 && value > int.parse(widget.minimum)){
                               value--;
+                              controller.text = value.toString();
                             } else {
                               Fluttertoast.showToast(
                                   msg: "Minimum quantity is ${widget.minimum}",
@@ -107,18 +111,79 @@ class _AddToBasketSheetState extends ConsumerState<AddToBasketSheet> {
                         ),
                       ),
                       SizedBox(width: 10),
-                      Text(
+                      SizedBox(
+                        width: 50,
+                        child: TextField(
+                          controller: controller,
+                          textAlign: TextAlign.center,
+                          keyboardType: TextInputType.number,
+                          onChanged: (val)async{
+                            await Future.delayed(Duration(seconds: 2));
+                            if(int.parse(controller.text) > 1 && int.parse(controller.text) > int.parse(widget.minimum)){
+                              setState(() {
+                                value = int.parse(controller.text);
+                              });
+                            } else {
+                              Fluttertoast.showToast(
+                                  msg: "Minimum quantity is ${widget.minimum}",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.red,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0
+                              );
+                              controller.text = widget.minimum.toString();
+                            }
+
+                          },
+                          onEditingComplete: (){
+                            setState(() {
+                              height = 250;
+                            });
+                          },
+                          onSubmitted: (val){
+                            setState(() {
+                              height = 250;
+                            });
+                          },
+                          onTapOutside: (v){
+                            setState(() {
+                              height = 250;
+                            });
+                          },
+                          onTap: (){
+                            setState(() {
+                              height = 500;
+                            });
+                          },
+                          style: GoogleFonts.poppins(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "0",
+                            hintStyle: GoogleFonts.poppins(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                     /* Text(
                         "$value",
                         style: GoogleFonts.poppins(
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
                         ),
-                      ),
+                      ),*/
                       SizedBox(width: 10),
                       InkWell(
                         onTap: () {
                           setState(() {
                             value++;
+                            controller.text = value.toString();
                           });
                         },
                         child: Container(
@@ -144,31 +209,33 @@ class _AddToBasketSheetState extends ConsumerState<AddToBasketSheet> {
                   const SizedBox(height: 40),
                   ElevatedButton(
                     onPressed: () {
-                      if(widget.isNow == true){
-                        if (data.data()!["Name"] != "" &&  data.data()!["Contact"] != "" &&  data.data()!["Address"].toString().split("%")[0] != "No Data") {
-                          showDialog(context: context, builder: (builder){
-                            return AlertDialog(
-                              title: const Text("Payment Method"),
-                              content: const Text("Please select your payment method"),
-                              actions: [
-                                TextButton(onPressed: (){
-                                  FirestoreService().createOrder(["${widget.id},$value"],  data.data()!["Name"], data.data()!["Contact"], data.data()!["Address"], widget.sellerID);
-                                  Fluttertoast.showToast(msg: "Order has been placed");
-                                  Navigator.pop(builder);
-                                }, child: const Text("COD")),
-                                TextButton(onPressed: (){
-                                  showDialog(context: context, builder: (builder){
-                                    return PaymentDialog(items: ["${widget.id},$value"], name:  data.data()!["Name"], contact: data.data()!["Contact"], address: data.data()!["Address"], sellerID: widget.sellerID,);
-                                  });
-                                }, child: const Text("Gcash")),
-                              ],
-                            );
-                          });
+                      if(int.parse(controller.text) >= int.parse(widget.minimum)){
+                        if(widget.isNow == true){
+                          if (data.data()!["Name"] != "" &&  data.data()!["Contact"] != "" &&  data.data()!["Address"].toString().split("%")[0] != "No Data") {
+                            showDialog(context: context, builder: (builder){
+                              return AlertDialog(
+                                title: const Text("Payment Method"),
+                                content: const Text("Please select your payment method"),
+                                actions: [
+                                  TextButton(onPressed: (){
+                                    FirestoreService().createOrder(["${widget.id},$value"],  data.data()!["Name"], data.data()!["Contact"], data.data()!["Address"], widget.sellerID);
+                                    Fluttertoast.showToast(msg: "Order has been placed");
+                                    Navigator.pop(builder);
+                                  }, child: const Text("COD")),
+                                  TextButton(onPressed: (){
+                                    showDialog(context: context, builder: (builder){
+                                      return PaymentDialog(items: ["${widget.id},$value"], name:  data.data()!["Name"], contact: data.data()!["Contact"], address: data.data()!["Address"], sellerID: widget.sellerID,);
+                                    });
+                                  }, child: const Text("Gcash")),
+                                ],
+                              );
+                            });
+                          } else {
+                            Fluttertoast.showToast(msg: "No items in basket or you have not filled up your profile yet");
+                          }
                         } else {
-                          Fluttertoast.showToast(msg: "No items in basket or you have not filled up your profile yet");
+                          FirestoreService().addToBasket(widget.id, value);
                         }
-                      } else {
-                        FirestoreService().addToBasket(widget.id, value);
                       }
                     },
                     style: ElevatedButton.styleFrom(

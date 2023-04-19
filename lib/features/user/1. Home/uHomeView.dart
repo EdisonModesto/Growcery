@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -215,12 +217,37 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
-                              subtitle: Text(
-                                sellers[index].data()["Address"],
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                              subtitle: StreamBuilder(
+                                stream: FirebaseFirestore.instance.collection("Users").doc(sellers[index].id).collection("Ratings").snapshots(),
+                                builder: (context, snapshot) {
+                                  if(snapshot.hasData){
+                                    double totalRating = 0;
+
+                                    snapshot.data!.docs.forEach((element) {
+                                      totalRating += element.data()["Rating"];
+                                    });
+
+                                    totalRating = totalRating == 0 ? 0.0 : totalRating / snapshot.data!.docs.length;
+                                    return RatingBar.builder(
+                                      initialRating: totalRating,
+                                      minRating: 0,
+                                      direction: Axis.horizontal,
+                                      ignoreGestures: true,
+                                      allowHalfRating: true,
+                                      itemCount: 5,
+                                      itemPadding: const EdgeInsets.symmetric(horizontal:0),
+                                      itemSize: 25,
+                                      itemBuilder: (context, _) => const Icon(
+                                        Icons.star,
+                                        color: Colors.amber,
+                                      ),
+                                      onRatingUpdate: (rating) {
+                                        print(rating);
+                                      },
+                                    );
+                                  }
+                                  return SizedBox();
+                                }
                               ),
                               trailing: Text(
                                 ">",
@@ -541,6 +568,27 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                   ),
                                 ),
                                 children: List.generate(vegies.length, (index) => ListTile(
+                                  onTap: (){
+                                    showModalBottomSheet(
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(12),
+                                        ),
+                                      ),
+                                      context: context,
+                                      isScrollControlled: true,
+                                      builder: (context) => ViewItemSheet(
+                                        name: vegies[index].data()['Name'],
+                                        price: vegies[index].data()['Price'],
+                                        description: vegies[index].data()['Description'],
+                                        stock: vegies[index].data()['Stocks'],
+                                        image: vegies[index].data()['Url'],
+                                        id: vegies[index].id,
+                                        min: vegies[index].data()['Minimum'],
+                                        sellerID: vegies[index].data()['SellerID'],
+                                      ),
+                                    );
+                                  },
                                   leading: Image.network(
                                     vegies[index].data()['Url'],
                                     width: 50,
@@ -580,6 +628,27 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                   ),
                                 ),
                                   children: List.generate(frutis.length, (index) => ListTile(
+                                    onTap: (){
+                                      showModalBottomSheet(
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(12),
+                                          ),
+                                        ),
+                                        context: context,
+                                        isScrollControlled: true,
+                                        builder: (context) => ViewItemSheet(
+                                          name: frutis[index].data()['Name'],
+                                          price: frutis[index].data()['Price'],
+                                          description: frutis[index].data()['Description'],
+                                          stock: frutis[index].data()['Stocks'],
+                                          image: frutis[index].data()['Url'],
+                                          id: frutis[index].id,
+                                          min: frutis[index].data()['Minimum'],
+                                          sellerID: frutis[index].data()['SellerID'],
+                                        ),
+                                      );
+                                    },
                                     leading: Image.network(
                                       frutis[index].data()['Url'],
                                       width: 50,

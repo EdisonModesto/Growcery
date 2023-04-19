@@ -48,7 +48,7 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
     return authState.when(
         data: (data){
           return DefaultTabController(
-            length: 4,
+            length: 5,
             child: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
@@ -110,6 +110,15 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                             ),
                           ),
                         ),
+                        Tab(
+                          child: Text(
+                            "Refund",
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -130,6 +139,7 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                           var inProgress = data1.docs.where((element) => element.data()["Status"] == "1" && element.data()["SellerID"] == AuthService().getID()).toList();
                           var toRecieve = data1.docs.where((element) => element.data()["Status"] == "2" && element.data()["SellerID"] == AuthService().getID()).toList();
                           var complete = data1.docs.where((element) => element.data()["Status"] == "3" && element.data()["SellerID"] == AuthService().getID()).toList();
+                          var canceled = data1.docs.where((element) => element.data()["Status"] == "5" && element.data()["SellerID"] == AuthService().getID()).toList();
 
                           return TabBarView(
                             children: [
@@ -535,6 +545,102 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                 },
                                 separatorBuilder: (context, index) => const SizedBox(height: 10),
                               ),
+                              ListView.separated(
+                                itemCount: canceled.length,
+                                itemBuilder: (context, index){
+                                  return FutureBuilder(
+                                      future: getResource(canceled[index].data()["Items"][0].toString().split(",")[0]),
+                                      builder: (context, snapshot) {
+                                        if(snapshot.hasData){
+                                          return InkWell(
+                                            onTap: (){
+                                              showMaterialModalBottomSheet(
+                                                  context: context,
+                                                  shape: const RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.vertical(
+                                                      top: Radius.circular(20),
+                                                    ),
+                                                  ),
+                                                  builder: (context){
+                                                    return OrderDetailsView(
+                                                      orderData: canceled[index],
+                                                    );
+                                                  }
+                                              );
+                                            },
+                                            child: Container(
+                                              height: 100,
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey[200],
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                    width: 100,
+                                                    height: 100,
+                                                    decoration: BoxDecoration(
+                                                      color: AppColors().primaryColor,
+                                                      borderRadius: BorderRadius.circular(10),
+                                                      image: DecorationImage(
+                                                        image: NetworkImage(snapshot.data!["Url"]),
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                  Expanded(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          canceled[index].id,
+                                                          style: GoogleFonts.poppins(
+                                                            fontSize: 14,
+                                                            fontWeight: FontWeight.w400,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 5),
+                                                        Text(
+                                                          "Total Items: ${canceled[index].data()["Items"].length}",
+                                                          style: GoogleFonts.poppins(
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w400,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 5),
+                                                        FutureBuilder(
+                                                            future: calculateTotal(canceled[index].data()["Items"]),
+                                                            builder: (context, result) {
+                                                              if(result.hasData){
+                                                                return Text(
+                                                                  "Total Price: ${result.data}",
+                                                                  style: GoogleFonts.poppins(
+                                                                    fontSize: 12,
+                                                                    fontWeight: FontWeight.w400,
+                                                                  ),
+                                                                );
+                                                              }
+                                                              return const SizedBox();
+                                                            }
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                        return const SizedBox();
+                                      }
+                                  );
+                                },
+                                separatorBuilder: (context, index) => const SizedBox(height: 10),
+                              ),
+
                             ],
                           );
                         },

@@ -4,9 +4,11 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../../constants/AppColors.dart';
 import '../../../services/FirestoreService.dart';
+import 'RefundSheet.dart';
 
 class RatingSheet extends ConsumerStatefulWidget {
   const RatingSheet({
@@ -91,7 +93,7 @@ class _RatingSheetState extends ConsumerState<RatingSheet> {
                   },
                   child: const Text("Submit"),
                 ),
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     fixedSize: Size(MediaQuery.of(context).size.width, 50),
@@ -103,11 +105,23 @@ class _RatingSheetState extends ConsumerState<RatingSheet> {
                   onPressed: (){
 
                     Navigator.pop(context);
+                    showMaterialModalBottomSheet(
+                      context: context,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
+                      ),
+                      builder: (context) => RefundSheet(
+                        orderData: widget.orderData,
+                      ),
+                    );
                   },
                   child:  Text(
                     "Refund",
                     style: GoogleFonts.poppins(
-                      color: Color(0xff414141),
+                      color: const Color(0xff414141),
                     ),
                   ),
                 ),

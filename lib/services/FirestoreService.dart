@@ -155,8 +155,16 @@ class FirestoreService{
   void updateOrderStatus(id, status){
     FirebaseFirestore.instance.collection("Orders").doc(id).update({
       "Status": status,
-      "Date": DateTime.now().toString(),
       "Date Completed": status == "3" ? DateTime.now().toString() : "",
+    });
+  }
+
+  void refundOrder(id, refundImage, refundComment, marketContact){
+    FirebaseFirestore.instance.collection("Orders").doc(id).update({
+      "Status": "5",
+      "RefundImage" : refundImage,
+      "RefundComment" : refundComment,
+      "MarketContact" : marketContact,
     });
   }
 
@@ -177,4 +185,7 @@ class FirestoreService{
       "Stocks": (int.parse(stocks) + int.parse(quantity)).toString(),
     });
   }
+
+
+
 }
