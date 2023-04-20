@@ -64,6 +64,9 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
             var basket = ref.watch(userProvider);
             return basket.when(
                 data: (data){
+                  List<String> basketList = List<String>.from(data.data()!["Basket"]);
+                  basketList.sort();
+                  print(basketList);
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -123,38 +126,19 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                           itemCount: data.data()!["Basket"].length,
                           itemBuilder: (context, index) {
                             return StreamBuilder(
-                              stream: FirebaseFirestore.instance
-                                  .collection("Items")
-                                  .doc(data
-                                  .data()!["Basket"][index]
-                                  .toString()
-                                  .split(",")[0])
-                                  .snapshots(),
+                              stream: FirebaseFirestore.instance.collection("Items").doc(basketList[index].toString().split(",")[0]).snapshots(),
                               builder: (context, snapshot) {
 
                                 if (snapshot.hasData) {
                                   if(snapshot.data!.exists == false){
-                                    FirestoreService().removeItem(data.data()!["Basket"][index].toString());
+                                    FirestoreService().removeItem(basketList[index].toString());
                                   } else {
-                                    itemQuantity[index] = int.parse(data
-                                        .data()!["Basket"][index]
-                                        .toString()
-                                        .split(",")[1]);
-                                    itemPrice[index] = double.parse(
-                                        snapshot.data!.data()!["Price"]
-                                            .toString());
+                                    itemQuantity[index] = int.parse(basketList[index].toString().split(",")[1]);
+                                    itemPrice[index] = double.parse(snapshot.data!.data()!["Price"].toString());
                                     return Dismissible(
                                       key: UniqueKey(),
                                       onDismissed: (direction) {
-                                        FirestoreService()
-                                            .updateBasketQuantity(
-                                            data
-                                                .data()!["Basket"][index]
-                                                .toString()
-                                                .split(",")[0],
-                                            0,
-                                            data
-                                                .data()!["Basket"][index]);
+                                        FirestoreService().updateBasketQuantity(basketList[index].toString().split(",")[0], 0, basketList[index]);
                                       },
                                       child: Container(
                                         height: 100,
@@ -169,8 +153,7 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                               decoration: BoxDecoration(
                                                 image: DecorationImage(
                                                   image: NetworkImage(
-                                                      snapshot.data!
-                                                          .data()!["Url"]),
+                                                      snapshot.data!.data()!["Url"]),
                                                   fit: BoxFit.cover,
                                                 ),
                                                 color: Colors.grey[300],
@@ -187,11 +170,9 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                                 CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    snapshot.data!
-                                                        .data()!["Name"],
+                                                    snapshot.data!.data()!["Name"],
                                                     maxLines: 1,
-                                                    overflow: TextOverflow
-                                                        .ellipsis,
+                                                    overflow: TextOverflow.ellipsis,
                                                     style: GoogleFonts.poppins(
                                                       fontSize: 16,
                                                       fontWeight: FontWeight.w600,
@@ -199,8 +180,7 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                                   ),
                                                   const SizedBox(height: 5),
                                                   Text(
-                                                    "PHP ${snapshot.data!
-                                                        .data()!["Price"]}",
+                                                    "PHP ${snapshot.data!.data()!["Price"]}",
                                                     maxLines: 1,
                                                     overflow: TextOverflow
                                                         .ellipsis,
@@ -216,30 +196,12 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                                         onTap: () {
                                                           if (int.parse(snapshot.data!.data()!["Minimum"]) <=
                                                               itemQuantity[index] - 1) {
-                                                            checkValues[index] =
-                                                            false;
-                                                            selecteditems.remove(
-                                                                data
-                                                                    .data()!["Basket"][index]
-                                                                    .toString());
-                                                            selectedQuantity.remove(
-                                                                itemQuantity[index]);
-                                                            selectedPrice.remove(
-                                                                itemPrice[index]);
+                                                            checkValues[index] = false;
+                                                            selecteditems.remove(basketList[index].toString());
+                                                            selectedQuantity.remove(itemQuantity[index]);
+                                                            selectedPrice.remove(itemPrice[index]);
                                                             setState(() {});
-                                                            FirestoreService()
-                                                                .updateBasketQuantity(
-                                                                data
-                                                                    .data()!["Basket"][index]
-                                                                    .toString()
-                                                                    .split(",")[0],
-                                                                itemQuantity[index] -
-                                                                    1,
-                                                                data
-                                                                    .data()!["Basket"][index]);
-                                                            itemQuantity[index] =
-                                                                itemQuantity[index] -
-                                                                    1;
+                                                            FirestoreService().updateBasketQuantity(basketList[index].toString().split(",")[0], itemQuantity[index] - 1, basketList[index]);itemQuantity[index] = itemQuantity[index] - 1;
                                                             setState(() {});
                                                           } else {
                                                             Fluttertoast.showToast(
@@ -279,8 +241,7 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                                           checkValues[index] =
                                                           false;
                                                           selecteditems.remove(
-                                                              data
-                                                                  .data()!["Basket"][index]
+                                                              basketList[index]
                                                                   .toString());
                                                           selectedQuantity.remove(
                                                               itemQuantity[index]);
@@ -289,14 +250,12 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                                           setState(() {});
                                                           FirestoreService()
                                                               .updateBasketQuantity(
-                                                              data
-                                                                  .data()!["Basket"][index]
+                                                              basketList[index]
                                                                   .toString()
                                                                   .split(",")[0],
                                                               itemQuantity[index] +
                                                                   1,
-                                                              data
-                                                                  .data()!["Basket"][index]);
+                                                              basketList[index]);
                                                           itemQuantity[index] =
                                                               itemQuantity[index] +
                                                                   1;
@@ -326,7 +285,7 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                                 ],
                                               ),
                                             ),
-                                            const Spacer(),
+
                                             Checkbox(
                                               value: checkValues[index],
                                               onChanged: (value) {
@@ -376,11 +335,11 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                           decoration: BoxDecoration(
                             color: Colors.grey[200],
                           ),
-                          child: data.data()!["Basket"].length == 0
+                          child: basketList.length == 0
                               ? const SizedBox()
                               :
                   StreamBuilder(
-                            stream: FirebaseFirestore.instance.collection("Items").doc(data.data()!["Basket"][0].toString().split(",")[0]).snapshots(),
+                            stream: FirebaseFirestore.instance.collection("Items").doc(basketList[0].toString().split(",")[0]).snapshots(),
                             builder: (context, snapshot2) {
                               if(snapshot2.hasData){
                                 return PriceLabel(
@@ -526,12 +485,14 @@ class _PriceLabelState extends ConsumerState<PriceLabel> {
       children: [
         Expanded(
           child: InkWell(
-            onTap: () {
-              var sellerID = widget.items[0].toString().split(",")[0];
+            onTap: () async {
+              //var sellerID = widget.items[0].toString().split(",")[0];
 
 
               for (int i = 0; i < widget.items.length; i++) {
-                if(widget.items[i].toString().split(",")[0] != sellerID ){
+                var data = await FirebaseFirestore.instance.collection("Items").doc(widget.items[i].toString().split(",")[0]).get();
+                //data.data()!["SellerID"];
+                if( data.data()!["SellerID"] != widget.sellerID ){
                   isSame = false;
                   Fluttertoast.showToast(msg: "You can only checkout items from one seller per batch");
                   return;
