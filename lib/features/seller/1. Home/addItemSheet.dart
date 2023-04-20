@@ -27,6 +27,7 @@ class _AddItemSheetState extends ConsumerState<AddItemSheet> {
   TextEditingController quantityController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController minimumController = TextEditingController();
+  TextEditingController variationController = TextEditingController();
 
   String url = "";
 
@@ -56,6 +57,8 @@ class _AddItemSheetState extends ConsumerState<AddItemSheet> {
 
   var value = "Vegetables";
 
+  List<String> variations = [];
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -64,7 +67,7 @@ class _AddItemSheetState extends ConsumerState<AddItemSheet> {
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: SizedBox(
-            height: 860,
+            height: 960,
             child: Form(
               key: _formKey,
               child: Column(
@@ -286,10 +289,71 @@ class _AddItemSheetState extends ConsumerState<AddItemSheet> {
                       ),
                     ),
                   ),
+                  Row(
+                    children: List.generate(variations.length, (index) => Chip(
+                      onDeleted: () {
+                        setState(() {
+                          variations.removeAt(index);
+                        });
+                      },
+                      label: Text(
+                          variations[index],
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
+                      ),
+                    ))
+                  ),
+                  const SizedBox(height: 5),
+                  SizedBox(
+                    height: 50,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: variationController,
+                            decoration: InputDecoration(
+                              errorStyle: GoogleFonts.poppins(
+                                height: 0,
+                              ),
+                              labelText: "Add Variation",
+                              labelStyle: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Colors.grey,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            if (variationController.text != "") {
+                              variations.add(variationController.text);
+                              variationController.clear();
+                              setState(() {});
+                            }
+                          },
+                          icon: Icon(
+                            Icons.add,
+                            color: AppColors().primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      if (_formKey.currentState!.validate() && url != "") {
+                      if (_formKey.currentState!.validate() && url != "" && variations.isNotEmpty) {
                         FirestoreService().addItem(
                             url,
                             nameController.text,
@@ -298,7 +362,9 @@ class _AddItemSheetState extends ConsumerState<AddItemSheet> {
                             descriptionController.text,
                             value,
                             minimumController.text,
-                            AuthService().getID());
+                            AuthService().getID(),
+                            variations
+                        );
                         Navigator.pop(context);
                       } else {
                         Fluttertoast.showToast(

@@ -53,7 +53,7 @@ class FirestoreService{
     return "Unknown";
   }
 
-  void addItem(url, name, price, stocks, description, category, minimum, sellerID){
+  void addItem(url, name, price, stocks, description, category, minimum, sellerID, variations){
     FirebaseFirestore.instance.collection("Items").doc().set({
       "Url": url,
       "SellerID": sellerID,
@@ -63,10 +63,11 @@ class FirestoreService{
       "Description": description,
       "Category": category,
       "Minimum": minimum,
+      "Variations": variations,
     });
   }
 
-  void updateItem(url, name, price, stocks, description,id, category, minimum, sellerID){
+  void updateItem(url, name, price, stocks, description,id, category, minimum, sellerID, variations){
     FirebaseFirestore.instance.collection("Items").doc(id).update({
       "Url": url,
       "SellerID": sellerID,
@@ -76,6 +77,7 @@ class FirestoreService{
       "Description": description,
       "Category": category,
       "Minimum": minimum,
+      "Variations": variations,
     });
   }
 
@@ -83,7 +85,7 @@ class FirestoreService{
     FirebaseFirestore.instance.collection("Items").doc(id).delete();
   }
 
-  Future<void> addToBasket(id, quantity) async {
+  Future<void> addToBasket(id, quantity, variation) async {
 
     var ref = await FirebaseFirestore.instance.collection("Users").doc(AuthService().getID()).get();
     List<dynamic> cart = ref.data()!["Basket"] as List<dynamic>;
@@ -99,7 +101,7 @@ class FirestoreService{
     } else{
       Fluttertoast.showToast(msg: "Item added to cart");
       FirebaseFirestore.instance.collection("Users").doc(AuthService().getID()).update({
-        "Basket": FieldValue.arrayUnion(["$id,$quantity"])
+        "Basket": FieldValue.arrayUnion(["$id,$quantity,$variation"]),
       });
     }
   }

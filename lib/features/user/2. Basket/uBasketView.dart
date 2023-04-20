@@ -170,7 +170,7 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                                 CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    snapshot.data!.data()!["Name"],
+                                                    "${snapshot.data!.data()!["Name"]} (${basketList[index].toString().split(",")[2]})",
                                                     maxLines: 1,
                                                     overflow: TextOverflow.ellipsis,
                                                     style: GoogleFonts.poppins(

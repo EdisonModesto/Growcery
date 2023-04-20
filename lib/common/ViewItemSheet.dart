@@ -75,7 +75,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    "PHP ${widget.price}/Kilogram",
+                    "PHP ${widget.price}",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.poppins(
@@ -238,7 +238,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                                 topRight: Radius.circular(20),
                               ),
                             ),
-                            builder: (context) => AddToBasketSheet(id: widget.id, minimum: widget.min, isNow: true, sellerID: snapshot.data?["SellerID"],),
+                            builder: (context) => AddToBasketSheet(id: widget.id, minimum: widget.min, isNow: true, sellerID: snapshot.data?["SellerID"], variations: snapshot.data?["Variations"],),
                           );
                         } else {
                           Fluttertoast.showToast(
@@ -257,50 +257,58 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                   }
                 ),
                 SizedBox(width: 5,),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    elevation: 0,
-                    fixedSize: const Size(150, 40),
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                    ),
-                  ),
-                  child: Text(
-                    "Add to Basket",
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      color:AppColors().primaryColor,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  onPressed: (){
-                    if (int.parse(widget.stock) >=int.parse(widget.min)) {
-                      showMaterialModalBottomSheet(
-                        context: context,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
+                StreamBuilder(
+                    stream: FirebaseFirestore.instance.collection("Items").doc(widget.id).snapshots(),
+                    builder: (context, snapshot) {
+                    if(snapshot.hasData){
+                      return ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          elevation: 0,
+                          fixedSize: const Size(150, 40),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
                           ),
                         ),
-                        builder: (context) => AddToBasketSheet(id: widget.id, minimum: widget.min, isNow: false, sellerID: widget.sellerID),
-                      );
-                    } else {
-                      Fluttertoast.showToast(
-                        msg: "Insufficient Stocks for minimum order",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        fontSize: 16.0,
+                        child: Text(
+                          "Add to Basket",
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            color:AppColors().primaryColor,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        onPressed: (){
+                          if (int.parse(widget.stock) >=int.parse(widget.min)) {
+                            showMaterialModalBottomSheet(
+                              context: context,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20),
+                                ),
+                              ),
+                              builder: (context) => AddToBasketSheet(id: widget.id, minimum: widget.min, isNow: false, sellerID: widget.sellerID, variations: snapshot.data?["Variations"]),
+                            );
+                          } else {
+                            Fluttertoast.showToast(
+                              msg: "Insufficient Stocks for minimum order",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.red,
+                              textColor: Colors.white,
+                              fontSize: 16.0,
+                            );
+                          }
+                          //FirestoreService().addToBasket(widget.id);
+                        },
                       );
                     }
-                    //FirestoreService().addToBasket(widget.id);
-                  },
+                    return SizedBox();
+                  }
                 )
               ],
             ),

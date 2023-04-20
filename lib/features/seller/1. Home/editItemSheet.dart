@@ -21,10 +21,11 @@ class EditItemSheet extends ConsumerStatefulWidget {
     required this.id,
     required this.category,
     required this.mini,
+    required this.variations,
     Key? key,
   }) : super(key: key);
 
-  final url, name, price, quantity, description, id, category, mini;
+  final url, name, price, quantity, description, id, category, mini, variations;
 
   @override
   ConsumerState createState() => _EditItemSheetState();
@@ -38,6 +39,9 @@ class _EditItemSheetState extends ConsumerState<EditItemSheet> {
   TextEditingController quantityController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController minimumController = TextEditingController();
+  TextEditingController variationController = TextEditingController();
+
+  List<dynamic> variations = [];
 
   String url = "";
 
@@ -85,6 +89,7 @@ class _EditItemSheetState extends ConsumerState<EditItemSheet> {
     descriptionController.text = widget.description;
     minimumController.text = widget.mini;
     value = widget.category;
+    variations = widget.variations;
     super.initState();
   }
 
@@ -96,7 +101,7 @@ class _EditItemSheetState extends ConsumerState<EditItemSheet> {
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: SizedBox(
-            height: 860,
+            height: 1000,
             child: Form(
               key: _formKey,
               child: Column(
@@ -318,10 +323,71 @@ class _EditItemSheetState extends ConsumerState<EditItemSheet> {
                       ),
                     ),
                   ),
+                  Row(
+                      children: List.generate(variations.length, (index) => Chip(
+                        onDeleted: () {
+                          setState(() {
+                            variations.removeAt(index);
+                          });
+                        },
+                        label: Text(
+                          variations[index],
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ))
+                  ),
+                  const SizedBox(height: 5),
+                  SizedBox(
+                    height: 50,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: variationController,
+                            decoration: InputDecoration(
+                              errorStyle: GoogleFonts.poppins(
+                                height: 0,
+                              ),
+                              labelText: "Add Variation",
+                              labelStyle: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Colors.grey,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            if (variationController.text != "") {
+                              variations.add(variationController.text);
+                              variationController.clear();
+                              setState(() {});
+                            }
+                          },
+                          icon: Icon(
+                            Icons.add,
+                            color: AppColors().primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      if (_formKey.currentState!.validate() && url != "") {
+                      if (_formKey.currentState!.validate() && url != "" && variations.isNotEmpty) {
                         FirestoreService().updateItem(
                             url,
                             nameController.text,
@@ -331,8 +397,8 @@ class _EditItemSheetState extends ConsumerState<EditItemSheet> {
                             widget.id,
                             value,
                             minimumController.text,
-                            AuthService().getID()
-
+                            AuthService().getID(),
+                          variations
                         );
                         Navigator.pop(context);
                       } else {

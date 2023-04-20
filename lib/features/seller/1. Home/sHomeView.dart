@@ -205,6 +205,7 @@ class _AHomeViewState extends ConsumerState<SHomeView> {
                                             id: searchResult[index].id,
                                             category: searchResult[index].data()["Category"],
                                             mini: searchResult[index].data()["Minimum"],
+                                            variations: searchResult[index].data()["Variations"],
                                           );
                                         });
                                       },
@@ -290,7 +291,7 @@ class _AHomeViewState extends ConsumerState<SHomeView> {
                                                 ),
                                                 const SizedBox(height: 5),
                                                 Text(
-                                                  "Stocks: ${myData[index].data()["Stocks"]}KG",
+                                                  "Stocks: ${myData[index].data()["Stocks"]}",
                                                   maxLines: 1,
                                                   overflow: TextOverflow.ellipsis,
                                                   style: GoogleFonts.poppins(
@@ -324,6 +325,7 @@ class _AHomeViewState extends ConsumerState<SHomeView> {
                                             id: myData[index].id,
                                             category: myData[index].data()["Category"],
                                             mini:  myData[index].data()["Minimum"],
+                                            variations: myData[index].data()["Variations"],
 
                                           );
                                         });

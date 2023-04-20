@@ -56,6 +56,36 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
     return total;
   }
 
+  int getDelivery(){
+    var brgy = widget.orderData.data()['Address'].toString().split("%")[1];
+
+    if (brgy == "San Isidro") {
+      return 200;
+    } else if (brgy == "San Jose") {
+      return 400;
+    } else if (brgy == "Burgos") {
+      return 400;
+    } else if (brgy == "Manggahan") {
+      return 400;
+    } else if (brgy == "Rosario") {
+      return 350;
+    } else if (brgy == "Balite") {
+      return 350;
+    } else if (brgy == "Geronimo") {
+      return 350;
+    } else if (brgy == "San Rafael") {
+      return 300;
+    } else if (brgy == "Mascap") {
+      return 200;
+    } else if (brgy == "Macabud") {
+      return 350;
+    } else if (brgy == "Puray") {
+      return 250;
+    } else {
+      return 0;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -147,7 +177,7 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                           const SizedBox(width: 30),
                           Expanded(
                             child: AutoSizeText(
-                              widget.orderData.data()['Address'],
+                              widget.orderData.data()['Address'].toString().replaceAll("%", ", "),
                               minFontSize: 0,
                               wrapWords: true,
                               style: GoogleFonts.poppins(
@@ -157,6 +187,25 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                           ),
                         ],
                       ),
+                      Row(
+                        children: [
+                          Text(
+                            "Delivery Fee:",
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            "PHP${getDelivery().toString()}",
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+
                       const SizedBox(height: 20),
                       Text(
                         "Order Date: ${widget.orderData.data()['Date'].toDate().toString().split(" ")[0]}",
@@ -178,6 +227,36 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                   ),
                 ),
               ),
+              const SizedBox(height: 10),
+              widget.orderData.data()["Status"] == "5" ? Center(
+                child: Column(
+                  children: [
+                    Text(
+                      "Refund Details:",
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 200,
+                      child: Image.network(
+                        widget.orderData.data()["RefundImage"],
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      "Refund Comment: ${widget.orderData.data()['RefundComment']}",
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ],
+                ),
+              ) : const SizedBox(),
               const SizedBox(height: 20),
               Text(
                 "Items:",
@@ -210,7 +289,7 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                               ),
                             ),
                             title: Text(
-                              snapshot.data!['Name'],
+                              "${snapshot.data!['Name']} (${widget.orderData.data()['Items'][index].toString().split(",")[2]})",
                               style: GoogleFonts.poppins(
                                 fontSize: 16,
                               ),

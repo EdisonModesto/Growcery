@@ -160,6 +160,7 @@ class _SellerStartViewState extends ConsumerState<SellerStartView> {
                                               id: sellerItems[index].id,
                                               min: sellerItems[index].data()['Minimum'],
                                               sellerID: sellerItems[index].data()['SellerID'],
+
                                             ),
                                           );
                                         },

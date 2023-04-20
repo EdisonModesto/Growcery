@@ -14,6 +14,7 @@ class AddToBasketSheet extends ConsumerStatefulWidget {
     required this.minimum,
     required this.isNow,
     required this.sellerID,
+    required this.variations,
     Key? key,
   }) : super(key: key);
 
@@ -21,6 +22,7 @@ class AddToBasketSheet extends ConsumerStatefulWidget {
   final minimum;
   final isNow;
   final sellerID;
+  final List<dynamic> variations;
 
   @override
   ConsumerState createState() => _AddToBasketSheetState();
@@ -29,8 +31,10 @@ class AddToBasketSheet extends ConsumerStatefulWidget {
 class _AddToBasketSheetState extends ConsumerState<AddToBasketSheet> {
 
   int value = 1;
-  double height = 250;
+  double height = 350;
   TextEditingController controller = TextEditingController();
+  int _selectedVariationIndex = 0;
+
 
 
   @override
@@ -61,6 +65,20 @@ class _AddToBasketSheetState extends ConsumerState<AddToBasketSheet> {
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
                     ),
+                  ),
+                  const SizedBox(height: 20),
+                  Wrap(
+                    children: List.generate(widget.variations.length, (index){
+                      return ChoiceChip(
+                        label: Text(widget.variations[index]),
+                        selected: _selectedVariationIndex == index,
+                        onSelected: (isSelected) {
+                          setState(() {
+                            _selectedVariationIndex = isSelected ? index : -1;
+                          });
+                        },
+                      );
+                    }),
                   ),
                   const SizedBox(height: 20),
                   Row(
@@ -139,17 +157,17 @@ class _AddToBasketSheetState extends ConsumerState<AddToBasketSheet> {
                           },
                           onEditingComplete: (){
                             setState(() {
-                              height = 250;
+                              height = 350;
                             });
                           },
                           onSubmitted: (val){
                             setState(() {
-                              height = 250;
+                              height = 350;
                             });
                           },
                           onTapOutside: (v){
                             setState(() {
-                              height = 250;
+                              height = 350;
                             });
                           },
                           onTap: (){
@@ -218,13 +236,18 @@ class _AddToBasketSheetState extends ConsumerState<AddToBasketSheet> {
                                 content: const Text("Please select your payment method"),
                                 actions: [
                                   TextButton(onPressed: (){
-                                    FirestoreService().createOrder(["${widget.id},$value"],  data.data()!["Name"], data.data()!["Contact"], data.data()!["Address"], widget.sellerID);
+                                    FirestoreService().createOrder(
+                                        ["${widget.id},$value,${widget.variations[_selectedVariationIndex]}"],
+                                        data..data()!["Name"],
+                                        data.data()!["Contact"],
+                                        data.data()!["Address"],
+                                        widget.sellerID);
                                     Fluttertoast.showToast(msg: "Order has been placed");
                                     Navigator.pop(builder);
                                   }, child: const Text("COD")),
                                   TextButton(onPressed: (){
                                     showDialog(context: context, builder: (builder){
-                                      return PaymentDialog(items: ["${widget.id},$value"], name:  data.data()!["Name"], contact: data.data()!["Contact"], address: data.data()!["Address"], sellerID: widget.sellerID,);
+                                      return PaymentDialog(items: ["${widget.id},$value,${widget.variations[_selectedVariationIndex]}"], name:  data.data()!["Name"], contact: data.data()!["Contact"], address: data.data()!["Address"], sellerID: widget.sellerID,);
                                     });
                                   }, child: const Text("Gcash")),
                                 ],
@@ -234,7 +257,7 @@ class _AddToBasketSheetState extends ConsumerState<AddToBasketSheet> {
                             Fluttertoast.showToast(msg: "No items in basket or you have not filled up your profile yet");
                           }
                         } else {
-                          FirestoreService().addToBasket(widget.id, value);
+                          FirestoreService().addToBasket(widget.id, value, widget.variations[_selectedVariationIndex]);
                         }
                       }
                     },
