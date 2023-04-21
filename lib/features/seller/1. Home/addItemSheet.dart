@@ -57,6 +57,41 @@ class _AddItemSheetState extends ConsumerState<AddItemSheet> {
 
   var value = "Vegetables";
 
+  var measurementItems = [
+
+    PopupMenuItem(
+      value: "Kg",
+      child: Text(
+        "Kg",
+        style: GoogleFonts.poppins(
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+    ),
+    PopupMenuItem(
+      value: "Sack",
+      child: Text(
+        "Sack",
+        style: GoogleFonts.poppins(
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+    ),
+    PopupMenuItem(
+      value: "Bundle",
+      child: Text(
+        "Bundle",
+        style: GoogleFonts.poppins(
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+    ),
+  ];
+  var measurementValue = "Kg";
+
   List<String> variations = [];
 
   @override
@@ -197,31 +232,51 @@ class _AddItemSheetState extends ConsumerState<AddItemSheet> {
                   const SizedBox(height: 20),
                   SizedBox(
                     height: 50,
-                    child: TextFormField(
-                      controller: quantityController,
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "";
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        errorStyle: GoogleFonts.poppins(
-                          height: 0,
-                        ),
-                        labelText: "Stocks",
-                        labelStyle: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        border: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Colors.grey,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: quantityController,
+                            keyboardType: TextInputType.number,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "";
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              errorStyle: GoogleFonts.poppins(
+                                height: 0,
+                              ),
+                              labelText: "Stocks",
+                              labelStyle: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Colors.grey,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
                           ),
-                          borderRadius: BorderRadius.circular(10),
                         ),
-                      ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        PopupMenuButton(
+                          icon: Icon(
+                            Icons.monitor_weight_outlined,
+                            color: AppColors().primaryColor,
+                          ),
+                          onSelected: (val) {
+                            measurementValue = val.toString();
+                            setState(() {});
+                          },
+                          itemBuilder: (context) => measurementItems,
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -363,7 +418,8 @@ class _AddItemSheetState extends ConsumerState<AddItemSheet> {
                             value,
                             minimumController.text,
                             AuthService().getID(),
-                            variations
+                            variations,
+                          measurementValue,
                         );
                         Navigator.pop(context);
                       } else {

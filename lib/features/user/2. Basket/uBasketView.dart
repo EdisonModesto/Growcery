@@ -60,8 +60,7 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
         items.add(i);
       }
     }
-    print("ITEMS");
-    print(items);
+
     return items;
   }
 
@@ -92,7 +91,6 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                 data: (data){
                   List<String> basketList = List<String>.from(data.data()!["Basket"]);
                   basketList.sort();
-                  print(basketList);
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -133,10 +131,10 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                                           ),
                                                         );
                                                       }
-                                                      return SizedBox();
+                                                      return const SizedBox();
                                                     }
                                                 ),
-                                                Spacer(),
+                                                const Spacer(),
                                                 TextButton(
                                                   onPressed: () {
                                                     if(!selecteditems.any((element) => List.generate(itemList.data!.length, (index) => basketList[itemList.data![index]]).contains(element))) {
@@ -178,16 +176,12 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                             ),
                                             Column(
                                               children: List.generate(itemList.data!.length, (index){
-                                                print(itemList.data![index]);
-                                                print(basketList[itemList.data![index]]);
                                                 return StreamBuilder(
                                                   stream: FirebaseFirestore.instance.collection("Items").doc(basketList[itemList.data![index]].toString().split(",")[0]).snapshots(),
                                                   builder: (context, snapshot) {
 
                                                     if (snapshot.hasData) {
-                                                      print("DATA FETCHED");
                                                       if(snapshot.data!.exists == false){
-                                                        print("NOT EXIST?");
                                                         FirestoreService().removeItem(basketList[itemList.data![index]].toString());
                                                       } else {
                                                         itemQuantity[itemList.data![index]] = int.parse(basketList[itemList.data![index]].toString().split(",")[1]);
@@ -305,7 +299,6 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                                                               setState(() {});
                                                                               FirestoreService().updateBasketQuantity(basketList[itemList.data![index]].toString().split(",")[0], itemQuantity[itemList.data![index]] + 1, basketList[itemList.data![index]],  basketList[itemList.data![index]].toString().split(",")[2]);
                                                                               itemQuantity[itemList.data![index]] = itemQuantity[itemList.data![index]] + 1;
-                                                                              print(itemQuantity[itemList.data![index]]);
                                                                               setState(() {});
                                                                             },
                                                                             child: Container(
@@ -343,7 +336,6 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                                                       selectedPrice.add(
                                                                           itemPrice[itemList.data![index]]);
                                                                     } else {
-                                                                      print("CHANGED");
                                                                       selecteditems.remove(data
                                                                           .data()!["Basket"][itemList.data![index]]
                                                                           .toString()
@@ -374,22 +366,22 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                         );
 
                                       }
-                                      return SizedBox();
+                                      return const SizedBox();
                                     }
                                   );
                                 },
                                 separatorBuilder: (context, index) =>
                                 Column(
-                                  children: [
-                                    const SizedBox(height: 5),
+                                  children: const [
+                                    SizedBox(height: 5),
                                     Divider(thickness: 1,),
-                                    const SizedBox(height: 5),
+                                    SizedBox(height: 5),
                                   ],
                                 ),
                               );
 
                             }
-                            return SizedBox();
+                            return const SizedBox();
                           }
 
                         ),
@@ -418,7 +410,7 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                   sellerID: snapshot2.data?["SellerID"] ?? "",
                                 );
                               }
-                              return SizedBox();
+                              return const SizedBox();
                             }
                           ),
                         ),
@@ -502,8 +494,12 @@ class _PriceLabelState extends ConsumerState<PriceLabel> {
   Future<double> computeTotal(dummy) async {
     total = 0;
     setState(() {});
-    await Future.delayed(const Duration(seconds: 1));
+    print("Widget Prices: ");
+    print(widget.prices);
+
+
     for (int i = 0; i < widget.prices.length; i++) {
+      print(widget.quantity[i]);
       total = total + (widget.prices[i] * widget.quantity[i]);
     }
 

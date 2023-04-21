@@ -141,6 +141,12 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                           var complete = data1.docs.where((element) => element.data()["Status"] == "3" && element.data()["SellerID"] == AuthService().getID()).toList();
                           var canceled = data1.docs.where((element) => element.data()["Status"] == "5" && element.data()["SellerID"] == AuthService().getID()).toList();
 
+                          toPay.sort((a, b) => b.data()["Date"].compareTo(a.data()["Date"]));
+                          inProgress.sort(( a, b) => b.data()["Date"].compareTo(a.data()["Date"]));
+                          toRecieve.sort((a, b) => b.data()["Date"].compareTo(a.data()["Date"]));
+                          complete.sort((a, b) => b.data()["Date"].compareTo(a.data()["Date"]));
+                          canceled.sort((a, b) => b.data()["Date"].compareTo(a.data()["Date"]));
+
                           return TabBarView(
                             children: [
                               ListView.separated(
@@ -166,6 +172,8 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                       builder: (context){
                                                         return OrderDetailsView(
                                                           orderData: toPay[index],
+                                                          isComplete: false,
+                                                          delivery: false,
                                                         );
                                                       }
                                                   );
@@ -291,6 +299,9 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                         builder: (context){
                                                           return OrderDetailsView(
                                                             orderData: inProgress[index],
+                                                            isComplete: false,
+                                                            delivery: false,
+
                                                           );
                                                         }
                                                     );
@@ -406,6 +417,9 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                         builder: (context){
                                                           return OrderDetailsView(
                                                             orderData: toRecieve[index],
+                                                            isComplete: false,
+                                                            delivery: true,
+
                                                           );
                                                         }
                                                     );
@@ -510,6 +524,9 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                         builder: (context){
                                                           return OrderDetailsView(
                                                             orderData: complete[index],
+                                                            isComplete: true,
+                                                            delivery: false,
+
                                                           );
                                                         }
                                                     );
@@ -613,6 +630,8 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                           builder: (context){
                                                             return OrderDetailsView(
                                                               orderData: canceled[index],
+                                                              isComplete: false,
+                                                              delivery: false,
                                                             );
                                                           }
                                                       );

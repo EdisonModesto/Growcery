@@ -1,16 +1,21 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class OrderDetailsView extends ConsumerStatefulWidget {
   const OrderDetailsView({
     required this.orderData,
+    required this.isComplete,
+    required this.delivery,
     Key? key,
   }) : super(key: key);
 
   final orderData;
+  final isComplete;
+  final delivery;
 
   @override
   ConsumerState createState() => _OrderDetailsViewState();
@@ -169,6 +174,27 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                         ],
                       ),
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Est Delivery:",
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Spacer(),
+                          AutoSizeText(
+                            widget.orderData.data()['Date'].toDate().add(Duration(days: 2)).toString().split(" ")[0],
+                            minFontSize: 0,
+                            wrapWords: true,
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
                         children: [
                           Text(
                             "Delivery Fee:",
@@ -211,15 +237,62 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      const SizedBox(height: 10),
-
                       Text(
-                        "Completed Date: ${widget.orderData.data()['Date Completed']}",
+                        "Order Time: ${widget.orderData.data()['Date'].toDate().toString().split(" ")[1].substring(0, 5)}",
                         style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
+                      const SizedBox(height: 10),
+                      widget.isComplete ?
+                      Text(
+                        "Completed Date: ${widget.orderData.data()['Date Completed'].toString().split(" ")[0]}",
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ) : SizedBox(),
+                      widget.isComplete ?
+                      Text(
+                        "Completed Time: ${widget.orderData.data()['Date Completed'].toString().split(" ")[1].substring(0, 5)}",
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ) : SizedBox(),
+                      widget.isComplete ?
+
+                      Row(
+                        children: [
+                          Text(
+                            "Rating: ",
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Expanded(
+                            child: RatingBar.builder(
+                              initialRating: widget.orderData.data()['Rating'],
+                              minRating: 0,
+                              direction: Axis.horizontal,
+                              ignoreGestures: true,
+                              allowHalfRating: true,
+                              itemCount: 5,
+                              itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                              itemSize: 25,
+                              itemBuilder: (context, _) => const Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              ),
+                              onRatingUpdate: (rating) {
+                                print(rating);
+                              },
+                            ),
+                          ),
+                        ],
+                      ) : SizedBox(),
                     ],
                   ),
                 ),

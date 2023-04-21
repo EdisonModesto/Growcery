@@ -46,7 +46,7 @@ class _RefundSheetState extends ConsumerState<RefundSheet> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Please Contact us for Refund",
+                      "Refund",
                       style: GoogleFonts.poppins(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -119,9 +119,16 @@ class _RefundSheetState extends ConsumerState<RefundSheet> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      "Contact number: ${snapshot.data!["Contact"]}",
+                      "Please Contact Us for Refund",
                       style: GoogleFonts.poppins(
                         fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    Text(
+                      "Contact number: ${snapshot.data!["Contact"]}",
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
                         fontWeight: FontWeight.w400,
                       ),
                     ),

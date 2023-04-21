@@ -116,117 +116,128 @@ class _AHomeViewState extends ConsumerState<SHomeView> {
                         mainAxisSpacing: 20,
                         childAspectRatio: 0.8,
                         children: List.generate(searchResult.length, (index){
-                          return Stack(
-                            children: [
-                              InkWell(
-                                onTap: (){
-                                  showModalBottomSheet(
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(12),
-                                      ),
-                                    ),
-                                    context: context,
-                                    isScrollControlled: true,
-                                    builder: (context) => ViewItemAdmin(
-                                      name: searchResult[index].data()["Name"],
-                                      price: searchResult[index].data()["Price"],
-                                      stock: searchResult[index].data()["Stocks"],
-                                      image: searchResult[index].data()["Url"],
-                                      description: searchResult[index].data()["Description"],
-                                      id: searchResult[index].id,
-                                    ),
-                                  );
-                                },
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Expanded(
-                                          child: Image.network(
-                                            searchResult[index].data()["Url"],
-                                            width: double.infinity,
-                                            fit: BoxFit.fitWidth,
-                                          ),
+                          return Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.25),
+                                  offset: Offset(0, 5),
+                                  blurRadius: 5,
+                                ),
+                              ],
+                            ),
+                            child: Stack(
+                              children: [
+                                InkWell(
+                                  onTap: (){
+                                    showModalBottomSheet(
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(12),
                                         ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(20.0),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  searchResult[index].data()["Name"],
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 5),
-                                                Text(
-                                                  "Stocks: ${searchResult[index].data()["Stocks"]}",
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                              ],
+                                      ),
+                                      context: context,
+                                      isScrollControlled: true,
+                                      builder: (context) => ViewItemAdmin(
+                                        name: searchResult[index].data()["Name"],
+                                        price: searchResult[index].data()["Price"],
+                                        stock: searchResult[index].data()["Stocks"],
+                                        image: searchResult[index].data()["Url"],
+                                        description: searchResult[index].data()["Description"],
+                                        id: searchResult[index].id,
+                                      ),
+                                    );
+                                  },
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            child: Image.network(
+                                              searchResult[index].data()["Url"],
+                                              width: double.infinity,
+                                              fit: BoxFit.fitWidth,
                                             ),
                                           ),
-                                        )
-                                      ],
+                                          Expanded(
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(20.0),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    searchResult[index].data()["Name"],
+                                                    maxLines: 1,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 5),
+                                                  Text(
+                                                    "Stocks: ${searchResult[index].data()["Stocks"]}",
+                                                    maxLines: 1,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Align(
-                                alignment: Alignment.topRight,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    IconButton(
-                                      onPressed: (){
-                                        showMaterialModalBottomSheet(context: context, builder: (builder){
-                                          return EditItemSheet(
-                                            url: searchResult[index].data()["Url"],
-                                            name: searchResult[index].data()["Name"],
-                                            price: searchResult[index].data()["Price"],
-                                            quantity: searchResult[index].data()["Stocks"],
-                                            description: searchResult[index].data()["Description"],
-                                            id: searchResult[index].id,
-                                            category: searchResult[index].data()["Category"],
-                                            mini: searchResult[index].data()["Minimum"],
-                                            variations: searchResult[index].data()["Variations"],
-                                          );
-                                        });
-                                      },
-                                      icon: Icon(
-                                        Icons.edit,
-                                        color: AppColors().primaryColor,
+                                Align(
+                                  alignment: Alignment.topRight,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      IconButton(
+                                        onPressed: (){
+                                          showMaterialModalBottomSheet(context: context, builder: (builder){
+                                            return EditItemSheet(
+                                              url: searchResult[index].data()["Url"],
+                                              name: searchResult[index].data()["Name"],
+                                              price: searchResult[index].data()["Price"],
+                                              quantity: searchResult[index].data()["Stocks"],
+                                              description: searchResult[index].data()["Description"],
+                                              id: searchResult[index].id,
+                                              category: searchResult[index].data()["Category"],
+                                              mini: searchResult[index].data()["Minimum"],
+                                              variations: searchResult[index].data()["Variations"],
+                                            );
+                                          });
+                                        },
+                                        icon: Icon(
+                                          Icons.edit,
+                                          color: AppColors().primaryColor,
+                                        ),
                                       ),
-                                    ),
-                                   /* IconButton(
-                                      onPressed: (){
-                                        FirestoreService().removeItem(searchResult[index].id);
-                                      },
-                                      icon: const Icon(
-                                        Icons.delete,
-                                        color: Colors.redAccent,
-                                      ),
-                                    ),*/
-                                  ],
-                                ),
-                              )
-                            ],
+                                     /* IconButton(
+                                        onPressed: (){
+                                          FirestoreService().removeItem(searchResult[index].id);
+                                        },
+                                        icon: const Icon(
+                                          Icons.delete,
+                                          color: Colors.redAccent,
+                                        ),
+                                      ),*/
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
                           );
                         })
                     ) :
@@ -236,118 +247,129 @@ class _AHomeViewState extends ConsumerState<SHomeView> {
                         mainAxisSpacing: 20,
                         childAspectRatio: 0.8,
                         children: List.generate(myData.length, (index){
-                          return Stack(
-                            children: [
-                              InkWell(
-                                onTap: (){
-                                  showModalBottomSheet(
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(12),
-                                      ),
-                                    ),
-                                    context: context,
-                                    isScrollControlled: true,
-                                    builder: (context) => ViewItemAdmin(
-                                      name: myData[index].data()["Name"],
-                                      price: myData[index].data()["Price"],
-                                      stock: myData[index].data()["Stocks"],
-                                      image:myData[index].data()["Url"],
-                                      description: myData[index].data()["Description"],
-                                      id: myData[index].id,
-                                    ),
-                                  );
-                                },
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Expanded(
-                                          child: Image.network(
-                                            myData[index].data()["Url"],
-                                            width: double.infinity,
-                                            fit: BoxFit.fitWidth,
-                                          ),
+                          return Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.25),
+                                  offset: Offset(0, 5),
+                                  blurRadius: 5,
+                                ),
+                              ],
+                            ),
+                            child: Stack(
+                              children: [
+                                InkWell(
+                                  onTap: (){
+                                    showModalBottomSheet(
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(12),
                                         ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(20.0),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  myData[index].data()["Name"],
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 5),
-                                                Text(
-                                                  "Stocks: ${myData[index].data()["Stocks"]}",
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                              ],
+                                      ),
+                                      context: context,
+                                      isScrollControlled: true,
+                                      builder: (context) => ViewItemAdmin(
+                                        name: myData[index].data()["Name"],
+                                        price: myData[index].data()["Price"],
+                                        stock: myData[index].data()["Stocks"],
+                                        image:myData[index].data()["Url"],
+                                        description: myData[index].data()["Description"],
+                                        id: myData[index].id,
+                                      ),
+                                    );
+                                  },
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            child: Image.network(
+                                              myData[index].data()["Url"],
+                                              width: double.infinity,
+                                              fit: BoxFit.fitWidth,
                                             ),
                                           ),
-                                        )
-                                      ],
+                                          Expanded(
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(20.0),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    myData[index].data()["Name"],
+                                                    maxLines: 1,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 5),
+                                                  Text(
+                                                    "Stocks: ${myData[index].data()["Stocks"]}",
+                                                    maxLines: 1,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Align(
-                                alignment: Alignment.topRight,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    IconButton(
-                                      onPressed: (){
-                                        showMaterialModalBottomSheet(context: context, builder: (builder){
-                                          return EditItemSheet(
-                                            url:myData[index].data()["Url"],
-                                            name: myData[index].data()["Name"],
-                                            price: myData[index].data()["Price"],
-                                            quantity: myData[index].data()["Stocks"],
-                                            description: myData[index].data()["Description"],
-                                            id: myData[index].id,
-                                            category: myData[index].data()["Category"],
-                                            mini:  myData[index].data()["Minimum"],
-                                            variations: myData[index].data()["Variations"],
+                                Align(
+                                  alignment: Alignment.topRight,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      IconButton(
+                                        onPressed: (){
+                                          showMaterialModalBottomSheet(context: context, builder: (builder){
+                                            return EditItemSheet(
+                                              url:myData[index].data()["Url"],
+                                              name: myData[index].data()["Name"],
+                                              price: myData[index].data()["Price"],
+                                              quantity: myData[index].data()["Stocks"],
+                                              description: myData[index].data()["Description"],
+                                              id: myData[index].id,
+                                              category: myData[index].data()["Category"],
+                                              mini:  myData[index].data()["Minimum"],
+                                              variations: myData[index].data()["Variations"],
 
-                                          );
-                                        });
-                                      },
-                                      icon: Icon(
-                                        Icons.edit,
-                                        color:  AppColors().primaryColor,
+                                            );
+                                          });
+                                        },
+                                        icon: Icon(
+                                          Icons.edit,
+                                          color:  AppColors().primaryColor,
+                                        ),
                                       ),
-                                    ),
-                                   /* IconButton(
-                                      onPressed: (){
-                                        FirestoreService().removeItem(data.docs[index].id);
-                                      },
-                                      icon: const Icon(
-                                        Icons.delete,
-                                        color: Colors.redAccent,
-                                      ),
-                                    ),*/
-                                  ],
-                                ),
-                              )
-                            ],
+                                     /* IconButton(
+                                        onPressed: (){
+                                          FirestoreService().removeItem(data.docs[index].id);
+                                        },
+                                        icon: const Icon(
+                                          Icons.delete,
+                                          color: Colors.redAccent,
+                                        ),
+                                      ),*/
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
                           );
                         })
                     );

@@ -206,81 +206,83 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                         return ListView.builder(
                           itemCount: sellers.length,
                           itemBuilder: (context, index){
-                            return ListTile(
-                              onTap: (){
-                                context.pushNamed("sellerStore", params: {"sellerID": sellers[index].id});
-                              },
-                              title: Text(
-                                sellers[index].data()["Name"],
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w400,
+                            return Card(
+                              child: ListTile(
+                                onTap: (){
+                                  context.pushNamed("sellerStore", params: {"sellerID": sellers[index].id});
+                                },
+                                title: Text(
+                                  sellers[index].data()["Name"],
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                  ),
                                 ),
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    sellers[index].data()["Address"].toString().replaceAll("%", ", "),
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      sellers[index].data()["Address"].toString().replaceAll("%", ", "),
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                      ),
                                     ),
-                                  ),
-                                  StreamBuilder(
-                                    stream: FirebaseFirestore.instance.collection("Items").where("SellerID", isEqualTo: sellers[index].id).snapshots(),
-                                    builder: (context, snapshot) {
-                                      if(snapshot.hasData){
-                                        return Text(
-                                          "Total Items: ${snapshot.data!.docs.length}",
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        );
+                                    StreamBuilder(
+                                      stream: FirebaseFirestore.instance.collection("Items").where("SellerID", isEqualTo: sellers[index].id).snapshots(),
+                                      builder: (context, snapshot) {
+                                        if(snapshot.hasData){
+                                          return Text(
+                                            "Total Items: ${snapshot.data!.docs.length}",
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          );
+                                        }
+                                        return SizedBox();
                                       }
-                                      return SizedBox();
-                                    }
-                                  ),
-                                  StreamBuilder(
-                                    stream: FirebaseFirestore.instance.collection("Users").doc(sellers[index].id).collection("Ratings").snapshots(),
-                                    builder: (context, snapshot) {
-                                      if(snapshot.hasData){
-                                        double totalRating = 0;
+                                    ),
+                                    StreamBuilder(
+                                      stream: FirebaseFirestore.instance.collection("Users").doc(sellers[index].id).collection("Ratings").snapshots(),
+                                      builder: (context, snapshot) {
+                                        if(snapshot.hasData){
+                                          double totalRating = 0;
 
-                                        snapshot.data!.docs.forEach((element) {
-                                          totalRating += element.data()["Rating"];
-                                        });
+                                          snapshot.data!.docs.forEach((element) {
+                                            totalRating += element.data()["Rating"];
+                                          });
 
-                                        totalRating = totalRating == 0 ? 0.0 : totalRating / snapshot.data!.docs.length;
-                                        return RatingBar.builder(
-                                          initialRating: totalRating,
-                                          minRating: 0,
-                                          direction: Axis.horizontal,
-                                          ignoreGestures: true,
-                                          allowHalfRating: true,
-                                          itemCount: 5,
-                                          itemPadding: const EdgeInsets.symmetric(horizontal:0),
-                                          itemSize: 25,
-                                          itemBuilder: (context, _) => const Icon(
-                                            Icons.star,
-                                            color: Colors.amber,
-                                          ),
-                                          onRatingUpdate: (rating) {
-                                            print(rating);
-                                          },
-                                        );
+                                          totalRating = totalRating == 0 ? 0.0 : totalRating / snapshot.data!.docs.length;
+                                          return RatingBar.builder(
+                                            initialRating: totalRating,
+                                            minRating: 0,
+                                            direction: Axis.horizontal,
+                                            ignoreGestures: true,
+                                            allowHalfRating: true,
+                                            itemCount: 5,
+                                            itemPadding: const EdgeInsets.symmetric(horizontal:0),
+                                            itemSize: 25,
+                                            itemBuilder: (context, _) => const Icon(
+                                              Icons.star,
+                                              color: Colors.amber,
+                                            ),
+                                            onRatingUpdate: (rating) {
+                                              print(rating);
+                                            },
+                                          );
+                                        }
+                                        return SizedBox();
                                       }
-                                      return SizedBox();
-                                    }
+                                    ),
+                                  ],
+                                ),
+                                trailing: Text(
+                                  ">",
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
                                   ),
-                                ],
-                              ),
-                              trailing: Text(
-                                ">",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w400,
                                 ),
                               ),
                             );
@@ -349,6 +351,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                       id: searchResult[index].id,
                                       min: searchResult[index].data()['Minimum'],
                                       sellerID: searchResult[index].data()['SellerID'],
+                                      measurement: searchResult[index].data()['Measurement'],
                                     ),
                                   );
                                 },
@@ -389,7 +392,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                                   ),
                                                   const SizedBox(height: 5),
                                                   Text(
-                                                    "PHP ${searchResult[index].data()['Price']}/KG",
+                                                    "PHP ${searchResult[index].data()['Price']}/${searchResult[index].data()['Measurement']}",
                                                     maxLines: 1,
                                                     overflow: TextOverflow.ellipsis,
                                                     style: GoogleFonts.poppins(
@@ -435,6 +438,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                       id: data.docs[index].id,
                                       min: data.docs[index].data()['Minimum'],
                                       sellerID: data.docs[index].data()['SellerID'],
+                                      measurement: data.docs[index].data()['Measurement'],
                                     ),
                                   );
                                 },
@@ -475,7 +479,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                                   ),
                                                   const SizedBox(height: 5),
                                                   Text(
-                                                    "PHP ${data.docs[index].data()['Price']}/KG",
+                                                    "PHP ${data.docs[index].data()['Price']}/${data.docs[index].data()['Measurement']}",
                                                     maxLines: 1,
                                                     overflow: TextOverflow.ellipsis,
                                                     style: GoogleFonts.poppins(
@@ -613,6 +617,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                         id: vegies[index].id,
                                         min: vegies[index].data()['Minimum'],
                                         sellerID: vegies[index].data()['SellerID'],
+                                        measurement: vegies[index].data()['Measurement'],
                                       ),
                                     );
                                   },
@@ -673,6 +678,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                           id: frutis[index].id,
                                           min: frutis[index].data()['Minimum'],
                                           sellerID: frutis[index].data()['SellerID'],
+                                          measurement: frutis[index].data()['Measurement'],
                                         ),
                                       );
                                     },

@@ -118,18 +118,6 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
                       },
                     ),
                     const SizedBox(height: 10),
-                    const Divider(thickness: 1,),
-                    const SizedBox(height: 10),
-                    Center(
-                      child: Text(
-                        "Average Rating",
-                        style: GoogleFonts.poppins(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                            color: Colors.black
-                        ),
-                      ),
-                    ),
                     Expanded(
                       child: ratings.when(
                           data: (data){
@@ -141,27 +129,45 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
                             });
 
                             totalRating = totalRating / data.docs.length;
-
                             return Column(
 
                               children: [
-                                Center(
-                                  child: RatingBar.builder(
-                                    initialRating: totalRating,
-                                    minRating: 1,
-                                    direction: Axis.horizontal,
-                                    ignoreGestures: true,
-                                    allowHalfRating: true,
-                                    itemCount: 5,
-                                    itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-                                    itemSize: 30,
-                                    itemBuilder: (context, _) => const Icon(
-                                      Icons.star,
-                                      color: Colors.amber,
+                                Card(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Column(
+                                      children: [
+                                        Center(
+                                          child: Text(
+                                            "Average Rating",
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black
+                                            ),
+                                          ),
+                                        ),
+                                        Center(
+                                          child: RatingBar.builder(
+                                            initialRating: data.docs.isEmpty ? 0.0 : totalRating,
+                                            minRating: 0,
+                                            direction: Axis.horizontal,
+                                            ignoreGestures: true,
+                                            allowHalfRating: true,
+                                            itemCount: 5,
+                                            itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                            itemSize: 30,
+                                            itemBuilder: (context, _) => const Icon(
+                                              Icons.star,
+                                              color: Colors.amber,
+                                            ),
+                                            onRatingUpdate: (rating) {
+                                              print(rating);
+                                            },
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    onRatingUpdate: (rating) {
-                                      print(rating);
-                                    },
                                   ),
                                 ),
                                 const SizedBox(

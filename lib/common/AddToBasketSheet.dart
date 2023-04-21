@@ -15,6 +15,7 @@ class AddToBasketSheet extends ConsumerStatefulWidget {
     required this.isNow,
     required this.sellerID,
     required this.variations,
+    required this.stocks,
     Key? key,
   }) : super(key: key);
 
@@ -23,6 +24,7 @@ class AddToBasketSheet extends ConsumerStatefulWidget {
   final isNow;
   final sellerID;
   final List<dynamic> variations;
+  final stocks;
 
   @override
   ConsumerState createState() => _AddToBasketSheetState();
@@ -227,7 +229,7 @@ class _AddToBasketSheetState extends ConsumerState<AddToBasketSheet> {
                   const SizedBox(height: 40),
                   ElevatedButton(
                     onPressed: () {
-                      if(int.parse(controller.text) >= int.parse(widget.minimum)){
+                      if(int.parse(controller.text) >= int.parse(widget.minimum) && int.parse(controller.text) <= int.parse(widget.stocks)){
                         if(widget.isNow == true){
                           if (data.data()!["Name"] != "" &&  data.data()!["Contact"] != "" &&  data.data()!["Address"].toString().split("%")[0] != "No Data") {
                             showDialog(context: context, builder: (builder){
@@ -259,6 +261,10 @@ class _AddToBasketSheetState extends ConsumerState<AddToBasketSheet> {
                         } else {
                           FirestoreService().addToBasket(widget.id, value, widget.variations[_selectedVariationIndex]);
                         }
+                      } else {
+                        Fluttertoast.showToast(
+                          msg: "Minimum quantity is ${widget.minimum} and maximum is ${widget.stocks}",
+                        );
                       }
                     },
                     style: ElevatedButton.styleFrom(

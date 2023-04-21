@@ -312,6 +312,9 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                           builder: (context) {
                                                             return OrderDetailsView(
                                                               orderData: toPay[index],
+                                                              isComplete: false,
+                                                              delivery: false,
+
                                                             );
                                                           }
                                                       );
@@ -494,6 +497,9 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                           builder: (context) {
                                                             return OrderDetailsView(
                                                               orderData: inProgress[index],
+                                                              isComplete: false,
+                                                              delivery: false,
+
                                                             );
                                                           }
                                                       );
@@ -625,6 +631,8 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                           builder: (context) {
                                                             return OrderDetailsView(
                                                               orderData: toRecieve[index],
+                                                              isComplete: false,
+                                                              delivery: true,
                                                             );
                                                           }
                                                       );
@@ -776,6 +784,9 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                           builder: (context) {
                                                             return OrderDetailsView(
                                                               orderData: cancelled[index],
+                                                              isComplete: false,
+                                                              delivery: false,
+
                                                             );
                                                           }
                                                       );
@@ -901,6 +912,9 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                           builder: (context) {
                                                             return OrderDetailsView(
                                                               orderData: complete[index],
+                                                              isComplete: true,
+                                                              delivery: false,
+
                                                             );
                                                           }
                                                       );
@@ -1029,6 +1043,8 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                           builder: (context) {
                                                             return OrderDetailsView(
                                                               orderData: refunded[index],
+                                                              isComplete: false,
+                                                              delivery: false,
                                                             );
                                                           }
                                                       );

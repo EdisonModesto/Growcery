@@ -21,6 +21,7 @@ class ViewItemSheet extends ConsumerStatefulWidget {
     required this.id,
     required this.min,
     required this.sellerID,
+    required this.measurement,
     Key? key,
   }) : super(key: key);
 
@@ -32,6 +33,7 @@ class ViewItemSheet extends ConsumerStatefulWidget {
   final String id;
   final min;
   final sellerID;
+  final measurement;
 
   @override
   ConsumerState createState() => _ViewItemSheetState();
@@ -64,7 +66,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    "${widget.name} - MINIMUM OF ${widget.min}KG",
+                    "${widget.name} - MINIMUM OF ${widget.min}/${widget.measurement}",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.poppins(
@@ -99,7 +101,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                         ),
                       ),
                       Text(
-                        "Stocks: ${widget.stock}KG",
+                        "Stocks: ${widget.stock}/${widget.measurement}",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.poppins(
@@ -241,7 +243,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                                 topRight: Radius.circular(20),
                               ),
                             ),
-                            builder: (context) => AddToBasketSheet(id: widget.id, minimum: widget.min, isNow: true, sellerID: snapshot.data?["SellerID"], variations: snapshot.data?["Variations"],),
+                            builder: (context) => AddToBasketSheet(id: widget.id, minimum: widget.min, isNow: true, sellerID: snapshot.data?["SellerID"], variations: snapshot.data?["Variations"], stocks: snapshot.data?["Stocks"],),
                           );
                         } else {
                           Fluttertoast.showToast(
@@ -293,7 +295,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                                   topRight: Radius.circular(20),
                                 ),
                               ),
-                              builder: (context) => AddToBasketSheet(id: widget.id, minimum: widget.min, isNow: false, sellerID: widget.sellerID, variations: snapshot.data?["Variations"]),
+                              builder: (context) => AddToBasketSheet(id: widget.id, minimum: widget.min, isNow: false, sellerID: widget.sellerID, variations: snapshot.data?["Variations"], stocks: snapshot.data?["Stocks"],),
                             );
                           } else {
                             Fluttertoast.showToast(

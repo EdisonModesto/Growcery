@@ -53,7 +53,7 @@ class FirestoreService{
     return "Unknown";
   }
 
-  void addItem(url, name, price, stocks, description, category, minimum, sellerID, variations){
+  void addItem(url, name, price, stocks, description, category, minimum, sellerID, variations, measurement){
     FirebaseFirestore.instance.collection("Items").doc().set({
       "Url": url,
       "SellerID": sellerID,
@@ -64,10 +64,11 @@ class FirestoreService{
       "Category": category,
       "Minimum": minimum,
       "Variations": variations,
+      "Measurement": measurement,
     });
   }
 
-  void updateItem(url, name, price, stocks, description,id, category, minimum, sellerID, variations){
+  void updateItem(url, name, price, stocks, description,id, category, minimum, sellerID, variations, measurement){
     FirebaseFirestore.instance.collection("Items").doc(id).update({
       "Url": url,
       "SellerID": sellerID,
@@ -78,6 +79,7 @@ class FirestoreService{
       "Category": category,
       "Minimum": minimum,
       "Variations": variations,
+      "Measurement": measurement,
     });
   }
 
@@ -170,12 +172,17 @@ class FirestoreService{
     });
   }
 
-  void saveRating(rating, sellerID, marketName){
+  void saveRating(rating, sellerID, marketName, orderID){
 
     FirebaseFirestore.instance.collection("Users").doc(sellerID).collection("Ratings").doc().set({
       "Rating": rating,
       "MarketName": marketName,
     });
+
+    FirebaseFirestore.instance.collection("Orders").doc(orderID).update({
+      "Rating": rating,
+    });
+
   }
 
   Future<void> restoreStock(id, quantity) async {

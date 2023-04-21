@@ -106,8 +106,8 @@ class _AuthDialogState extends ConsumerState<AuthView> {
                   children: [
                     const SizedBox(height: 75,),
 
-                    CircleAvatar(
-                      backgroundImage: const AssetImage("assets/images/growceryLogo.jpg"),
+                    const CircleAvatar(
+                      backgroundImage: AssetImage("assets/images/growceryLogo.jpg"),
                       radius: 50,
                     ),
                     const SizedBox(height: 50,),
@@ -260,7 +260,7 @@ class _AuthDialogState extends ConsumerState<AuthView> {
                                         },
                                         decoration: InputDecoration(
                                           labelText: "Email",
-                                          errorStyle: TextStyle(height: 0),
+                                          errorStyle: const TextStyle(height: 0),
                                           labelStyle: GoogleFonts.poppins(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w400,
@@ -289,7 +289,7 @@ class _AuthDialogState extends ConsumerState<AuthView> {
                                         obscureText: obscure,
                                         decoration: InputDecoration(
                                           labelText: "Password",
-                                          errorStyle: TextStyle(height: 0),
+                                          errorStyle: const TextStyle(height: 0),
 
                                           labelStyle: GoogleFonts.poppins(
                                             fontSize: 14,
@@ -328,7 +328,7 @@ class _AuthDialogState extends ConsumerState<AuthView> {
                                         },
                                         decoration: InputDecoration(
                                           labelText: "Name",
-                                          errorStyle: TextStyle(height: 0),
+                                          errorStyle: const TextStyle(height: 0),
 
                                           labelStyle: GoogleFonts.poppins(
                                             fontSize: 14,
@@ -357,7 +357,7 @@ class _AuthDialogState extends ConsumerState<AuthView> {
                                         },
                                         decoration: InputDecoration(
                                           labelText: "Contact",
-                                          errorStyle: TextStyle(height: 0),
+                                          errorStyle: const TextStyle(height: 0),
 
                                           labelStyle: GoogleFonts.poppins(
                                             fontSize: 14,
@@ -386,7 +386,7 @@ class _AuthDialogState extends ConsumerState<AuthView> {
                                         },
                                         decoration: InputDecoration(
                                           labelText: "GCash",
-                                          errorStyle: TextStyle(height: 0),
+                                          errorStyle: const TextStyle(height: 0),
 
                                           labelStyle: GoogleFonts.poppins(
                                             fontSize: 14,
@@ -561,8 +561,8 @@ class _AuthDialogState extends ConsumerState<AuthView> {
                                       children: [
                                         RadioListTile(
 
-                                          title: Text('Market'),
-                                          value: 'Market',
+                                          title: const Text('Market'),
+                                          value: 'Buyer',
                                           groupValue: _selectedOption,
                                           onChanged: (value) {
                                             setState(() {
@@ -571,8 +571,8 @@ class _AuthDialogState extends ConsumerState<AuthView> {
                                           },
                                         ),
                                         RadioListTile(
-                                          title: Text('Farm'),
-                                          value: 'Farm',
+                                          title: const Text('Farm'),
+                                          value: 'Seller',
                                           groupValue: _selectedOption,
                                           onChanged: (value) {
                                             setState(() {
