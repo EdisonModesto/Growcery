@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../constants/AppColors.dart';
+import '../../../services/CloudService.dart';
+import '../../../services/FilePickerService.dart';
 import '../../../services/FirestoreService.dart';
 
-class PaymentDialog extends ConsumerWidget {
+class PaymentDialog extends ConsumerStatefulWidget {
   const PaymentDialog({
     @required this.items,
     @required this.name,
@@ -19,14 +22,24 @@ class PaymentDialog extends ConsumerWidget {
 
   final items, name, contact, address, sellerID;
 
-  Widget build(BuildContext context, WidgetRef ref) {
+  @override
+  ConsumerState createState() => _PaymentDialogState();
+}
+
+class _PaymentDialogState extends ConsumerState<PaymentDialog> {
+
+  String url = "";
+
+
+  @override
+  Widget build(BuildContext context) {
     return Center(
         child: Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
           ),
           child: SizedBox(
-            height: 400,
+            height: 550,
             width: MediaQuery.of(context).size.width * 0.8,
             child: Padding(
               padding: const EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 10),
@@ -54,20 +67,60 @@ class PaymentDialog extends ConsumerWidget {
                   Align(
                     alignment: Alignment.center,
                     child: StreamBuilder(
-                      stream: FirebaseFirestore.instance.collection('Users').doc(sellerID).snapshots(),
-                      builder: (context, snapshot) {
-                        return Text(
-                          "Gcash: ${snapshot.data!.data()!["GCash"]}\nName: ${snapshot.data!.data()!["Name"]}",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            color: Colors.black,
-                          ),
-                        );
-                      }
+                        stream: FirebaseFirestore.instance.collection('Users').doc(widget.sellerID).snapshots(),
+                        builder: (context, snapshot) {
+                          return Text(
+                            "Gcash: ${snapshot.data!.data()!["GCash"]}\nName: ${snapshot.data!.data()!["Name"]}",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
+                          );
+                        }
                     ),
                   ),
-                  const Spacer(),
+                  const SizedBox(height: 25,),
+
+                  SizedBox(
+                      height: 200,
+                      width: double.infinity,
+                      child: Stack(
+                        children: [
+                          Image.network(
+                            url == ""
+                                ? "https://via.placeholder.com/500 "
+                                : url,
+                            width: double.infinity,
+                            fit: BoxFit.fitWidth,
+                          ),
+                          Center(
+                            child: IconButton(
+                              onPressed: () async {
+                                var image =
+                                await FilePickerService().pickImage();
+
+                                if (image != null) {
+                                  var uuid = const Uuid();
+                                  var id = uuid.v4();
+
+                                  url = await CloudService().uploadImage(image, id);
+                                  setState(() {});
+                                  print("url updated");
+                                }
+                              },
+                              icon: Icon(
+                                Icons.upload_file,
+                                size: 40,
+                                color: AppColors().primaryColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                  ),
+                  Spacer(),
+
                   Row(
                     children: [
                       Expanded(
@@ -88,10 +141,14 @@ class PaymentDialog extends ConsumerWidget {
                       Expanded(
                         child: TextButton(
                           onPressed: () {
-                            FirestoreService().createOrder(items, name, contact, address, sellerID);
+                            if(url != ""){
+                              FirestoreService().createOrder(widget.items, widget.name, widget.contact, widget.address, widget.sellerID, url);
 
-                            Fluttertoast.showToast(msg: "Order placed successfully");
-                            Navigator.pop(context);
+                              Fluttertoast.showToast(msg: "Order placed successfully");
+                              Navigator.pop(context);
+                            } else {
+                              Fluttertoast.showToast(msg: "Please upload your proof of payment");
+                            }
                           },
                           child: Text(
                             "Confirm",
@@ -112,3 +169,4 @@ class PaymentDialog extends ConsumerWidget {
     );
   }
 }
+

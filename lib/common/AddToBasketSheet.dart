@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:growcery/features/user/2.%20Basket/summaryDialog.dart';
 
 import '../constants/AppColors.dart';
 import '../features/ViewModels/UserViewModel.dart';
@@ -33,7 +34,7 @@ class AddToBasketSheet extends ConsumerStatefulWidget {
 class _AddToBasketSheetState extends ConsumerState<AddToBasketSheet> {
 
   int value = 1;
-  double height = 350;
+  double height = 300;
   TextEditingController controller = TextEditingController();
   int _selectedVariationIndex = 0;
 
@@ -71,14 +72,23 @@ class _AddToBasketSheetState extends ConsumerState<AddToBasketSheet> {
                   const SizedBox(height: 20),
                   Wrap(
                     children: List.generate(widget.variations.length, (index){
-                      return ChoiceChip(
-                        label: Text(widget.variations[index]),
-                        selected: _selectedVariationIndex == index,
-                        onSelected: (isSelected) {
-                          setState(() {
-                            _selectedVariationIndex = isSelected ? index : 0;
-                          });
-                        },
+                      return Container(
+                        margin: EdgeInsets.only(right: 10),
+                        child: ChoiceChip(
+                          label: Text(widget.variations[index]),
+                          selectedColor: AppColors().primaryColor,
+                          labelStyle: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: _selectedVariationIndex == index ? Colors.white : Colors.black,
+                          ),
+                          selected: _selectedVariationIndex == index,
+                          onSelected: (isSelected) {
+                            setState(() {
+                              _selectedVariationIndex = isSelected ? index : 0;
+                            });
+                          },
+                        ),
                       );
                     }),
                   ),
@@ -232,7 +242,20 @@ class _AddToBasketSheetState extends ConsumerState<AddToBasketSheet> {
                       if(int.parse(controller.text) >= int.parse(widget.minimum) && int.parse(controller.text) <= int.parse(widget.stocks)){
                         if(widget.isNow == true){
                           if (data.data()!["Name"] != "" &&  data.data()!["Contact"] != "" &&  data.data()!["Address"].toString().split("%")[0] != "No Data") {
+
                             showDialog(context: context, builder: (builder){
+                              return SummartyDialog(
+                                summaryItems: ["${widget.id},$value,${widget.variations[_selectedVariationIndex]}"],
+                                name: data.data()!["Name"],
+                                contact: data.data()!["Contact"],
+                                address: data.data()!["Address"],
+                                sellerID: widget.sellerID,
+                              );
+                            });
+
+
+
+                         /*   showDialog(context: context, builder: (builder){
                               return AlertDialog(
                                 title: const Text("Payment Method"),
                                 content: const Text("Please select your payment method"),
@@ -254,7 +277,7 @@ class _AddToBasketSheetState extends ConsumerState<AddToBasketSheet> {
                                   }, child: const Text("Gcash")),
                                 ],
                               );
-                            });
+                            });*/
                           } else {
                             Fluttertoast.showToast(msg: "No items in basket or you have not filled up your profile yet");
                           }

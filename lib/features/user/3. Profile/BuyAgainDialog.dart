@@ -137,10 +137,10 @@ class _BuyAgainDialogState extends ConsumerState<BuyAgainDialog> {
                             future: FirebaseFirestore.instance.collection('Items').doc(widget.summaryItems[index].toString().split(",")[0]).get(),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
-                                if(int.parse(snapshot.data!['Minimum']) < int.parse(snapshot.data!['Stocks'])){
+                             /*   if(int.parse(snapshot.data!['Minimum']) < int.parse(snapshot.data!['Stocks'])){
                                   widget.summaryItems.removeAt(index);
-                                }
-                                return ListTile(
+                                }*/
+                                return  ListTile(
                                   contentPadding: const EdgeInsets.all(0),
                                   leading: ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
@@ -263,7 +263,7 @@ class _BuyAgainDialogState extends ConsumerState<BuyAgainDialog> {
                   children: [
                     ElevatedButton(
                       onPressed: (){
-                        FirestoreService().createOrder(widget.summaryItems, widget.name, widget.contact, widget.address, widget.sellerID);
+                        FirestoreService().createOrder(widget.summaryItems, widget.name, widget.contact, widget.address, widget.sellerID, "");
                         Fluttertoast.showToast(msg: "Order has been placed");
                         Navigator.pop(context);
                       },

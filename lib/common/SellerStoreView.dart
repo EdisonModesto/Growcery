@@ -42,24 +42,25 @@ class _SellerStartViewState extends ConsumerState<SellerStartView> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
-                      flex: 12,
+                      flex: 10,
                       child: Container(
                         width: double.infinity,
                         color: AppColors().primaryColor,
-                        padding: EdgeInsets.only(left: 30, right: 30),
+                        padding: EdgeInsets.only(left: 30, right: 30, top: 10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             CircleAvatar(
                               radius: 45,
-                              backgroundColor: AppColors().primaryColor,
+                              backgroundColor: Colors.grey[200],
                               backgroundImage: NetworkImage(snapshot.data!["Image"]),
                             ),
-                            const SizedBox(height: 15),
+                            const SizedBox(height: 5),
                             Text(
                               snapshot.data!["Name"],
                               style: GoogleFonts.poppins(
+                                color: Colors.white,
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -67,6 +68,8 @@ class _SellerStartViewState extends ConsumerState<SellerStartView> {
                             Text(
                               snapshot.data!["Address"].toString().replaceAll("%", ", "),
                               style: GoogleFonts.poppins(
+                                color: Colors.white,
+
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
                               ),
@@ -85,6 +88,7 @@ class _SellerStartViewState extends ConsumerState<SellerStartView> {
                                     totalRating = totalRating == 0 ? 0.0 : totalRating / snapshot.data!.docs.length;
                                     return RatingBar.builder(
                                       initialRating: totalRating,
+                                      unratedColor: Colors.grey[200],
                                       minRating: 0,
                                       direction: Axis.horizontal,
                                       ignoreGestures: true,
@@ -133,7 +137,7 @@ class _SellerStartViewState extends ConsumerState<SellerStartView> {
                               tabs: [
                                 Tab(
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                                    padding: const EdgeInsets.symmetric(horizontal: 50),
                                     child: Text(
                                       "Product",
                                       style: GoogleFonts.poppins(
@@ -145,7 +149,7 @@ class _SellerStartViewState extends ConsumerState<SellerStartView> {
                                 ),
                                 Tab(
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                                    padding: const EdgeInsets.symmetric(horizontal: 50),
                                     child: Text(
                                       "Categories",
                                       style: GoogleFonts.poppins(
@@ -157,7 +161,11 @@ class _SellerStartViewState extends ConsumerState<SellerStartView> {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 15),
+                            const SizedBox(height: 7),
+                            Divider(
+                              thickness: 1,
+                            ),
+                            const SizedBox(height: 7),
                             Expanded(
                               child: TabBarView(
                                 children: [

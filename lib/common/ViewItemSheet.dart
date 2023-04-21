@@ -86,7 +86,9 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
+                  const Divider(thickness: 1, color: Colors.white),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -122,7 +124,11 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 7),
+
+                  const Divider(thickness: 1, color: Colors.white),
+
+                  const SizedBox(height: 7),
                   StreamBuilder(
                       stream: FirebaseFirestore.instance.collection("Users").doc(widget.sellerID).snapshots(),
                       builder: (context, snapshot) {
@@ -131,6 +137,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                             children: [
                               CircleAvatar(
                                 radius: 20,
+                                backgroundColor: Colors.white,
                                 backgroundImage: NetworkImage(snapshot.data!["Image"]),
                               ),
                               const SizedBox(width: 20),
@@ -159,6 +166,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                                           return RatingBar.builder(
                                             initialRating: totalRating,
                                             minRating: 0,
+                                            unratedColor: Colors.grey[200],
                                             direction: Axis.horizontal,
                                             ignoreGestures: true,
                                             allowHalfRating: true,
@@ -198,7 +206,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                         return const SizedBox();
                       }
                   ),
-
+                  const Divider(thickness: 1, color: Colors.white),
                 ],
               ),
             ),

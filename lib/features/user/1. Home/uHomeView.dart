@@ -144,7 +144,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                 tabs: [
                   Tab(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: Text(
                         "Farms",
                         style: GoogleFonts.poppins(
@@ -156,7 +156,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                   ),
                   Tab(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: Text(
                         "Product",
                         style: GoogleFonts.poppins(
@@ -168,7 +168,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                   ),
                   Tab(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: Text(
                         "Categories",
                         style: GoogleFonts.poppins(
@@ -207,81 +207,86 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                           itemCount: sellers.length,
                           itemBuilder: (context, index){
                             return Card(
-                              child: ListTile(
-                                onTap: (){
-                                  context.pushNamed("sellerStore", params: {"sellerID": sellers[index].id});
-                                },
-                                title: Text(
-                                  sellers[index].data()["Name"],
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
+                              child: ColoredBox(
+                                color: AppColors().primaryColor,
+                                child: ListTile(
+                                  onTap: (){
+                                    context.pushNamed("sellerStore", params: {"sellerID": sellers[index].id});
+                                  },
+                                  leading: CircleAvatar(
+                                    backgroundColor: Colors.grey[200],
+                                    backgroundImage: NetworkImage(sellers[index].data()["Image"]),
                                   ),
-                                ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      sellers[index].data()["Address"].toString().replaceAll("%", ", "),
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
+                                  title: Text(
+                                    sellers[index].data()["Name"],
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  subtitle: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        sellers[index].data()["Address"].toString().replaceAll("%", ", "),
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.white,
+
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                        ),
                                       ),
-                                    ),
-                                    StreamBuilder(
-                                      stream: FirebaseFirestore.instance.collection("Items").where("SellerID", isEqualTo: sellers[index].id).snapshots(),
-                                      builder: (context, snapshot) {
-                                        if(snapshot.hasData){
-                                          return Text(
-                                            "Total Items: ${snapshot.data!.docs.length}",
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          );
+                                      StreamBuilder(
+                                        stream: FirebaseFirestore.instance.collection("Items").where("SellerID", isEqualTo: sellers[index].id).snapshots(),
+                                        builder: (context, snapshot) {
+                                          if(snapshot.hasData){
+                                            return Text(
+                                              "Total Items: ${snapshot.data!.docs.length}",
+                                              style: GoogleFonts.poppins(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            );
+                                          }
+                                          return SizedBox();
                                         }
-                                        return SizedBox();
-                                      }
-                                    ),
-                                    StreamBuilder(
-                                      stream: FirebaseFirestore.instance.collection("Users").doc(sellers[index].id).collection("Ratings").snapshots(),
-                                      builder: (context, snapshot) {
-                                        if(snapshot.hasData){
-                                          double totalRating = 0;
+                                      ),
+                                      StreamBuilder(
+                                        stream: FirebaseFirestore.instance.collection("Users").doc(sellers[index].id).collection("Ratings").snapshots(),
+                                        builder: (context, snapshot) {
+                                          if(snapshot.hasData){
+                                            double totalRating = 0;
 
-                                          snapshot.data!.docs.forEach((element) {
-                                            totalRating += element.data()["Rating"];
-                                          });
+                                            snapshot.data!.docs.forEach((element) {
+                                              totalRating += element.data()["Rating"];
+                                            });
 
-                                          totalRating = totalRating == 0 ? 0.0 : totalRating / snapshot.data!.docs.length;
-                                          return RatingBar.builder(
-                                            initialRating: totalRating,
-                                            minRating: 0,
-                                            direction: Axis.horizontal,
-                                            ignoreGestures: true,
-                                            allowHalfRating: true,
-                                            itemCount: 5,
-                                            itemPadding: const EdgeInsets.symmetric(horizontal:0),
-                                            itemSize: 25,
-                                            itemBuilder: (context, _) => const Icon(
-                                              Icons.star,
-                                              color: Colors.amber,
-                                            ),
-                                            onRatingUpdate: (rating) {
-                                              print(rating);
-                                            },
-                                          );
+                                            totalRating = totalRating == 0 ? 0.0 : totalRating / snapshot.data!.docs.length;
+                                            return RatingBar.builder(
+                                              initialRating: totalRating,
+                                              unratedColor: Colors.grey[200],
+                                              minRating: 0,
+                                              direction: Axis.horizontal,
+                                              ignoreGestures: true,
+                                              allowHalfRating: true,
+                                              itemCount: 5,
+                                              itemPadding: const EdgeInsets.symmetric(horizontal:0),
+                                              itemSize: 25,
+                                              itemBuilder: (context, _) => const Icon(
+                                                Icons.star,
+                                                color: Colors.amber,
+                                              ),
+                                              onRatingUpdate: (rating) {
+                                                print(rating);
+                                              },
+                                            );
+                                          }
+                                          return SizedBox();
                                         }
-                                        return SizedBox();
-                                      }
-                                    ),
-                                  ],
-                                ),
-                                trailing: Text(
-                                  ">",
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),

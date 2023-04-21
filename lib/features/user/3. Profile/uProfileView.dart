@@ -68,49 +68,49 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                   children: [
                     Container(
                       color: AppColors().primaryColor,
-                      padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      padding: const EdgeInsets.fromLTRB(30, 10, 30, 20),
+                      child: Column(
                         children: [
-                          Text(
-                            "Profile",
-                            style: GoogleFonts.poppins(
-                              fontSize: 24,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Profile",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 24,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Visibility(
+                                visible: data?.uid == null ? false : true,
+                                child: IconButton(
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(12),
+                                          ),
+                                        ),
+                                        context: context,
+                                        isScrollControlled: true,
+                                        builder: (context) => const USettingsSheet()
+                                    );
+                                  },
+                                  icon: const Icon(
+                                    Icons.menu, color: Colors.white,),
+                                ),
+                              ),
+                            ],
                           ),
-                          Visibility(
-                            visible: data?.uid == null ? false : true,
-                            child: IconButton(
-                              onPressed: () {
-                                showModalBottomSheet(
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(12),
-                                      ),
-                                    ),
-                                    context: context,
-                                    isScrollControlled: true,
-                                    builder: (context) => const USettingsSheet()
-                                );
-                              },
-                              icon: const Icon(
-                                CupertinoIcons.settings, color: Colors.white,),
-                            ),
+                          const SizedBox(
+                            height: 10,
                           ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            user.when(
-                                data: (data1) {
-                                  return Row(
+                          user.when(
+                              data: (data1) {
+                                return ColoredBox(
+                                  color: AppColors().primaryColor,
+                                  child: Row(
                                     children: [
                                       data?.uid == null ? const CircleAvatar(
                                         radius: 35,
@@ -143,6 +143,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                       : data1.data()!["Name"],
                                                   style: GoogleFonts.poppins(
                                                     fontSize: 20,
+                                                    color: Colors.white,
                                                   ),
                                                 ),
                                               ],
@@ -166,6 +167,8 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                 "Login or Signup",
                                                 style: GoogleFonts.poppins(
                                                   fontSize: 14,
+                                                  color: Colors.white,
+
                                                   fontWeight: FontWeight.w400,
                                                 ),
                                               ),
@@ -174,20 +177,30 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                           ]
                                       )
                                     ],
-                                  );
-                                },
-                                error: (error, stack) {
-                                  return const Center(
-                                    child: Text("Error"),
-                                  );
-                                },
-                                loading: () {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-                            ),
-                            const SizedBox(height: 20),
+                                  ),
+                                );
+                              },
+                              error: (error, stack) {
+                                return const Center(
+                                  child: Text("Error"),
+                                );
+                              },
+                              loading: () {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+
                             const Divider(),
 
                             const SizedBox(height: 10),
@@ -323,7 +336,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                       height: 100,
                                                       width: double.infinity,
                                                       decoration: BoxDecoration(
-                                                        color: Colors.grey[200],
+                                                        color: AppColors().primaryColor,
                                                         borderRadius: BorderRadius
                                                             .circular(10),
                                                       ),
@@ -361,6 +374,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                                   style: GoogleFonts
                                                                       .poppins(
                                                                     fontSize: 14,
+                                                                    color: Colors.white,
                                                                     fontWeight: FontWeight
                                                                         .w400,
                                                                   ),
@@ -373,6 +387,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                                       .length}",
                                                                   style: GoogleFonts
                                                                       .poppins(
+                                                                    color: Colors.white,
                                                                     fontSize: 12,
                                                                     fontWeight: FontWeight
                                                                         .w400,
@@ -395,6 +410,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                                           style: GoogleFonts
                                                                               .poppins(
                                                                             fontSize: 12,
+                                                                            color: Colors.white,
                                                                             fontWeight: FontWeight
                                                                                 .w400,
                                                                           ),
@@ -407,7 +423,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                             ),
                                                           ),
                                                           IconButton(
-                                                            icon: const Icon(Icons.cancel_outlined),
+                                                            icon: const Icon(Icons.cancel_outlined, color: Colors.white),
                                                             onPressed: () async {
                                                               await showDialog(context: context, builder: (builder){
                                                                 return AlertDialog(
@@ -465,7 +481,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                     ),
                                                   );
                                                 }
-                                                return SizedBox();
+                                                return const SizedBox();
                                               }
                                           );
                                         },
@@ -508,7 +524,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                       height: 100,
                                                       width: double.infinity,
                                                       decoration: BoxDecoration(
-                                                        color: Colors.grey[200],
+                                                        color: AppColors().primaryColor,
                                                         borderRadius: BorderRadius
                                                             .circular(10),
                                                       ),
@@ -546,6 +562,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                                   style: GoogleFonts
                                                                       .poppins(
                                                                     fontSize: 14,
+                                                                    color: Colors.white,
                                                                     fontWeight: FontWeight
                                                                         .w400,
                                                                   ),
@@ -558,6 +575,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                                       .length}",
                                                                   style: GoogleFonts
                                                                       .poppins(
+                                                                    color: Colors.white,
                                                                     fontSize: 12,
                                                                     fontWeight: FontWeight
                                                                         .w400,
@@ -580,6 +598,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                                           style: GoogleFonts
                                                                               .poppins(
                                                                             fontSize: 12,
+                                                                            color: Colors.white,
                                                                             fontWeight: FontWeight
                                                                                 .w400,
                                                                           ),
@@ -641,7 +660,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                       height: 100,
                                                       width: double.infinity,
                                                       decoration: BoxDecoration(
-                                                        color: Colors.grey[200],
+                                                        color: AppColors().primaryColor,
                                                         borderRadius: BorderRadius
                                                             .circular(10),
                                                       ),
@@ -677,6 +696,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                               style: GoogleFonts
                                                                   .poppins(
                                                                 fontSize: 14,
+                                                                color: Colors.white,
                                                                 fontWeight: FontWeight
                                                                     .w400,
                                                               ),
@@ -689,6 +709,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                                   .length}",
                                                               style: GoogleFonts
                                                                   .poppins(
+                                                                color: Colors.white,
                                                                 fontSize: 12,
                                                                 fontWeight: FontWeight
                                                                     .w400,
@@ -708,9 +729,12 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                                     return Text(
                                                                       "Total Price: ${result
                                                                           .data}",
+
                                                                       style: GoogleFonts
                                                                           .poppins(
                                                                         fontSize: 12,
+                                                                        color: Colors.white,
+
                                                                         fontWeight: FontWeight
                                                                             .w400,
                                                                       ),
@@ -744,7 +768,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                         },
                                                         icon: const Icon(
                                                           CupertinoIcons.cube_box,
-                                                          color: Colors.black,
+                                                          color: Colors.white,
                                                           size: 30,
                                                         ),
                                                       ),
@@ -795,7 +819,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                       height: 100,
                                                       width: double.infinity,
                                                       decoration: BoxDecoration(
-                                                        color: Colors.grey[200],
+                                                        color: AppColors().primaryColor,
                                                         borderRadius: BorderRadius
                                                             .circular(10),
                                                       ),
@@ -831,6 +855,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                                   style: GoogleFonts
                                                                       .poppins(
                                                                     fontSize: 14,
+                                                                    color: Colors.white,
                                                                     fontWeight: FontWeight
                                                                         .w400,
                                                                   ),
@@ -844,6 +869,8 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                                   style: GoogleFonts
                                                                       .poppins(
                                                                     fontSize: 12,
+                                                                    color: Colors.white,
+
                                                                     fontWeight: FontWeight
                                                                         .w400,
                                                                   ),
@@ -865,6 +892,8 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                                           style: GoogleFonts
                                                                               .poppins(
                                                                             fontSize: 12,
+                                                                            color: Colors.white,
+
                                                                             fontWeight: FontWeight
                                                                                 .w400,
                                                                           ),
@@ -923,7 +952,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                       height: 100,
                                                       width: double.infinity,
                                                       decoration: BoxDecoration(
-                                                        color: Colors.grey[200],
+                                                        color: AppColors().primaryColor,
                                                         borderRadius: BorderRadius
                                                             .circular(10),
                                                       ),
@@ -961,6 +990,8 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                                   style: GoogleFonts
                                                                       .poppins(
                                                                     fontSize: 14,
+                                                                    color: Colors.white,
+
                                                                     fontWeight: FontWeight
                                                                         .w400,
                                                                   ),
@@ -974,6 +1005,8 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                                   style: GoogleFonts
                                                                       .poppins(
                                                                     fontSize: 12,
+                                                                    color: Colors.white,
+
                                                                     fontWeight: FontWeight
                                                                         .w400,
                                                                   ),
@@ -995,6 +1028,8 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                                           style: GoogleFonts
                                                                               .poppins(
                                                                             fontSize: 12,
+                                                                            color: Colors.white,
+
                                                                             fontWeight: FontWeight
                                                                                 .w400,
                                                                           ),
@@ -1053,7 +1088,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                       height: 100,
                                                       width: double.infinity,
                                                       decoration: BoxDecoration(
-                                                        color: Colors.grey[200],
+                                                        color: AppColors().primaryColor,
                                                         borderRadius: BorderRadius
                                                             .circular(10),
                                                       ),
@@ -1091,6 +1126,8 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                                   style: GoogleFonts
                                                                       .poppins(
                                                                     fontSize: 14,
+                                                                    color: Colors.white,
+
                                                                     fontWeight: FontWeight
                                                                         .w400,
                                                                   ),
@@ -1104,6 +1141,8 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                                   style: GoogleFonts
                                                                       .poppins(
                                                                     fontSize: 12,
+                                                                    color: Colors.white,
+
                                                                     fontWeight: FontWeight
                                                                         .w400,
                                                                   ),
@@ -1125,6 +1164,8 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                                           style: GoogleFonts
                                                                               .poppins(
                                                                             fontSize: 12,
+                                                                            color: Colors.white,
+
                                                                             fontWeight: FontWeight
                                                                                 .w400,
                                                                           ),

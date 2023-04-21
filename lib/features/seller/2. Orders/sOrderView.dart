@@ -182,7 +182,7 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                   height: 100,
                                                   width: double.infinity,
                                                   decoration: BoxDecoration(
-                                                    color: Colors.grey[200],
+                                                    color: AppColors().primaryColor,
                                                     borderRadius: BorderRadius.circular(10),
                                                   ),
                                                   child: Row(
@@ -191,7 +191,7 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                         width: 100,
                                                         height: 100,
                                                         decoration: BoxDecoration(
-                                                          color: AppColors().primaryColor,
+                                                          color: Colors.grey[200],
                                                           borderRadius: BorderRadius.circular(10),
                                                           image: DecorationImage(
                                                             image: NetworkImage(snapshot1.data!["Image"] == "" ? snapshot.data!["Url"] : snapshot1.data!["Image"]),
@@ -209,6 +209,7 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                               snapshot1.data!["Name"],
                                                               style: GoogleFonts.poppins(
                                                                 fontSize: 14,
+                                                                color: Colors.white,
                                                                 fontWeight: FontWeight.w400,
                                                               ),
                                                             ),
@@ -217,6 +218,8 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                               "Total Items: ${toPay[index].data()["Items"].length}",
                                                               style: GoogleFonts.poppins(
                                                                 fontSize: 12,
+                                                                color: Colors.white,
+
                                                                 fontWeight: FontWeight.w400,
                                                               ),
                                                             ),
@@ -229,6 +232,8 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                                       "Total Price: ${result.data}",
                                                                       style: GoogleFonts.poppins(
                                                                         fontSize: 12,
+                                                                        color: Colors.white,
+
                                                                         fontWeight: FontWeight.w400,
                                                                       ),
                                                                     );
@@ -246,7 +251,8 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                         },
                                                         icon: const Icon(
                                                           CupertinoIcons.xmark_octagon,
-                                                          color: Colors.black,
+                                                          color: Colors.white,
+
                                                           size: 30,
                                                         ),
                                                       ),
@@ -257,7 +263,8 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                         },
                                                         icon: const Icon(
                                                           CupertinoIcons.checkmark_alt_circle,
-                                                          color: Colors.black,
+                                                          color: Colors.white,
+
                                                           size: 30,
                                                         ),
                                                       )
@@ -310,7 +317,7 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                     height: 100,
                                                     width: double.infinity,
                                                     decoration: BoxDecoration(
-                                                      color: Colors.grey[200],
+                                                      color: AppColors().primaryColor,
                                                       borderRadius: BorderRadius.circular(10),
                                                     ),
                                                     child: Row(
@@ -319,7 +326,7 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                           width: 100,
                                                           height: 100,
                                                           decoration: BoxDecoration(
-                                                            color: AppColors().primaryColor,
+                                                            color: Colors.grey[200],
                                                             borderRadius: BorderRadius.circular(10),
                                                             image: DecorationImage(
                                                               image: NetworkImage(snapshot1.data!["Image"]),
@@ -337,6 +344,8 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                                 snapshot1.data!["Name"],
                                                                 style: GoogleFonts.poppins(
                                                                   fontSize: 14,
+                                                                  color: Colors.white,
+
                                                                   fontWeight: FontWeight.w400,
                                                                 ),
                                                               ),
@@ -345,6 +354,8 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                                 "Total Items: ${inProgress[index].data()["Items"].length}",
                                                                 style: GoogleFonts.poppins(
                                                                   fontSize: 12,
+                                                                  color: Colors.white,
+
                                                                   fontWeight: FontWeight.w400,
                                                                 ),
                                                               ),
@@ -357,6 +368,8 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                                         "Total Price: ${result.data}",
                                                                         style: GoogleFonts.poppins(
                                                                           fontSize: 12,
+                                                                          color: Colors.white,
+
                                                                           fontWeight: FontWeight.w400,
                                                                         ),
                                                                       );
@@ -374,7 +387,7 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                           },
                                                           icon: const Icon(
                                                             CupertinoIcons.upload_circle,
-                                                            color: Colors.black,
+                                                            color: Colors.white,
                                                             size: 30,
                                                           ),
                                                         )
@@ -428,7 +441,7 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                     height: 100,
                                                     width: double.infinity,
                                                     decoration: BoxDecoration(
-                                                      color: Colors.grey[200],
+                                                      color: AppColors().primaryColor,
                                                       borderRadius: BorderRadius.circular(10),
                                                     ),
                                                     child: Row(
@@ -437,7 +450,8 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                           width: 100,
                                                           height: 100,
                                                           decoration: BoxDecoration(
-                                                            color: AppColors().primaryColor,
+                                                            color: Colors.grey[200],
+
                                                             borderRadius: BorderRadius.circular(10),
                                                             image: DecorationImage(
                                                               image: NetworkImage(snapshot1.data!["Image"]),
@@ -455,6 +469,8 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                                 snapshot1.data!["Name"],
                                                                 style: GoogleFonts.poppins(
                                                                   fontSize: 14,
+                                                                  color: Colors.white,
+
                                                                   fontWeight: FontWeight.w400,
                                                                 ),
                                                               ),
@@ -463,6 +479,8 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                                 "Total Items: ${toRecieve[index].data()["Items"].length}",
                                                                 style: GoogleFonts.poppins(
                                                                   fontSize: 12,
+                                                                  color: Colors.white,
+
                                                                   fontWeight: FontWeight.w400,
                                                                 ),
                                                               ),
@@ -475,6 +493,8 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                                         "Total Price: ${result.data}",
                                                                         style: GoogleFonts.poppins(
                                                                           fontSize: 12,
+                                                                          color: Colors.white,
+
                                                                           fontWeight: FontWeight.w400,
                                                                         ),
                                                                       );
@@ -535,7 +555,7 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                     height: 100,
                                                     width: double.infinity,
                                                     decoration: BoxDecoration(
-                                                      color: Colors.grey[200],
+                                                      color: AppColors().primaryColor,
                                                       borderRadius: BorderRadius.circular(10),
                                                     ),
                                                     child: Row(
@@ -544,7 +564,8 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                           width: 100,
                                                           height: 100,
                                                           decoration: BoxDecoration(
-                                                            color: AppColors().primaryColor,
+                                                            color: Colors.grey[200],
+
                                                             borderRadius: BorderRadius.circular(10),
                                                             image: DecorationImage(
                                                               image: NetworkImage(snapshot1.data!["Image"]),
@@ -562,6 +583,8 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                                 snapshot1.data!["Name"],
                                                                 style: GoogleFonts.poppins(
                                                                   fontSize: 14,
+                                                                  color: Colors.white,
+
                                                                   fontWeight: FontWeight.w400,
                                                                 ),
                                                               ),
@@ -570,6 +593,8 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                                 "Total Items: ${complete[index].data()["Items"].length}",
                                                                 style: GoogleFonts.poppins(
                                                                   fontSize: 12,
+                                                                  color: Colors.white,
+
                                                                   fontWeight: FontWeight.w400,
                                                                 ),
                                                               ),
@@ -582,6 +607,8 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                                         "Total Price: ${result.data}",
                                                                         style: GoogleFonts.poppins(
                                                                           fontSize: 12,
+                                                                          color: Colors.white,
+
                                                                           fontWeight: FontWeight.w400,
                                                                         ),
                                                                       );
@@ -640,7 +667,7 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                       height: 100,
                                                       width: double.infinity,
                                                       decoration: BoxDecoration(
-                                                        color: Colors.grey[200],
+                                                        color: AppColors().primaryColor,
                                                         borderRadius: BorderRadius.circular(10),
                                                       ),
                                                       child: Row(
@@ -649,7 +676,7 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                             width: 100,
                                                             height: 100,
                                                             decoration: BoxDecoration(
-                                                              color: AppColors().primaryColor,
+                                                              color: Colors.grey[200],
                                                               borderRadius: BorderRadius.circular(10),
                                                               image: DecorationImage(
                                                                 image: NetworkImage(snapshot1.data!["Image"]),
@@ -667,6 +694,8 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                                   snapshot1.data!["Name"],
                                                                   style: GoogleFonts.poppins(
                                                                     fontSize: 14,
+                                                                    color: Colors.white,
+
                                                                     fontWeight: FontWeight.w400,
                                                                   ),
                                                                 ),
@@ -675,6 +704,8 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                                   "Total Items: ${canceled[index].data()["Items"].length}",
                                                                   style: GoogleFonts.poppins(
                                                                     fontSize: 12,
+                                                                    color: Colors.white,
+
                                                                     fontWeight: FontWeight.w400,
                                                                   ),
                                                                 ),
@@ -687,6 +718,8 @@ class _AOrderViewState extends ConsumerState<SOrderView> {
                                                                           "Total Price: ${result.data}",
                                                                           style: GoogleFonts.poppins(
                                                                             fontSize: 12,
+                                                                            color: Colors.white,
+
                                                                             fontWeight: FontWeight.w400,
                                                                           ),
                                                                         );

@@ -118,6 +118,7 @@ class _AHomeViewState extends ConsumerState<SHomeView> {
                         children: List.generate(searchResult.length, (index){
                           return Container(
                             decoration: BoxDecoration(
+                              color: AppColors().primaryColor,
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withOpacity(0.25),
@@ -165,31 +166,39 @@ class _AHomeViewState extends ConsumerState<SHomeView> {
                                             ),
                                           ),
                                           Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(20.0),
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    searchResult[index].data()["Name"],
-                                                    maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: GoogleFonts.poppins(
-                                                      fontSize: 16,
-                                                      fontWeight: FontWeight.w500,
-                                                    ),
+                                            child: SizedBox(
+                                              width: double.infinity,
+                                              child: ColoredBox(
+                                                color: AppColors().primaryColor,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(20.0),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Text(
+                                                        searchResult[index].data()["Name"],
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: GoogleFonts.poppins(
+                                                          fontSize: 16,
+                                                          color: Colors.white,
+                                                          fontWeight: FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 5),
+                                                      Text(
+                                                        "Stocks: ${searchResult[index].data()["Stocks"]}",
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: GoogleFonts.poppins(
+                                                          fontSize: 14,
+                                                          color: Colors.white,
+                                                          fontWeight: FontWeight.w400,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  const SizedBox(height: 5),
-                                                  Text(
-                                                    "Stocks: ${searchResult[index].data()["Stocks"]}",
-                                                    maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: GoogleFonts.poppins(
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.w400,
-                                                    ),
-                                                  ),
-                                                ],
+                                                ),
                                               ),
                                             ),
                                           )
@@ -249,6 +258,7 @@ class _AHomeViewState extends ConsumerState<SHomeView> {
                         children: List.generate(myData.length, (index){
                           return Container(
                             decoration: BoxDecoration(
+                              color: AppColors().primaryColor,
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withOpacity(0.25),
@@ -296,31 +306,39 @@ class _AHomeViewState extends ConsumerState<SHomeView> {
                                             ),
                                           ),
                                           Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(20.0),
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    myData[index].data()["Name"],
-                                                    maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: GoogleFonts.poppins(
-                                                      fontSize: 16,
-                                                      fontWeight: FontWeight.w500,
-                                                    ),
+                                            child: SizedBox(
+                                              width: double.infinity,
+                                              child: ColoredBox(
+                                                color: AppColors().primaryColor,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(20.0),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Text(
+                                                        myData[index].data()["Name"],
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: GoogleFonts.poppins(
+                                                          fontSize: 16,
+                                                          color: Colors.white,
+                                                          fontWeight: FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 5),
+                                                      Text(
+                                                        "Stocks: ${myData[index].data()["Stocks"]}",
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: GoogleFonts.poppins(
+                                                          fontSize: 14,
+                                                          color: Colors.white,
+                                                          fontWeight: FontWeight.w400,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  const SizedBox(height: 5),
-                                                  Text(
-                                                    "Stocks: ${myData[index].data()["Stocks"]}",
-                                                    maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: GoogleFonts.poppins(
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.w400,
-                                                    ),
-                                                  ),
-                                                ],
+                                                ),
                                               ),
                                             ),
                                           )

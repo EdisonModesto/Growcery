@@ -229,7 +229,7 @@ class _SummartyDialogState extends ConsumerState<SummartyDialog> {
                   children: [
                     ElevatedButton(
                       onPressed: (){
-                        FirestoreService().createOrder(widget.summaryItems, widget.name, widget.contact, widget.address, widget.sellerID);
+                        FirestoreService().createOrder(widget.summaryItems, widget.name, widget.contact, widget.address, widget.sellerID, "");
                         Fluttertoast.showToast(msg: "Order has been placed");
                         Navigator.pop(context);
                       },

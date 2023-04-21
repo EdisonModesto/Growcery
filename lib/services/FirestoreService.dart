@@ -127,7 +127,7 @@ class FirestoreService{
     });
   }
 
-  Future<void> createOrder(items, name, contact, address, sellerID) async {
+  Future<void> createOrder(items, name, contact, address, sellerID, url) async {
 
     FirebaseFirestore.instance.collection("Users").doc(AuthService().getID()).update({
       "Basket": FieldValue.arrayRemove(items),
@@ -143,6 +143,7 @@ class FirestoreService{
       "SellerID": sellerID,
       "Date": DateTime.now(),
       "Date Completed": "No Record",
+      "Proof": url,
     });
     
     for(var item in items){

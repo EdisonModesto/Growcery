@@ -330,6 +330,31 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                   ],
                 ),
               ) : const SizedBox(),
+
+
+              const SizedBox(height: 10),
+              widget.orderData.data()["Status"] == "0" ? Center(
+                child: Column(
+                  children: [
+                    Text(
+                      "Payment Proof:",
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 200,
+                      child: Image.network(
+                        widget.orderData.data()["Proof"],
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ],
+                ),
+              ) : const SizedBox(),
+
               const SizedBox(height: 20),
               Text(
                 "Items:",

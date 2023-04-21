@@ -513,6 +513,31 @@ class _AuthDialogState extends ConsumerState<AuthView> {
                                         },
                                       ),
                                     ),
+                                    Column(
+                                      children: [
+                                        RadioListTile(
+
+                                          title: const Text('Market'),
+                                          value: 'Buyer',
+                                          groupValue: _selectedOption,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _selectedOption = value!;
+                                            });
+                                          },
+                                        ),
+                                        RadioListTile(
+                                          title: const Text('Farm'),
+                                          value: 'Seller',
+                                          groupValue: _selectedOption,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _selectedOption = value!;
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                     Row(
                                       children: [
                                         Checkbox(
@@ -554,31 +579,6 @@ class _AuthDialogState extends ConsumerState<AuthView> {
                                                 ),
                                               ]
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        RadioListTile(
-
-                                          title: const Text('Market'),
-                                          value: 'Buyer',
-                                          groupValue: _selectedOption,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _selectedOption = value!;
-                                            });
-                                          },
-                                        ),
-                                        RadioListTile(
-                                          title: const Text('Farm'),
-                                          value: 'Seller',
-                                          groupValue: _selectedOption,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _selectedOption = value!;
-                                            });
-                                          },
                                         ),
                                       ],
                                     ),
