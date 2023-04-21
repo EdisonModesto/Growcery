@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:growcery/features/user/3.%20Profile/BuyAgainDialog.dart';
+
+import '../constants/AppColors.dart';
 
 class OrderDetailsView extends ConsumerStatefulWidget {
   const OrderDetailsView({
@@ -385,59 +388,6 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                   );
                 }),
               ),
-            /*  ListView.builder(
-                shrinkWrap: true,
-                padding: const EdgeInsets.all(0),
-                itemCount: widget.orderData.data()['Items'].length,
-                itemBuilder: (context, index) {
-                  return FutureBuilder(
-                    future: FirebaseFirestore.instance
-                        .collection('Items')
-                        .doc(widget.orderData.data()['Items'][index].toString().split(",")[0])
-                        .get(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return ListTile(
-                          contentPadding: const EdgeInsets.all(0),
-                          leading: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: SizedBox(
-                              child: Image.network(
-                                snapshot.data!['Url'],
-                                height: 50,
-                                width: 50,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          title: Text(
-                            snapshot.data!['Name'],
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                            ),
-                          ),
-                          subtitle: Text(
-                            "₱${snapshot.data!['Price']}",
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                            ),
-                          ),
-                          trailing: Text(
-                            "x${widget.orderData.data()['Items'][index].toString().split(",")[1]}",
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                            ),
-                          ),
-                        );
-                      }
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  );
-
-                },
-              ),*/
               const SizedBox(height: 20),
               Row(
                 children: [
@@ -467,6 +417,35 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                   ),
                 ],
               ),
+              const SizedBox(height: 10),
+
+              widget.isComplete ?
+              ElevatedButton(
+                onPressed: (){
+                  showDialog(context: context, builder: (builder){
+                    return BuyAgainDialog(
+                      address: widget.orderData.data()['Address'],
+                      summaryItems: widget.orderData.data()['Items'],
+                      contact: widget.orderData.data()['Contact'],
+                      name: widget.orderData.data()['Name'],
+                      sellerID: widget.orderData.data()['SellerID'],
+                    );
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors().primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  fixedSize: Size(MediaQuery.of(context).size.width, 50),
+                ),
+                child: Text(
+                  "Buy Again",
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                  ),
+                ),
+              ) : SizedBox()
             ],
           ),
         ),

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -41,18 +42,6 @@ class PaymentDialog extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 25,),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Total Amount: ",
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 25,),
                   Text(
                     "Please pay the amount to the following Gcash Number: ",
                     textAlign: TextAlign.center,
@@ -64,13 +53,18 @@ class PaymentDialog extends ConsumerWidget {
                   const SizedBox(height: 25,),
                   Align(
                     alignment: Alignment.center,
-                    child: Text(
-                      "Gcash: 09491824020\nName: Wendell R.",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        color: Colors.black,
-                      ),
+                    child: StreamBuilder(
+                      stream: FirebaseFirestore.instance.collection('Users').doc(sellerID).snapshots(),
+                      builder: (context, snapshot) {
+                        return Text(
+                          "Gcash: ${snapshot.data!.data()!["GCash"]}\nName: ${snapshot.data!.data()!["Name"]}",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            color: Colors.black,
+                          ),
+                        );
+                      }
                     ),
                   ),
                   const Spacer(),

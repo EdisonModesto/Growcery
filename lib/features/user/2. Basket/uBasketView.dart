@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:growcery/features/ViewModels/UserViewModel.dart';
 import 'package:growcery/features/user/2.%20Basket/PaymentDialog.dart';
+import 'package:growcery/features/user/2.%20Basket/summaryDialog.dart';
 import 'package:growcery/services/FirestoreService.dart';
 
 import '../../../common/ViewItemSheet.dart';
@@ -142,9 +143,11 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                                       selectedQuantity.clear();
                                                       selectedPrice.clear();
                                                       checkValues = List.filled(100, false);
+                                                      print(basketList);
+                                                      print(itemList.data);
                                                       for (int index = 0; index < itemList.data!.length; index++) {
                                                         checkValues[itemList.data![index]] = true;
-                                                        selecteditems.add(data.data()!["Basket"][itemList.data![index]].toString());
+                                                        selecteditems.add(basketList[itemList.data![index]].toString());
                                                         selectedQuantity.add(itemQuantity[itemList.data![index]]);
                                                         selectedPrice.add(itemPrice[itemList.data![index]]);
                                                       }
@@ -159,6 +162,7 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                                                       }
                                                       setState(() {});
                                                     }
+                                                    print(selecteditems);
                                                   },
                                                   child: Text(
                                                     
@@ -393,11 +397,11 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                           decoration: BoxDecoration(
                             color: Colors.grey[200],
                           ),
-                          child: basketList.length == 0
+                          child: selecteditems.length == 0
                               ? const SizedBox()
                               :
                   StreamBuilder(
-                            stream: FirebaseFirestore.instance.collection("Items").doc(basketList[0].toString().split(",")[0]).snapshots(),
+                            stream: FirebaseFirestore.instance.collection("Items").doc(selecteditems[0].toString().split(",")[0]).snapshots(),
                             builder: (context, snapshot2) {
                               if(snapshot2.hasData){
                                 return PriceLabel(
@@ -549,7 +553,7 @@ class _PriceLabelState extends ConsumerState<PriceLabel> {
           child: InkWell(
             onTap: () async {
               //var sellerID = widget.items[0].toString().split(",")[0];
-
+              print(widget.items);
 
               for (int i = 0; i < widget.items.length; i++) {
                 var data = await FirebaseFirestore.instance.collection("Items").doc(widget.items[i].toString().split(",")[0]).get();
@@ -562,7 +566,18 @@ class _PriceLabelState extends ConsumerState<PriceLabel> {
               }
 
               if (widget.items.isNotEmpty && widget.name != "" && widget.contact != "" && widget.address.toString().split("%")[0] != "No Data" && isSame) {
+
                 showDialog(context: context, builder: (builder){
+                  return SummartyDialog(
+                    summaryItems: widget.items,
+                    address: widget.address,
+                    contact: widget.contact,
+                    name: widget.name,
+                    sellerID: widget.sellerID,
+                  );
+                });
+
+               /* showDialog(context: context, builder: (builder){
                   return AlertDialog(
                     title: const Text("Payment Method"),
                     content: const Text("Please select your payment method"),
@@ -579,7 +594,7 @@ class _PriceLabelState extends ConsumerState<PriceLabel> {
                       }, child: const Text("Gcash")),
                     ],
                   );
-                });
+                });*/
               } else {
                 Fluttertoast.showToast(msg: "No items in basket or you have not filled up your profile yet");
               }

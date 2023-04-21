@@ -57,6 +57,7 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   auto_size_text: ^3.0.0
   webview_flutter: ^4.0.7
+  numberpicker: ^2.1.2
 
 
 

@@ -240,7 +240,7 @@ class _AddToBasketSheetState extends ConsumerState<AddToBasketSheet> {
                                   TextButton(onPressed: (){
                                     FirestoreService().createOrder(
                                         ["${widget.id},$value,${widget.variations[_selectedVariationIndex]}"],
-                                        data..data()!["Name"],
+                                        data.data()!["Name"],
                                         data.data()!["Contact"],
                                         data.data()!["Address"],
                                         widget.sellerID);
