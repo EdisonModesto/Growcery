@@ -110,81 +110,6 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                       ),
                     ],
                   ),
-                  StreamBuilder(
-                    stream: FirebaseFirestore.instance.collection("Users").doc(widget.sellerID).snapshots(),
-                    builder: (context, snapshot) {
-                      if(snapshot.hasData){
-                        return Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 20,
-                              backgroundImage: NetworkImage(snapshot.data!["Image"]),
-                            ),
-                            const SizedBox(width: 20),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  snapshot.data!["Name"],
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ),
-                                StreamBuilder(
-                                    stream: FirebaseFirestore.instance.collection("Users").doc(widget.sellerID).collection("Ratings").snapshots(),
-                                    builder: (context, snapshot1) {
-                                      if(snapshot1.hasData){
-                                        double totalRating = 0;
-
-                                        snapshot1.data!.docs.forEach((element) {
-                                          totalRating += element.data()["Rating"];
-                                        });
-
-                                        totalRating = totalRating == 0 ? 0.0 : totalRating / snapshot1.data!.docs.length;
-                                        return RatingBar.builder(
-                                          initialRating: totalRating,
-                                          minRating: 0,
-                                          direction: Axis.horizontal,
-                                          ignoreGestures: true,
-                                          allowHalfRating: true,
-                                          itemCount: 5,
-                                          itemPadding: const EdgeInsets.symmetric(horizontal:0),
-                                          itemSize: 20,
-                                          itemBuilder: (context, _) => const Icon(
-                                            Icons.star,
-                                            color: Colors.amber,
-                                          ),
-                                          onRatingUpdate: (rating) {
-                                            print(rating);
-                                          },
-                                        );
-                                      }
-                                      return const SizedBox();
-                                    }
-                                ),
-
-                              ],
-                            ),
-                            const Spacer(),
-                            TextButton(
-                              onPressed: (){
-                                context.pushNamed("sellerStore", params: {"sellerID": widget.sellerID});
-                              },
-                              child: const Text(
-                                "View Shop",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            )
-                          ],
-                        );
-                      }
-                      return SizedBox();
-                    }
-                  ),
                   const SizedBox(height: 10),
                   Text(
                     widget.description,
@@ -195,16 +120,94 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                       fontWeight: FontWeight.w400,
                     ),
                   ),
+                  const SizedBox(height: 15),
+                  StreamBuilder(
+                      stream: FirebaseFirestore.instance.collection("Users").doc(widget.sellerID).snapshots(),
+                      builder: (context, snapshot) {
+                        if(snapshot.hasData){
+                          return Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 20,
+                                backgroundImage: NetworkImage(snapshot.data!["Image"]),
+                              ),
+                              const SizedBox(width: 20),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    snapshot.data!["Name"],
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  ),
+                                  StreamBuilder(
+                                      stream: FirebaseFirestore.instance.collection("Users").doc(widget.sellerID).collection("Ratings").snapshots(),
+                                      builder: (context, snapshot1) {
+                                        if(snapshot1.hasData){
+                                          double totalRating = 0;
+
+                                          snapshot1.data!.docs.forEach((element) {
+                                            totalRating += element.data()["Rating"];
+                                          });
+
+                                          totalRating = totalRating == 0 ? 0.0 : totalRating / snapshot1.data!.docs.length;
+                                          return RatingBar.builder(
+                                            initialRating: totalRating,
+                                            minRating: 0,
+                                            direction: Axis.horizontal,
+                                            ignoreGestures: true,
+                                            allowHalfRating: true,
+                                            itemCount: 5,
+                                            itemPadding: const EdgeInsets.symmetric(horizontal:0),
+                                            itemSize: 20,
+                                            itemBuilder: (context, _) => const Icon(
+                                              Icons.star,
+                                              color: Colors.amber,
+                                            ),
+                                            onRatingUpdate: (rating) {
+                                              print(rating);
+                                            },
+                                          );
+                                        }
+                                        return const SizedBox();
+                                      }
+                                  ),
+
+                                ],
+                              ),
+                              const Spacer(),
+                              TextButton(
+                                onPressed: (){
+                                  context.pushNamed("sellerStore", params: {"sellerID": widget.sellerID});
+                                },
+                                child: const Text(
+                                  "View Shop",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            ],
+                          );
+                        }
+                        return const SizedBox();
+                      }
+                  ),
+
                 ],
               ),
             ),
           ),
+          const SizedBox(height: 10),
           Container(
             height: 50,
             padding: const EdgeInsets.only(left: 20, right: 20,),
             margin: const EdgeInsets.only(bottom: 20),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 StreamBuilder(
                     stream: FirebaseFirestore.instance.collection("Items").doc(widget.id).snapshots(),
@@ -256,7 +259,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                     );
                   }
                 ),
-                SizedBox(width: 5,),
+                const SizedBox(width: 20,),
                 StreamBuilder(
                     stream: FirebaseFirestore.instance.collection("Items").doc(widget.id).snapshots(),
                     builder: (context, snapshot) {
@@ -307,7 +310,7 @@ class _ViewItemSheetState extends ConsumerState<ViewItemSheet> {
                         },
                       );
                     }
-                    return SizedBox();
+                    return const SizedBox();
                   }
                 )
               ],

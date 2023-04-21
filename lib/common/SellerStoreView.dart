@@ -89,6 +89,14 @@ class _SellerStartViewState extends ConsumerState<SellerStartView> {
                           }
                       ),
                       const SizedBox(height: 15),
+                      Text(
+                        snapshot.data!["Address"].toString().replaceAll("%", ", "),
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      const SizedBox(height: 15),
                       TabBar(
                         labelColor: Colors.white,
                         unselectedLabelColor: Colors.grey,

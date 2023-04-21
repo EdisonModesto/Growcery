@@ -106,7 +106,7 @@ class FirestoreService{
     }
   }
 
-  void updateBasketQuantity(id, quantity, old){
+  void updateBasketQuantity(id, quantity, old, variation){
     FirebaseFirestore.instance.collection("Users").doc(AuthService().getID()).update({
       "Basket": FieldValue.arrayRemove([old])
     });
@@ -114,7 +114,7 @@ class FirestoreService{
 
     } else {
       FirebaseFirestore.instance.collection("Users").doc(AuthService().getID()).update({
-        "Basket": FieldValue.arrayUnion(["$id,$quantity"])
+        "Basket": FieldValue.arrayUnion(["$id,$quantity,$variation"])
       });
     }
   }

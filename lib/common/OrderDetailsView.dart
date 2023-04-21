@@ -109,26 +109,7 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                   padding: const EdgeInsets.all(12.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            "Order ID:",
-                            style: GoogleFonts.poppins(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const Spacer(),
-                          Text(
-                            widget.orderData.id,
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
+                    children: [Row(
                         children: [
                           Text(
                             "Buyer Name:",
@@ -205,8 +186,24 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                           ),
                         ],
                       ),
-
-                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Text(
+                            "Order ID:",
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            widget.orderData.id,
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
                       Text(
                         "Order Date: ${widget.orderData.data()['Date'].toDate().toString().split(" ")[0]}",
                         style: GoogleFonts.poppins(

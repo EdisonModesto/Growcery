@@ -74,7 +74,7 @@ class _AddToBasketSheetState extends ConsumerState<AddToBasketSheet> {
                         selected: _selectedVariationIndex == index,
                         onSelected: (isSelected) {
                           setState(() {
-                            _selectedVariationIndex = isSelected ? index : -1;
+                            _selectedVariationIndex = isSelected ? index : 0;
                           });
                         },
                       );

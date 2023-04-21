@@ -217,37 +217,64 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
-                              subtitle: StreamBuilder(
-                                stream: FirebaseFirestore.instance.collection("Users").doc(sellers[index].id).collection("Ratings").snapshots(),
-                                builder: (context, snapshot) {
-                                  if(snapshot.hasData){
-                                    double totalRating = 0;
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    sellers[index].data()["Address"].toString().replaceAll("%", ", "),
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  StreamBuilder(
+                                    stream: FirebaseFirestore.instance.collection("Items").where("SellerID", isEqualTo: sellers[index].id).snapshots(),
+                                    builder: (context, snapshot) {
+                                      if(snapshot.hasData){
+                                        return Text(
+                                          "Total Items: ${snapshot.data!.docs.length}",
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        );
+                                      }
+                                      return SizedBox();
+                                    }
+                                  ),
+                                  StreamBuilder(
+                                    stream: FirebaseFirestore.instance.collection("Users").doc(sellers[index].id).collection("Ratings").snapshots(),
+                                    builder: (context, snapshot) {
+                                      if(snapshot.hasData){
+                                        double totalRating = 0;
 
-                                    snapshot.data!.docs.forEach((element) {
-                                      totalRating += element.data()["Rating"];
-                                    });
+                                        snapshot.data!.docs.forEach((element) {
+                                          totalRating += element.data()["Rating"];
+                                        });
 
-                                    totalRating = totalRating == 0 ? 0.0 : totalRating / snapshot.data!.docs.length;
-                                    return RatingBar.builder(
-                                      initialRating: totalRating,
-                                      minRating: 0,
-                                      direction: Axis.horizontal,
-                                      ignoreGestures: true,
-                                      allowHalfRating: true,
-                                      itemCount: 5,
-                                      itemPadding: const EdgeInsets.symmetric(horizontal:0),
-                                      itemSize: 25,
-                                      itemBuilder: (context, _) => const Icon(
-                                        Icons.star,
-                                        color: Colors.amber,
-                                      ),
-                                      onRatingUpdate: (rating) {
-                                        print(rating);
-                                      },
-                                    );
-                                  }
-                                  return SizedBox();
-                                }
+                                        totalRating = totalRating == 0 ? 0.0 : totalRating / snapshot.data!.docs.length;
+                                        return RatingBar.builder(
+                                          initialRating: totalRating,
+                                          minRating: 0,
+                                          direction: Axis.horizontal,
+                                          ignoreGestures: true,
+                                          allowHalfRating: true,
+                                          itemCount: 5,
+                                          itemPadding: const EdgeInsets.symmetric(horizontal:0),
+                                          itemSize: 25,
+                                          itemBuilder: (context, _) => const Icon(
+                                            Icons.star,
+                                            color: Colors.amber,
+                                          ),
+                                          onRatingUpdate: (rating) {
+                                            print(rating);
+                                          },
+                                        );
+                                      }
+                                      return SizedBox();
+                                    }
+                                  ),
+                                ],
                               ),
                               trailing: Text(
                                 ">",

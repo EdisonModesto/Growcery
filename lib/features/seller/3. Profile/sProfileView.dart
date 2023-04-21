@@ -80,10 +80,10 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
                             ),
                             context: context,
                             isScrollControlled: true,
-                            builder: (context) => USettingsSheet()
+                            builder: (context) => const USettingsSheet()
                         );
                       },
-                      icon: const Icon(CupertinoIcons.settings),
+                      icon: const Icon(Icons.menu),
                     )],
                   ),
                     const SizedBox(height: 15),
@@ -117,15 +117,16 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
                         );
                       },
                     ),
-                    const SizedBox(height: 20),
-                    const Divider(),
+                    const SizedBox(height: 10),
+                    const Divider(thickness: 1,),
+                    const SizedBox(height: 10),
                     Center(
                       child: Text(
                         "Average Rating",
                         style: GoogleFonts.poppins(
                           fontSize: 17,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xff414141)
+                            color: Colors.black
                         ),
                       ),
                     ),
@@ -142,6 +143,7 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
                             totalRating = totalRating / data.docs.length;
 
                             return Column(
+
                               children: [
                                 Center(
                                   child: RatingBar.builder(
@@ -152,6 +154,7 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
                                     allowHalfRating: true,
                                     itemCount: 5,
                                     itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                    itemSize: 30,
                                     itemBuilder: (context, _) => const Icon(
                                       Icons.star,
                                       color: Colors.amber,
@@ -161,62 +164,83 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
                                     },
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 20,
                                 ),
-                                ListView.builder(
-                                  itemCount: data.docs.length,
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, index){
-                                    return StreamBuilder(
-                                      stream: FirebaseFirestore.instance.collection("Users").doc(data.docs[index].data()["MarketName"]).snapshots(),
-                                      builder: (context, snapshot) {
-                                        if(snapshot.hasData){
-                                          return ListTile(
-                                            leading: CircleAvatar(
-                                              backgroundColor: AppColors().primaryColor,
-                                              radius: 20,
-                                              child: Text(
-                                                data.docs[index].data()["Rating"].toString(),
-                                                style: GoogleFonts.poppins(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "List of rating from Markets",
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Expanded(
+                                  child: ListView.separated(
+                                    itemCount: data.docs.length,
+                                    shrinkWrap: true,
+                                    separatorBuilder: (context, index){
+                                      return const Divider(
+                                        thickness: 1,
+                                      );
+                                    },
+                                    itemBuilder: (context, index){
+                                      return StreamBuilder(
+                                        stream: FirebaseFirestore.instance.collection("Users").doc(data.docs[index].data()["MarketName"]).snapshots(),
+                                        builder: (context, snapshot) {
+                                          if(snapshot.hasData){
+                                            return ListTile(
+                                              leading: CircleAvatar(
+                                                backgroundColor: AppColors().primaryColor,
+                                                radius: 20,
+                                                child: Text(
+                                                  data.docs[index].data()["Rating"].toString(),
+                                                  style: GoogleFonts.poppins(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.white
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            title: Text(
-                                              snapshot.data!.data()!["Name"],
-                                              //data.docs[index].data()["Name"],
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
+                                              title: Text(
+                                                snapshot.data!.data()!["Name"],
+                                                //data.docs[index].data()["Name"],
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
-                                            ),
-                                            subtitle: RatingBar.builder(
-                                              initialRating: double.parse(data.docs[index].data()["Rating"].toString()),
-                                              minRating: 0,
-                                              direction: Axis.horizontal,
-                                              ignoreGestures: true,
-                                              allowHalfRating: true,
-                                              itemCount: 5,
-                                              itemPadding: const EdgeInsets.symmetric(horizontal:0),
-                                              itemSize: 25,
-                                              itemBuilder: (context, _) => const Icon(
-                                                Icons.star,
-                                                color: Colors.amber,
+                                              subtitle: RatingBar.builder(
+                                                initialRating: double.parse(data.docs[index].data()["Rating"].toString()),
+                                                minRating: 0,
+                                                direction: Axis.horizontal,
+                                                ignoreGestures: true,
+                                                allowHalfRating: true,
+                                                itemCount: 5,
+                                                itemPadding: const EdgeInsets.symmetric(horizontal:0),
+                                                itemSize: 25,
+                                                itemBuilder: (context, _) => const Icon(
+                                                  Icons.star,
+                                                  color: Colors.amber,
+                                                ),
+                                                onRatingUpdate: (rating) {
+                                                  print(rating);
+                                                },
                                               ),
-                                              onRatingUpdate: (rating) {
-                                                print(rating);
-                                              },
-                                            ),
 
-                                          );
+                                            );
+                                          }
+                                          return const SizedBox();
                                         }
-                                        return SizedBox();
-                                      }
-                                    );
-                                  },
+                                      );
+                                    },
+                                  ),
                                 )
                               ],
                             );
@@ -225,48 +249,47 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
                             return Center(child: Text(error.toString()));
                           },
                           loading: (){
-                            return Center(child: const CircularProgressIndicator());
+                            return const Center(child: CircularProgressIndicator());
                           }
                       ),
                     ),
-                    Expanded(
-                      child: Card(
-                        child: SizedBox(
-                          height: 100,
-                          child: Center(
-                            child: StreamBuilder(
-                              stream: FirebaseFirestore.instance.collection("Orders").where("SellerID", isEqualTo: AuthService().getID()).where("Status", isEqualTo: "3").snapshots(),
-                              builder: (context, snapshot) {
-                                if(snapshot.hasData){
-                                  return FutureBuilder(
-                                    future: calculateTotal2(snapshot),
-                                    builder: (context, snapshot3) {
-                                      if(snapshot3.hasData){
-                                        return Text(
-                                          "Total Sales: PHP${snapshot3.data.toString()}",
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        );
-                                      }
-                                      return SizedBox();
+                    Card(
+                      child: SizedBox(
+                        height: 100,
+                        child: Center(
+                          child: StreamBuilder(
+                            stream: FirebaseFirestore.instance.collection("Orders").where("SellerID", isEqualTo: AuthService().getID()).where("Status", isEqualTo: "3").snapshots(),
+                            builder: (context, snapshot) {
+                              if(snapshot.hasData){
+                                return FutureBuilder(
+                                  future: calculateTotal2(snapshot),
+                                  builder: (context, snapshot3) {
+                                    if(snapshot3.hasData){
+                                      return Text(
+                                        "Total Sales: PHP${snapshot3.data.toString()}",
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      );
                                     }
-                                  );
-                                }
-                                return Text(
-                                  "Total Sales: Loading",
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                    return const SizedBox();
+                                  }
                                 );
                               }
-                            ),
+                              return Text(
+                                "Total Sales: Loading",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              );
+                            }
                           ),
                         ),
-                      )
-                    )
+                      ),
+                    ),
+                    const SizedBox(height: 50,)
                   ],
                 ),
               ),

@@ -557,31 +557,28 @@ class _AuthDialogState extends ConsumerState<AuthView> {
                                         ),
                                       ],
                                     ),
-                                    Row(
+                                    Column(
                                       children: [
-                                        Expanded(
-                                          child: RadioListTile(
-                                            title: Text('Buyer'),
-                                            value: 'Buyer',
-                                            groupValue: _selectedOption,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _selectedOption = value!;
-                                              });
-                                            },
-                                          ),
+                                        RadioListTile(
+
+                                          title: Text('Market'),
+                                          value: 'Market',
+                                          groupValue: _selectedOption,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _selectedOption = value!;
+                                            });
+                                          },
                                         ),
-                                        Expanded(
-                                          child: RadioListTile(
-                                            title: Text('Seller'),
-                                            value: 'Seller',
-                                            groupValue: _selectedOption,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _selectedOption = value!;
-                                              });
-                                            },
-                                          ),
+                                        RadioListTile(
+                                          title: Text('Farm'),
+                                          value: 'Farm',
+                                          groupValue: _selectedOption,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _selectedOption = value!;
+                                            });
+                                          },
                                         ),
                                       ],
                                     ),

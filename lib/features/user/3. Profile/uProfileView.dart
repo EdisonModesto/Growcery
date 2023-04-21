@@ -865,22 +865,6 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                               ],
                                                             ),
                                                           ),
-                                                          const SizedBox(width: 10),
-
-                                                          IconButton(
-                                                            onPressed: () {
-                                                              FirestoreService()
-                                                                  .updateOrderStatus(
-                                                                  toPay[index].id,
-                                                                  "1");
-                                                            },
-                                                            icon: const Icon(
-                                                              CupertinoIcons
-                                                                  .upload_circle,
-                                                              color: Colors.black,
-                                                              size: 30,
-                                                            ),
-                                                          ),
                                                         ],
                                                       ),
                                                     ),);

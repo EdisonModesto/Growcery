@@ -39,6 +39,32 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
     super.initState();
   }
 
+  Future<List<String>> getSellers(basket)async{
+    List<String> sellers = [];
+    for(int index = 0; index < basket.length; index++){
+      var itemSnapshot = await FirebaseFirestore.instance.collection("Items").doc(basket[index].toString().split(",")[0]).get();
+      if(!sellers.contains(itemSnapshot.data()!["SellerID"])){
+        sellers.add(itemSnapshot.data()!["SellerID"]);
+      }
+    }
+    return sellers;
+  }
+
+  Future<List> loadItems(sellerID, basket) async {
+
+    var items = [];
+    for(int i = 0; i < basket.length; i++){
+
+      var itemSnapshot = await FirebaseFirestore.instance.collection("Items").doc(basket[i].toString().split(",")[0]).get();
+      if(itemSnapshot.data()!["SellerID"] == sellerID){
+        items.add(i);
+      }
+    }
+    print("ITEMS");
+    print(items);
+    return items;
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -70,262 +96,302 @@ class _UBasketViewState extends ConsumerState<UBasketView> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "My Basket",
-                            style: GoogleFonts.poppins(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              if(selecteditems.length == 0) {
-                                selecteditems.clear();
-                                selectedQuantity.clear();
-                                selectedPrice.clear();
-                                for (int index = 0; index <
-                                    data.data()!["Basket"].length; index++) {
-                                  checkValues[index] = true;
-                                  selecteditems.add(data
-                                      .data()!["Basket"][index]
-                                      .toString());
-                                  selectedQuantity.add(
-                                      itemQuantity[index]);
-                                  selectedPrice.add(
-                                      itemPrice[index]);
-                                }
-                                setState(() {});
-                              } else {
-                                selecteditems.clear();
-                                selectedQuantity.clear();
-                                selectedPrice.clear();
-                                for (int index = 0; index <
-                                    data.data()!["Basket"].length; index++) {
-                                  checkValues[index] = false;
-                                }
-                                setState(() {});
-                              }
-                            },
-                            child: Text(
-                              selecteditems.length == 0 ? "Select All" : "Unselect All",
-                              style: GoogleFonts.poppins(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors().primaryColor,
-                              ),
-                            ),
-                          ),
-                        ],
+                      Text(
+                        "My Basket",
+                        style: GoogleFonts.poppins(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 10),
                       Expanded(
-                        child: ListView.separated(
-                          itemCount: data.data()!["Basket"].length,
-                          itemBuilder: (context, index) {
-                            return StreamBuilder(
-                              stream: FirebaseFirestore.instance.collection("Items").doc(basketList[index].toString().split(",")[0]).snapshots(),
-                              builder: (context, snapshot) {
-
-                                if (snapshot.hasData) {
-                                  if(snapshot.data!.exists == false){
-                                    FirestoreService().removeItem(basketList[index].toString());
-                                  } else {
-                                    itemQuantity[index] = int.parse(basketList[index].toString().split(",")[1]);
-                                    itemPrice[index] = double.parse(snapshot.data!.data()!["Price"].toString());
-                                    return Dismissible(
-                                      key: UniqueKey(),
-                                      onDismissed: (direction) {
-                                        FirestoreService().updateBasketQuantity(basketList[index].toString().split(",")[0], 0, basketList[index]);
-                                      },
-                                      child: Container(
-                                        height: 100,
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[200],
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),
-                                        child: Row(
+                        child: FutureBuilder(
+                          future: getSellers(basketList),
+                          builder: (context, sellerSnapshot){
+                            if(sellerSnapshot.hasData){
+                              return ListView.separated(
+                                itemCount: sellerSnapshot.data!.length,
+                                itemBuilder: (context, i) {
+                                  return FutureBuilder(
+                                    future: loadItems(sellerSnapshot.data![i], basketList),
+                                    builder: (context, itemList) {
+                                      if(itemList.hasData){
+                                        return Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Container(
-                                              width: 100,
-                                              decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      snapshot.data!.data()!["Url"]),
-                                                  fit: BoxFit.cover,
+                                            Row(
+                                              children: [
+                                                FutureBuilder(
+                                                    future: FirebaseFirestore.instance.collection("Users").doc(sellerSnapshot.data![i]).get(),
+                                                    builder: (context, sellerDetails) {
+                                                      if(sellerDetails.hasData){
+                                                        return Text(
+                                                          sellerDetails.data!.data()!["Name"],
+                                                          style: GoogleFonts.poppins(
+                                                            fontSize: 16,
+                                                            fontWeight: FontWeight.w600,
+                                                          ),
+                                                        );
+                                                      }
+                                                      return SizedBox();
+                                                    }
                                                 ),
-                                                color: Colors.grey[300],
-                                                borderRadius: BorderRadius
-                                                    .circular(10),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 20),
-                                            Expanded(
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    "${snapshot.data!.data()!["Name"]} (${basketList[index].toString().split(",")[2]})",
-                                                    maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: GoogleFonts.poppins(
-                                                      fontSize: 16,
-                                                      fontWeight: FontWeight.w600,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(height: 5),
-                                                  Text(
-                                                    "PHP ${snapshot.data!.data()!["Price"]}",
-                                                    maxLines: 1,
-                                                    overflow: TextOverflow
-                                                        .ellipsis,
+                                                Spacer(),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    if(!selecteditems.any((element) => List.generate(itemList.data!.length, (index) => basketList[itemList.data![index]]).contains(element))) {
+                                                      selecteditems.clear();
+                                                      selectedQuantity.clear();
+                                                      selectedPrice.clear();
+                                                      checkValues = List.filled(100, false);
+                                                      for (int index = 0; index < itemList.data!.length; index++) {
+                                                        checkValues[itemList.data![index]] = true;
+                                                        selecteditems.add(data.data()!["Basket"][itemList.data![index]].toString());
+                                                        selectedQuantity.add(itemQuantity[itemList.data![index]]);
+                                                        selectedPrice.add(itemPrice[itemList.data![index]]);
+                                                      }
+                                                      setState(() {});
+                                                    } else {
+                                                      selecteditems.clear();
+                                                      selectedQuantity.clear();
+                                                      selectedPrice.clear();
+                                                      checkValues = List.filled(100, false);
+                                                      for (int index = 0; index < itemList.data!.length; index++) {
+                                                        checkValues[itemList.data![index]] = false;
+                                                      }
+                                                      setState(() {});
+                                                    }
+                                                  },
+                                                  child: Text(
+                                                    
+                                                    //ListEquality().equals(selecteditems, List.generate(itemList.data!.length, (index) => basketList[itemList.data![index]]) .sublist(0, selecteditems.length)) 
+                                                    selecteditems.any((element) => List.generate(itemList.data!.length, (index) => basketList[itemList.data![index]]).contains(element)) ? "Unselect All" : "Select All",
                                                     style: GoogleFonts.poppins(
                                                       fontSize: 14,
-                                                      fontWeight: FontWeight.w400,
+                                                      fontWeight: FontWeight.w600,
+                                                      color: AppColors().primaryColor,
                                                     ),
                                                   ),
-                                                  const SizedBox(height: 5),
-                                                  Row(
-                                                    children: [
-                                                      InkWell(
-                                                        onTap: () {
-                                                          if (int.parse(snapshot.data!.data()!["Minimum"]) <=
-                                                              itemQuantity[index] - 1) {
-                                                            checkValues[index] = false;
-                                                            selecteditems.remove(basketList[index].toString());
-                                                            selectedQuantity.remove(itemQuantity[index]);
-                                                            selectedPrice.remove(itemPrice[index]);
-                                                            setState(() {});
-                                                            FirestoreService().updateBasketQuantity(basketList[index].toString().split(",")[0], itemQuantity[index] - 1, basketList[index]);itemQuantity[index] = itemQuantity[index] - 1;
-                                                            setState(() {});
-                                                          } else {
-                                                            Fluttertoast.showToast(
-                                                                msg:
-                                                                "Minimum quantity is ${snapshot.data!.data()!["Minimum"]}");
-                                                          }
-                                                        },
-                                                        child: Container(
-                                                          width: 25,
-                                                          height: 25,
-                                                          decoration: BoxDecoration(
-                                                            color: AppColors()
-                                                                .primaryColor,
-                                                            borderRadius:
-                                                            BorderRadius.circular(
-                                                                8),
-                                                          ),
-                                                          child: const Icon(
-                                                            Icons.remove,
-                                                            color: Colors.white,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      const SizedBox(width: 10),
-                                                      Text(
-                                                        "${itemQuantity[index]}",
-                                                        style: GoogleFonts
-                                                            .poppins(
-                                                          fontSize: 16,
-                                                          fontWeight: FontWeight
-                                                              .w600,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(width: 10),
-                                                      InkWell(
-                                                        onTap: () {
-                                                          checkValues[index] =
-                                                          false;
-                                                          selecteditems.remove(
-                                                              basketList[index]
-                                                                  .toString());
-                                                          selectedQuantity.remove(
-                                                              itemQuantity[index]);
-                                                          selectedPrice.remove(
-                                                              itemPrice[index]);
-                                                          setState(() {});
-                                                          FirestoreService()
-                                                              .updateBasketQuantity(
-                                                              basketList[index]
-                                                                  .toString()
-                                                                  .split(",")[0],
-                                                              itemQuantity[index] +
-                                                                  1,
-                                                              basketList[index]);
-                                                          itemQuantity[index] =
-                                                              itemQuantity[index] +
-                                                                  1;
-                                                          print(
-                                                              itemQuantity[index]);
-                                                          setState(() {});
-                                                        },
-                                                        child: Container(
-                                                          width: 25,
-                                                          height: 25,
-                                                          decoration: BoxDecoration(
-                                                            color: AppColors()
-                                                                .primaryColor,
-                                                            borderRadius:
-                                                            BorderRadius.circular(
-                                                                10),
-                                                          ),
-                                                          child: const Icon(
-                                                            Icons.add,
-                                                            color: Colors.white,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      const SizedBox(width: 10),
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
+                                                ),
+
+                                              ],
                                             ),
+                                            Column(
+                                              children: List.generate(itemList.data!.length, (index){
+                                                print(itemList.data![index]);
+                                                print(basketList[itemList.data![index]]);
+                                                return StreamBuilder(
+                                                  stream: FirebaseFirestore.instance.collection("Items").doc(basketList[itemList.data![index]].toString().split(",")[0]).snapshots(),
+                                                  builder: (context, snapshot) {
 
-                                            Checkbox(
-                                              value: checkValues[index],
-                                              onChanged: (value) {
-                                                if (value!) {
-                                                  selecteditems.add(data
-                                                      .data()!["Basket"][index]
-                                                      .toString());
-                                                  selectedQuantity.add(
-                                                      itemQuantity[index]);
-                                                  selectedPrice.add(
-                                                      itemPrice[index]);
-                                                } else {
-                                                  print("CHANGED");
-                                                  selecteditems.remove(data
-                                                      .data()!["Basket"][index]
-                                                      .toString()
-                                                  );
-                                                  selectedQuantity.remove(
-                                                      itemQuantity[index]);
-                                                  selectedPrice.remove(
-                                                      itemPrice[index]);
-                                                }
-                                                setState(() {
-                                                  checkValues[index] = value!;
-                                                });
-                                              },
-                                            )
+                                                    if (snapshot.hasData) {
+                                                      print("DATA FETCHED");
+                                                      if(snapshot.data!.exists == false){
+                                                        print("NOT EXIST?");
+                                                        FirestoreService().removeItem(basketList[itemList.data![index]].toString());
+                                                      } else {
+                                                        itemQuantity[itemList.data![index]] = int.parse(basketList[itemList.data![index]].toString().split(",")[1]);
+                                                        itemPrice[itemList.data![index]] = double.parse(snapshot.data!.data()!["Price"].toString());
+
+                                                        return Dismissible(
+                                                          key: UniqueKey(),
+                                                          onDismissed: (direction) {
+                                                            FirestoreService().updateBasketQuantity(basketList[itemList.data![index]].toString().split(",")[0], 0, basketList[itemList.data![index]], basketList[itemList.data![index]].toString().split(",")[2]);
+                                                          },
+                                                          child: Container(
+                                                            height: 100,
+                                                            margin: const EdgeInsets.only(bottom: 10),
+                                                            decoration: BoxDecoration(
+                                                              color: Colors.grey[200],
+                                                              borderRadius: BorderRadius.circular(10),
+                                                            ),
+                                                            child: Row(
+                                                              children: [
+                                                                Container(
+                                                                  width: 100,
+                                                                  decoration: BoxDecoration(
+                                                                    image: DecorationImage(
+                                                                      image: NetworkImage(
+                                                                          snapshot.data!.data()!["Url"]),
+                                                                      fit: BoxFit.cover,
+                                                                    ),
+                                                                    color: Colors.grey[300],
+                                                                    borderRadius: BorderRadius
+                                                                        .circular(10),
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(width: 20),
+                                                                Expanded(
+                                                                  child: Column(
+                                                                    mainAxisAlignment:
+                                                                    MainAxisAlignment.center,
+                                                                    crossAxisAlignment:
+                                                                    CrossAxisAlignment.start,
+                                                                    children: [
+                                                                      Text(
+                                                                        "${snapshot.data!.data()!["Name"]} (${basketList[itemList.data![index]].toString().split(",")[2]})",
+                                                                        maxLines: 1,
+                                                                        overflow: TextOverflow.ellipsis,
+                                                                        style: GoogleFonts.poppins(
+                                                                          fontSize: 16,
+                                                                          fontWeight: FontWeight.w600,
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(height: 5),
+                                                                      Text(
+                                                                        "PHP ${snapshot.data!.data()!["Price"]}",
+                                                                        maxLines: 1,
+                                                                        overflow: TextOverflow
+                                                                            .ellipsis,
+                                                                        style: GoogleFonts.poppins(
+                                                                          fontSize: 14,
+                                                                          fontWeight: FontWeight.w400,
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(height: 5),
+                                                                      Row(
+                                                                        children: [
+                                                                          InkWell(
+                                                                            onTap: () {
+                                                                              if (int.parse(snapshot.data!.data()!["Minimum"]) <=
+                                                                                  itemQuantity[itemList.data![index]] - 1) {
+                                                                                checkValues[itemList.data![index]] = false;
+                                                                                selecteditems.remove(basketList[itemList.data![index]].toString());
+                                                                                selectedQuantity.remove(itemQuantity[itemList.data![index]]);
+                                                                                selectedPrice.remove(itemPrice[itemList.data![index]]);
+                                                                                setState(() {});
+                                                                                FirestoreService().updateBasketQuantity(basketList[itemList.data![index]].toString().split(",")[0], itemQuantity[itemList.data![index]] - 1, basketList[itemList.data![index]],  basketList[itemList.data![index]].toString().split(",")[2]);
+                                                                                itemQuantity[itemList.data![index]] = itemQuantity[itemList.data![index]] - 1;
+                                                                                setState(() {});
+                                                                              } else {
+                                                                                Fluttertoast.showToast(
+                                                                                    msg:
+                                                                                    "Minimum quantity is ${snapshot.data!.data()!["Minimum"]}");
+                                                                              }
+                                                                            },
+                                                                            child: Container(
+                                                                              width: 25,
+                                                                              height: 25,
+                                                                              decoration: BoxDecoration(
+                                                                                color: AppColors()
+                                                                                    .primaryColor,
+                                                                                borderRadius:
+                                                                                BorderRadius.circular(
+                                                                                    8),
+                                                                              ),
+                                                                              child: const Icon(
+                                                                                Icons.remove,
+                                                                                color: Colors.white,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          const SizedBox(width: 10),
+                                                                          Text(
+                                                                            "${itemQuantity[itemList.data![index]]}",
+                                                                            style: GoogleFonts
+                                                                                .poppins(
+                                                                              fontSize: 16,
+                                                                              fontWeight: FontWeight
+                                                                                  .w600,
+                                                                            ),
+                                                                          ),
+                                                                          const SizedBox(width: 10),
+                                                                          InkWell(
+                                                                            onTap: () {
+                                                                              checkValues[itemList.data![index]] = false;
+                                                                              selecteditems.remove(basketList[itemList.data![index]].toString());
+                                                                              selectedQuantity.remove(itemQuantity[itemList.data![index]]);
+                                                                              selectedPrice.remove(itemPrice[itemList.data![index]]);
+                                                                              setState(() {});
+                                                                              FirestoreService().updateBasketQuantity(basketList[itemList.data![index]].toString().split(",")[0], itemQuantity[itemList.data![index]] + 1, basketList[itemList.data![index]],  basketList[itemList.data![index]].toString().split(",")[2]);
+                                                                              itemQuantity[itemList.data![index]] = itemQuantity[itemList.data![index]] + 1;
+                                                                              print(itemQuantity[itemList.data![index]]);
+                                                                              setState(() {});
+                                                                            },
+                                                                            child: Container(
+                                                                              width: 25,
+                                                                              height: 25,
+                                                                              decoration: BoxDecoration(
+                                                                                color: AppColors()
+                                                                                    .primaryColor,
+                                                                                borderRadius:
+                                                                                BorderRadius.circular(
+                                                                                    10),
+                                                                              ),
+                                                                              child: const Icon(
+                                                                                Icons.add,
+                                                                                color: Colors.white,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          const SizedBox(width: 10),
+                                                                        ],
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                ),
+
+                                                                Checkbox(
+                                                                  value: checkValues[itemList.data![index]],
+                                                                  onChanged: (value) {
+                                                                    if (value!) {
+                                                                      selecteditems.add(data
+                                                                          .data()!["Basket"][itemList.data![index]]
+                                                                          .toString());
+                                                                      selectedQuantity.add(
+                                                                          itemQuantity[itemList.data![index]]);
+                                                                      selectedPrice.add(
+                                                                          itemPrice[itemList.data![index]]);
+                                                                    } else {
+                                                                      print("CHANGED");
+                                                                      selecteditems.remove(data
+                                                                          .data()!["Basket"][itemList.data![index]]
+                                                                          .toString()
+                                                                      );
+                                                                      selectedQuantity.remove(
+                                                                          itemQuantity[itemList.data![index]]);
+                                                                      selectedPrice.remove(
+                                                                          itemPrice[itemList.data![index]]);
+                                                                    }
+                                                                    setState(() {
+                                                                      checkValues[itemList.data![index]] = value!;
+                                                                    });
+                                                                  },
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }
+                                                    }
+
+                                                    return const SizedBox();
+                                                  },
+                                                );
+                                              }),
+                                            ),
                                           ],
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                }
+                                        );
 
-                                return const SizedBox();
-                              },
-                            );
-                          },
-                          separatorBuilder: (context, index) =>
-                          const SizedBox(height: 10),
+                                      }
+                                      return SizedBox();
+                                    }
+                                  );
+                                },
+                                separatorBuilder: (context, index) =>
+                                Column(
+                                  children: [
+                                    const SizedBox(height: 5),
+                                    Divider(thickness: 1,),
+                                    const SizedBox(height: 5),
+                                  ],
+                                ),
+                              );
+
+                            }
+                            return SizedBox();
+                          }
+
                         ),
                       ),
                       ClipRRect(
