@@ -330,20 +330,19 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                   ],
                 ),
               ) : const SizedBox(),
-
-
-              const SizedBox(height: 10),
+              
               widget.orderData.data()["Status"] == "0" ? Center(
                 child: Column(
                   children: [
                     Text(
-                      "Payment Proof:",
+                      "Payment Method: ${widget.orderData.data()["Proof"] == "" ? "COD" : "GCash" }",
                       style: GoogleFonts.poppins(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 10),
+                    widget.orderData.data()["Proof"] == "" ? SizedBox() :
                     SizedBox(
                       height: 200,
                       child: Image.network(

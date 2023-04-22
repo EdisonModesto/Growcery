@@ -167,6 +167,12 @@ class _BuyAgainDialogState extends ConsumerState<BuyAgainDialog> {
                                   ),
                                   trailing: NumberPicker(
                                     value: values[index],
+                                    itemCount: 1,
+                                    itemHeight: 30,
+                                    itemWidth: 30,
+                                    selectedTextStyle: GoogleFonts.poppins(
+                                      fontSize: 16,
+                                    ),
                                     minValue: int.parse(snapshot.data!['Minimum']),
                                     maxValue: int.parse(snapshot.data!['Stocks']),
                                     onChanged: (value){
@@ -243,6 +249,7 @@ class _BuyAgainDialogState extends ConsumerState<BuyAgainDialog> {
                         future: calculateTotal(widget.summaryItems),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
+                            print(widget.summaryItems);
                             return Text(
                               "PHP${snapshot.data}",
                               style: GoogleFonts.poppins(
