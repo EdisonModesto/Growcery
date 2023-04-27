@@ -250,7 +250,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                               ),
                                             );
                                           }
-                                          return SizedBox();
+                                          return const SizedBox();
                                         }
                                       ),
                                       StreamBuilder(
@@ -283,7 +283,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                               },
                                             );
                                           }
-                                          return SizedBox();
+                                          return const SizedBox();
                                         }
                                       ),
                                     ],
@@ -381,9 +381,9 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                             width: double.infinity,
                                             color: AppColors().primaryColor,
                                             child: Padding(
-                                              padding: const EdgeInsets.all(20.0),
+                                              padding: const EdgeInsets.all(10.0),
                                               child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
                                                     searchResult[index].data()['Name'],
@@ -395,7 +395,6 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                                       fontWeight: FontWeight.bold,
                                                     ),
                                                   ),
-                                                  const SizedBox(height: 5),
                                                   Text(
                                                     "PHP ${searchResult[index].data()['Price']}/${searchResult[index].data()['Measurement']}",
                                                     maxLines: 1,
@@ -406,6 +405,66 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                                       fontWeight: FontWeight.w400,
                                                     ),
                                                   ),
+                                                  const SizedBox(height: 5,),
+                                                  Expanded(
+                                                    child: StreamBuilder(
+                                                        stream: FirebaseFirestore.instance.collection("Users").doc(searchResult[index].data()['SellerID']).snapshots(),
+                                                        builder: (context, snapshot) {
+                                                          if(snapshot.hasData){
+                                                            return Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Text(
+                                                                  snapshot.data!.data()!['Name'],
+                                                                  maxLines: 1,
+                                                                  overflow: TextOverflow.ellipsis,
+                                                                  style: GoogleFonts.poppins(
+                                                                    color: Colors.white,
+                                                                    fontSize: 12,
+                                                                    fontWeight: FontWeight.w400,
+                                                                  ),
+                                                                ),
+                                                                StreamBuilder(
+                                                                    stream: FirebaseFirestore.instance.collection("Users").doc(searchResult[index].data()['SellerID']).collection("Ratings").snapshots(),
+                                                                    builder: (context, snapshot) {
+                                                                      if(snapshot.hasData){
+                                                                        double totalRating = 0;
+
+                                                                        snapshot.data!.docs.forEach((element) {
+                                                                          totalRating += element.data()["Rating"];
+                                                                        });
+
+                                                                        totalRating = totalRating == 0 ? 0.0 : totalRating / snapshot.data!.docs.length;
+                                                                        return RatingBar.builder(
+                                                                          initialRating: totalRating,
+                                                                          unratedColor: Colors.grey[200],
+                                                                          minRating: 0,
+                                                                          direction: Axis.horizontal,
+                                                                          ignoreGestures: true,
+                                                                          allowHalfRating: true,
+                                                                          itemCount: 5,
+                                                                          itemPadding: const EdgeInsets.symmetric(horizontal:0),
+                                                                          itemSize: 15,
+                                                                          itemBuilder: (context, _) => const Icon(
+                                                                            Icons.star,
+                                                                            color: Colors.amber,
+                                                                          ),
+                                                                          onRatingUpdate: (rating) {
+                                                                            print(rating);
+                                                                          },
+                                                                        );
+                                                                      }
+                                                                      return const SizedBox();
+                                                                    }
+                                                                ),
+
+                                                              ],
+                                                            );
+                                                          }
+                                                          return const SizedBox();
+                                                        }
+                                                    ),
+                                                  )
                                                 ],
                                               ),
                                             ),
@@ -468,9 +527,10 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                             color: AppColors().primaryColor,
                                             width: double.infinity,
                                             child: Padding(
-                                              padding: const EdgeInsets.all(20.0),
+                                              padding: const EdgeInsets.all(10.0),
                                               child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
                                                     data.docs[index].data()['Name'],
@@ -482,7 +542,6 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                                       fontWeight: FontWeight.bold,
                                                     ),
                                                   ),
-                                                  const SizedBox(height: 5),
                                                   Text(
                                                     "PHP ${data.docs[index].data()['Price']}/${data.docs[index].data()['Measurement']}",
                                                     maxLines: 1,
@@ -493,6 +552,66 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                                       fontWeight: FontWeight.w400,
                                                     ),
                                                   ),
+                                                  const SizedBox(height: 5,),
+                                                  Expanded(
+                                                    child: StreamBuilder(
+                                                      stream: FirebaseFirestore.instance.collection("Users").doc(data.docs[index].data()['SellerID']).snapshots(),
+                                                      builder: (context, snapshot) {
+                                                        if(snapshot.hasData){
+                                                          return Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                snapshot.data!.data()!['Name'],
+                                                                maxLines: 1,
+                                                                overflow: TextOverflow.ellipsis,
+                                                                style: GoogleFonts.poppins(
+                                                                  color: Colors.white,
+                                                                  fontSize: 12,
+                                                                  fontWeight: FontWeight.w400,
+                                                                ),
+                                                              ),
+                                                              StreamBuilder(
+                                                                  stream: FirebaseFirestore.instance.collection("Users").doc(data.docs[index].data()['SellerID']).collection("Ratings").snapshots(),
+                                                                  builder: (context, snapshot) {
+                                                                    if(snapshot.hasData){
+                                                                      double totalRating = 0;
+
+                                                                      snapshot.data!.docs.forEach((element) {
+                                                                        totalRating += element.data()["Rating"];
+                                                                      });
+
+                                                                      totalRating = totalRating == 0 ? 0.0 : totalRating / snapshot.data!.docs.length;
+                                                                      return RatingBar.builder(
+                                                                        initialRating: totalRating,
+                                                                        unratedColor: Colors.grey[200],
+                                                                        minRating: 0,
+                                                                        direction: Axis.horizontal,
+                                                                        ignoreGestures: true,
+                                                                        allowHalfRating: true,
+                                                                        itemCount: 5,
+                                                                        itemPadding: const EdgeInsets.symmetric(horizontal:0),
+                                                                        itemSize: 15,
+                                                                        itemBuilder: (context, _) => const Icon(
+                                                                          Icons.star,
+                                                                          color: Colors.amber,
+                                                                        ),
+                                                                        onRatingUpdate: (rating) {
+                                                                          print(rating);
+                                                                        },
+                                                                      );
+                                                                    }
+                                                                    return const SizedBox();
+                                                                  }
+                                                              ),
+
+                                                            ],
+                                                          );
+                                                        }
+                                                        return const SizedBox();
+                                                      }
+                                                    ),
+                                                  )
                                                 ],
                                               ),
                                             ),
@@ -535,7 +654,7 @@ class _UHomeViewState extends ConsumerState<UHomeView> {
                                                   ),
                                                   const SizedBox(height: 5),
                                                   Text(
-                                                    "PHP ${data.docs[index].data()['Price']}/KG",
+                                                    "PHP ${data.docs[index].data()['Price']}",
                                                     maxLines: 1,
                                                     overflow: TextOverflow.ellipsis,
                                                     style: GoogleFonts.poppins(

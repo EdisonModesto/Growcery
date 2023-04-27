@@ -29,7 +29,7 @@ class _RatingSheetState extends ConsumerState<RatingSheet> {
   Widget build(BuildContext context) {
 
     return SizedBox(
-      height: 300,
+      height: 200,
       child: Padding(
         padding: const EdgeInsets.only(left: 40, right: 40, top: 20, bottom: 20),
         child: Column(
@@ -94,7 +94,7 @@ class _RatingSheetState extends ConsumerState<RatingSheet> {
                   },
                   child: const Text("Submit"),
                 ),
-                const SizedBox(height: 10,),
+         /*       const SizedBox(height: 10,),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     fixedSize: Size(MediaQuery.of(context).size.width, 50),
@@ -125,7 +125,7 @@ class _RatingSheetState extends ConsumerState<RatingSheet> {
                       color: const Color(0xff414141),
                     ),
                   ),
-                ),
+                ),*/
 
               ],
             ),

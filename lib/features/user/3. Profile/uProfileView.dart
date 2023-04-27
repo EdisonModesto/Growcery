@@ -20,6 +20,7 @@ import "../../../services/AuthService.dart";
 import "../../ViewModels/AuthViewModels.dart";
 import "../../ViewModels/UserViewModel.dart";
 import "RatingSheet.dart";
+import "RefundSheet.dart";
 
 class UProfileView extends ConsumerStatefulWidget {
   const UProfileView({
@@ -747,8 +748,61 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                         ),
                                                       ),
                                                       const SizedBox(width: 10),
-
-                                                      IconButton(
+                                                          IconButton(
+                                                            icon: const Icon(Icons.cancel_outlined, color: Colors.white),
+                                                            onPressed: () async {
+                                                              await showDialog(context: context, builder: (builder){
+                                                                return AlertDialog(
+                                                                  title: Text(
+                                                                    "Cancel Order",
+                                                                    style: GoogleFonts.poppins(
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.w400,
+                                                                    ),
+                                                                  ),
+                                                                  content: Text(
+                                                                    "Are you sure you want to cancel this order?",
+                                                                    style: GoogleFonts.poppins(
+                                                                      fontSize: 12,
+                                                                      fontWeight: FontWeight.w400,
+                                                                    ),
+                                                                  ),
+                                                                  actions: [
+                                                                    TextButton(
+                                                                      onPressed: (){
+                                                                        Navigator.of(builder).pop();
+                                                                      },
+                                                                      child: Text(
+                                                                        "No",
+                                                                        style: GoogleFonts.poppins(
+                                                                          fontSize: 12,
+                                                                          fontWeight: FontWeight.w400,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    TextButton(
+                                                                      onPressed: (){
+                                                                        FirestoreService().updateOrderStatus(toPay[index].id, "4");
+                                                                        //restore stock
+                                                                        for(var i = 0; i < toPay[index].data()["Items"].length; i++){
+                                                                          FirestoreService().restoreStock(toPay[index].data()["Items"][i].toString().split(",")[0], toPay[index].data()["Items"][i].toString().split(",")[1]);
+                                                                        }
+                                                                        Navigator.pop(builder);
+                                                                      },
+                                                                      child: Text(
+                                                                        "Yes",
+                                                                        style: GoogleFonts.poppins(
+                                                                          fontSize: 12,
+                                                                          fontWeight: FontWeight.w400,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                );
+                                                              });
+                                                            },
+                                                          ),
+                                                          IconButton(
                                                         onPressed: () {
                                                           print(toRecieve[index]);
                                                           showMaterialModalBottomSheet(
@@ -788,10 +842,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                         itemBuilder: (context, index) {
                                           return FutureBuilder(
                                               future: getResource(
-                                                  cancelled[index]
-                                                      .data()["Items"][0]
-                                                      .toString()
-                                                      .split(",")[0]),
+                                                  cancelled[index].data()["Items"][0].toString().split(",")[0]),
                                               builder: (context, snapshot) {
                                                 if (snapshot.hasData) {
                                                   return InkWell(
@@ -829,14 +880,11 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                             width: 100,
                                                             height: 100,
                                                             decoration: BoxDecoration(
-                                                              color: AppColors()
-                                                                  .primaryColor,
-                                                              borderRadius: BorderRadius
-                                                                  .circular(10),
+                                                              color: AppColors().primaryColor,
+                                                              borderRadius: BorderRadius.circular(10),
                                                               image: DecorationImage(
                                                                 image: NetworkImage(
-                                                                    snapshot
-                                                                        .data!["Url"]),
+                                                                    snapshot.data!["Url"]),
                                                                 fit: BoxFit.cover,
                                                               ),
                                                             ),
@@ -844,16 +892,12 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                           const SizedBox(width: 10),
                                                           Expanded(
                                                             child: Column(
-                                                              mainAxisAlignment: MainAxisAlignment
-                                                                  .center,
-                                                              crossAxisAlignment: CrossAxisAlignment
-                                                                  .start,
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
                                                               children: [
                                                                 Text(
-                                                                  cancelled[index]
-                                                                      .id,
-                                                                  style: GoogleFonts
-                                                                      .poppins(
+                                                                  cancelled[index].id,
+                                                                  style: GoogleFonts.poppins(
                                                                     fontSize: 14,
                                                                     color: Colors.white,
                                                                     fontWeight: FontWeight
@@ -863,39 +907,27 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                                 const SizedBox(
                                                                     height: 5),
                                                                 Text(
-                                                                  "Total Items: ${cancelled[index]
-                                                                      .data()["Items"]
-                                                                      .length}",
-                                                                  style: GoogleFonts
-                                                                      .poppins(
+                                                                  "Total Items: ${cancelled[index].data()["Items"].length}",
+                                                                  style: GoogleFonts.poppins(
                                                                     fontSize: 12,
                                                                     color: Colors.white,
 
-                                                                    fontWeight: FontWeight
-                                                                        .w400,
+                                                                    fontWeight: FontWeight.w400,
                                                                   ),
                                                                 ),
-                                                                const SizedBox(
-                                                                    height: 5),
+                                                                const SizedBox(height: 5),
                                                                 FutureBuilder(
                                                                     future: calculateTotal(
-                                                                        cancelled[index]
-                                                                            .data()["Items"]),
-                                                                    builder: (
-                                                                        context,
-                                                                        result) {
-                                                                      if (result
-                                                                          .hasData) {
+                                                                        cancelled[index].data()["Items"]),
+                                                                    builder: (context, result) {
+                                                                      if (result.hasData) {
                                                                         return Text(
-                                                                          "Total Price: ${result
-                                                                              .data}",
-                                                                          style: GoogleFonts
-                                                                              .poppins(
+                                                                          "Total Price: ${result.data}",
+                                                                          style: GoogleFonts.poppins(
                                                                             fontSize: 12,
                                                                             color: Colors.white,
 
-                                                                            fontWeight: FontWeight
-                                                                                .w400,
+                                                                            fontWeight: FontWeight.w400,
                                                                           ),
                                                                         );
                                                                       }
@@ -921,10 +953,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                         itemBuilder: (context, index) {
                                           return FutureBuilder(
                                               future: getResource(
-                                                  complete[index]
-                                                      .data()["Items"][0]
-                                                      .toString()
-                                                      .split(",")[0]),
+                                                  complete[index].data()["Items"][0].toString().split(",")[0]),
                                               builder: (context, snapshot) {
                                                 if (snapshot.hasData) {
                                                   return InkWell(
@@ -1041,6 +1070,28 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                               ],
                                                             ),
                                                           ),
+                                                          IconButton(
+                                                            onPressed: () {
+                                                              showMaterialModalBottomSheet(
+                                                                context: context,
+                                                                shape: const RoundedRectangleBorder(
+                                                                  borderRadius: BorderRadius.only(
+                                                                    topLeft: Radius.circular(20),
+                                                                    topRight: Radius.circular(20),
+                                                                  ),
+                                                                ),
+                                                                builder: (context) => RefundSheet(
+                                                                  orderData: complete[index],
+                                                                ),
+                                                              );
+                                                            },
+                                                            icon: const Icon(
+                                                              CupertinoIcons.return_icon,
+                                                              color: Colors.white,
+                                                              size: 30,
+                                                            ),
+                                                          ),
+
                                                         ],
                                                       ),
                                                     ),

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +26,7 @@ class SProfileView extends ConsumerStatefulWidget {
 }
 
 class _AProfileViewState extends ConsumerState<SProfileView> {
+  var rnd = Random();
 
   Future<double> calculateTotal(items) async{
     var total1 = 0.0;
@@ -53,7 +56,7 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
     return authState.when(
         data: (data){
           return DefaultTabController(
-            length: 4,
+            length: 3,
             child: SafeArea(
               child: Column(
                 children: [
@@ -194,18 +197,18 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
                                         ),
                                       ),
                                       const SizedBox(
-                                        height: 10,
+                                        height: 5,
                                       ),
                                       const Divider(
                                         thickness: 1,
                                       ),
                                       const SizedBox(
-                                        height: 10,
+                                        height: 5,
                                       ),
                                       Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          "List of rating from Markets",
+                                          "Sales Report",
                                           style: GoogleFonts.poppins(
                                               fontSize: 17,
                                               fontWeight: FontWeight.bold,
@@ -214,69 +217,333 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
                                         ),
                                       ),
                                       const SizedBox(
-                                        height: 10,
+                                        height: 5,
+                                      ),
+                                      TabBar(
+                                        isScrollable: true,
+                                        labelColor: Colors.white,
+                                        unselectedLabelColor: Colors.black,
+                                        indicator: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(50),
+                                          color: AppColors().primaryColor,
+                                        ),
+                                        splashBorderRadius: BorderRadius.circular(50),
+                                        tabs: [
+                                          Tab(
+                                            height: 40,
+                                            child: Text(
+                                              "Daily Report",
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ),
+                                          Tab(
+                                            height: 40,
+
+                                            child: Text(
+                                              "Weekly Report",
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ),
+                                          Tab(
+                                            height: 40,
+
+                                            child: Text(
+                                              "Monthly Report",
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                       Expanded(
-                                        child: ListView.separated(
-                                          itemCount: data.docs.length,
-                                          shrinkWrap: true,
-                                          separatorBuilder: (context, index){
-                                            return const Divider(
-                                              thickness: 1,
-                                            );
-                                          },
-                                          itemBuilder: (context, index){
-                                            return StreamBuilder(
-                                              stream: FirebaseFirestore.instance.collection("Users").doc(data.docs[index].data()["MarketName"]).snapshots(),
-                                              builder: (context, snapshot) {
-                                                if(snapshot.hasData){
-                                                  return ListTile(
-                                                    leading: CircleAvatar(
-                                                      backgroundColor: AppColors().primaryColor,
-                                                      radius: 20,
-                                                      child: Text(
-                                                        data.docs[index].data()["Rating"].toString(),
+                                        child: TabBarView(
+                                          children: [
+                                            SingleChildScrollView(
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children:  List.generate(10, (index){
+                                                  return Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      const Divider(thickness: 1,),
+                                                      Text(
+                                                        "Day ${index+1}",
                                                         style: GoogleFonts.poppins(
-                                                            fontSize: 16,
-                                                            fontWeight: FontWeight.bold,
-                                                            color: Colors.white
+                                                          fontSize: 16,
+                                                          fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
-                                                    ),
-                                                    title: Text(
-                                                      snapshot.data!.data()!["Name"],
-                                                      //data.docs[index].data()["Name"],
-                                                      style: GoogleFonts.poppins(
-                                                        fontSize: 16,
-                                                        fontWeight: FontWeight.bold,
+                                                      const SizedBox(height: 5,),
+                                                      Text(
+                                                        "Total No. Products Sold: ${rnd.nextInt(300)}", //${data.docs.length}
+                                                        style: GoogleFonts.poppins(
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.w400,
+                                                        ),
                                                       ),
-                                                    ),
-                                                    subtitle: RatingBar.builder(
-                                                      initialRating: double.parse(data.docs[index].data()["Rating"].toString()),
-                                                      minRating: 0,
-                                                      direction: Axis.horizontal,
-                                                      ignoreGestures: true,
-                                                      allowHalfRating: true,
-                                                      itemCount: 5,
-                                                      itemPadding: const EdgeInsets.symmetric(horizontal:0),
-                                                      itemSize: 25,
-                                                      itemBuilder: (context, _) => const Icon(
-                                                        Icons.star,
-                                                        color: Colors.amber,
+                                                      const SizedBox(height: 5,),
+                                                      Text(
+                                                        "Total Amount. Products Sold: ${rnd.nextInt(300)}", //${data.docs.length}
+                                                        style: GoogleFonts.poppins(
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.w400,
+                                                        ),
                                                       ),
-                                                      onRatingUpdate: (rating) {
-                                                        print(rating);
-                                                      },
-                                                    ),
+                                                      const SizedBox(height: 5,),
 
+                                                      Text(
+                                                        "Total No. Completed Order: ${rnd.nextInt(300)}", //${data.docs.length}
+                                                        style: GoogleFonts.poppins(
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.w400,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 5,),
+
+                                                      Text(
+                                                        "Total No. Canceled Order: ${rnd.nextInt(100)}", //${data.docs.length}
+                                                        style: GoogleFonts.poppins(
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.w400,
+                                                        ),
+                                                      ),
+                                                      const Divider(thickness: 1,),
+                                                    ],
                                                   );
-                                                }
-                                                return const SizedBox();
-                                              }
-                                            );
-                                          },
-                                        ),
+                                                })
+                                            /*
+                                                [
+                                                  Text(
+                                                    "Total No. Products Sold: null", //${data.docs.length}
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 5,),
+                                                  Text(
+                                                    "Total Amount. Products Sold: null", //${data.docs.length}
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 5,),
+
+                                                  Text(
+                                                    "Total No. Completed Order: null", //${data.docs.length}
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 5,),
+
+                                                  Text(
+                                                    "Total No. Canceled Order: null", //${data.docs.length}
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  )
+                                                ],*/
+                                              ),
+                                            ),
+                                            SingleChildScrollView(
+                                              child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children:  List.generate(10, (index){
+                                                    return Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        const Divider(thickness: 1,),
+                                                        Text(
+                                                          "Week ${index+1}",
+                                                          style: GoogleFonts.poppins(
+                                                            fontSize: 16,
+                                                            fontWeight: FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 5,),
+                                                        Text(
+                                                          "Total No. Products Sold: ${rnd.nextInt(300)}", //${data.docs.length}
+                                                          style: GoogleFonts.poppins(
+                                                            fontSize: 14,
+                                                            fontWeight: FontWeight.w400,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 5,),
+                                                        Text(
+                                                          "Total Amount. Products Sold: ${rnd.nextInt(300)}", //${data.docs.length}
+                                                          style: GoogleFonts.poppins(
+                                                            fontSize: 14,
+                                                            fontWeight: FontWeight.w400,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 5,),
+
+                                                        Text(
+                                                          "Total No. Completed Order: ${rnd.nextInt(300)}", //${data.docs.length}
+                                                          style: GoogleFonts.poppins(
+                                                            fontSize: 14,
+                                                            fontWeight: FontWeight.w400,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 5,),
+
+                                                        Text(
+                                                          "Total No. Canceled Order: ${rnd.nextInt(100)}", //${data.docs.length}
+                                                          style: GoogleFonts.poppins(
+                                                            fontSize: 14,
+                                                            fontWeight: FontWeight.w400,
+                                                          ),
+                                                        ),
+                                                        const Divider(thickness: 1,),
+                                                      ],
+                                                    );
+                                                  })
+                                                /*
+                                                [
+                                                  Text(
+                                                    "Total No. Products Sold: null", //${data.docs.length}
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 5,),
+                                                  Text(
+                                                    "Total Amount. Products Sold: null", //${data.docs.length}
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 5,),
+
+                                                  Text(
+                                                    "Total No. Completed Order: null", //${data.docs.length}
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 5,),
+
+                                                  Text(
+                                                    "Total No. Canceled Order: null", //${data.docs.length}
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  )
+                                                ],*/
+                                              ),
+                                            ),
+                                            SingleChildScrollView(
+                                              child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children:  List.generate(10, (index){
+                                                    return Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        const Divider(thickness: 1,),
+                                                        Text(
+                                                          "Month ${index+1}",
+                                                          style: GoogleFonts.poppins(
+                                                            fontSize: 16,
+                                                            fontWeight: FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 5,),
+                                                        Text(
+                                                          "Total No. Products Sold: ${rnd.nextInt(300)}", //${data.docs.length}
+                                                          style: GoogleFonts.poppins(
+                                                            fontSize: 14,
+                                                            fontWeight: FontWeight.w400,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 5,),
+                                                        Text(
+                                                          "Total Amount. Products Sold: ${rnd.nextInt(300)}", //${data.docs.length}
+                                                          style: GoogleFonts.poppins(
+                                                            fontSize: 14,
+                                                            fontWeight: FontWeight.w400,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 5,),
+
+                                                        Text(
+                                                          "Total No. Completed Order: ${rnd.nextInt(300)}", //${data.docs.length}
+                                                          style: GoogleFonts.poppins(
+                                                            fontSize: 14,
+                                                            fontWeight: FontWeight.w400,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 5,),
+
+                                                        Text(
+                                                          "Total No. Canceled Order: ${rnd.nextInt(100)}", //${data.docs.length}
+                                                          style: GoogleFonts.poppins(
+                                                            fontSize: 14,
+                                                            fontWeight: FontWeight.w400,
+                                                          ),
+                                                        ),
+                                                        const Divider(thickness: 1,),
+                                                      ],
+                                                    );
+                                                  })
+                                                /*
+                                                [
+                                                  Text(
+                                                    "Total No. Products Sold: null", //${data.docs.length}
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 5,),
+                                                  Text(
+                                                    "Total Amount. Products Sold: null", //${data.docs.length}
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 5,),
+
+                                                  Text(
+                                                    "Total No. Completed Order: null", //${data.docs.length}
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 5,),
+
+                                                  Text(
+                                                    "Total No. Canceled Order: null", //${data.docs.length}
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  )
+                                                ],*/
+                                              ),
+                                            ),
+
+                                          ],
+                                        )
                                       )
+
                                     ],
                                   );
                                 },
@@ -289,19 +556,19 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
                             ),
                           ),
                           const SizedBox(
-                            height: 10,
+                            height: 5,
                           ),
                           const Divider(
                             thickness: 1,
                           ),
                           const SizedBox(
-                            height: 10,
+                            height: 5,
                           ),
                           Card(
                             child: ColoredBox(
                               color: AppColors().primaryColor,
                               child: SizedBox(
-                                height: 70,
+                                height: 60,
                                 child: Center(
                                   child: StreamBuilder(
                                     stream: FirebaseFirestore.instance.collection("Orders").where("SellerID", isEqualTo: AuthService().getID()).where("Status", isEqualTo: "3").snapshots(),
