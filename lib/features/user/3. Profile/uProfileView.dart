@@ -823,7 +823,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                         icon: const Icon(
                                                           CupertinoIcons.cube_box,
                                                           color: Colors.white,
-                                                          size: 30,
+                                                          size: 20,
                                                         ),
                                                       ),
                                                       ],
@@ -1088,7 +1088,7 @@ class _UOrderViewState extends ConsumerState<UProfileView> {
                                                             icon: const Icon(
                                                               CupertinoIcons.return_icon,
                                                               color: Colors.white,
-                                                              size: 30,
+                                                              size: 20,
                                                             ),
                                                           ),
 

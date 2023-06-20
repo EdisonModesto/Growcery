@@ -269,7 +269,7 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
                                             SingleChildScrollView(
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment.center,
-                                                children:  List.generate(10, (index){
+                                                children:  List.generate(5, (index){
                                                   return Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
@@ -283,7 +283,7 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
                                                       ),
                                                       const SizedBox(height: 5,),
                                                       Text(
-                                                        "Total No. Products Sold: ${rnd.nextInt(300)}", //${data.docs.length}
+                                                        "Total No. Products Sold: ${5 + rnd.nextInt(100 - 5 )}", //${data.docs.length}
                                                         style: GoogleFonts.poppins(
                                                           fontSize: 14,
                                                           fontWeight: FontWeight.w400,
@@ -291,7 +291,7 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
                                                       ),
                                                       const SizedBox(height: 5,),
                                                       Text(
-                                                        "Total Amount. Products Sold: ${rnd.nextInt(300)}", //${data.docs.length}
+                                                        "Total Amount. Products Sold: ${500 + rnd.nextInt(3000 - 500)}", //${data.docs.length}
                                                         style: GoogleFonts.poppins(
                                                           fontSize: 14,
                                                           fontWeight: FontWeight.w400,
@@ -360,7 +360,7 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
                                             SingleChildScrollView(
                                               child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
-                                                  children:  List.generate(10, (index){
+                                                  children:  List.generate(0, (index){
                                                     return Column(
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
@@ -374,7 +374,7 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
                                                         ),
                                                         const SizedBox(height: 5,),
                                                         Text(
-                                                          "Total No. Products Sold: ${rnd.nextInt(300)}", //${data.docs.length}
+                                                          "Total No. Products Sold: ${5 + rnd.nextInt(100 - 5 )}", //${data.docs.length}
                                                           style: GoogleFonts.poppins(
                                                             fontSize: 14,
                                                             fontWeight: FontWeight.w400,
@@ -382,7 +382,7 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
                                                         ),
                                                         const SizedBox(height: 5,),
                                                         Text(
-                                                          "Total Amount. Products Sold: ${rnd.nextInt(300)}", //${data.docs.length}
+                                                          "Total Amount. Products Sold: ${500 + rnd.nextInt(3000 - 500)}", //${data.docs.length}
                                                           style: GoogleFonts.poppins(
                                                             fontSize: 14,
                                                             fontWeight: FontWeight.w400,
@@ -451,7 +451,7 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
                                             SingleChildScrollView(
                                               child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
-                                                  children:  List.generate(10, (index){
+                                                  children:  List.generate(0, (index){
                                                     return Column(
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
@@ -465,7 +465,7 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
                                                         ),
                                                         const SizedBox(height: 5,),
                                                         Text(
-                                                          "Total No. Products Sold: ${rnd.nextInt(300)}", //${data.docs.length}
+                                                          "Total No. Products Sold: ${5 + rnd.nextInt(100 - 5 )}", //${data.docs.length}
                                                           style: GoogleFonts.poppins(
                                                             fontSize: 14,
                                                             fontWeight: FontWeight.w400,
@@ -473,7 +473,7 @@ class _AProfileViewState extends ConsumerState<SProfileView> {
                                                         ),
                                                         const SizedBox(height: 5,),
                                                         Text(
-                                                          "Total Amount. Products Sold: ${rnd.nextInt(300)}", //${data.docs.length}
+                                                          "Total Amount. Products Sold: ${500 + rnd.nextInt(3000 - 500)}", //${data.docs.length}
                                                           style: GoogleFonts.poppins(
                                                             fontSize: 14,
                                                             fontWeight: FontWeight.w400,
