@@ -1,4 +1,4 @@
-<img src="/assets/images/growceryLogo.png" height="200">
+<img src="/assets/images/growceryLogo.jpg" height="200">
 
 # Growcery Mobile
 
@@ -14,8 +14,8 @@ Growcery is an e-commerce platform for farmers. Shop for fresh produce with ease
 
 Here're some of the project's best features:
 
-- Buy fresh produces from different farmers
-- Sell fresh produces to the market
+- Buy fresh produce from different farmers
+- Sell fresh produce to the market
 - Order Tracking
 - Daily/Weekly/Monthly Sales Report
 - Inventory Management
